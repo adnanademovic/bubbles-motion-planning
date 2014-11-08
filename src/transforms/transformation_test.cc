@@ -57,7 +57,8 @@ BOOST_AUTO_TEST_CASE(constructor_is_identity) {
 }
 
 BOOST_AUTO_TEST_CASE(translation) {
-  Transformation transform = Transformation::Translation(2.0, 2.5, 3.0);
+  Transformation transform;
+  transform.Translate(2.0, 2.5, 3.0);
   double matrix[4][4] = {{1.0, 0.0, 0.0, 2.0},
                          {0.0, 1.0, 0.0, 2.5},
                          {0.0, 0.0, 1.0, 3.0},
@@ -67,7 +68,8 @@ BOOST_AUTO_TEST_CASE(translation) {
 
 BOOST_AUTO_TEST_CASE(rotation_x) {
   double angle = M_PI/6.0;
-  Transformation transform = Transformation::Rotation(Transformation::X, angle);
+  Transformation transform;
+  transform.Rotate(Transformation::X, angle);
   double matrix[4][4] = {{1.0,             0.0,             0.0, 0.0},
                          {0.0, std::sqrt(0.75),            -0.5, 0.0},
                          {0.0,             0.5, std::sqrt(0.75), 0.0},
@@ -77,7 +79,8 @@ BOOST_AUTO_TEST_CASE(rotation_x) {
 
 BOOST_AUTO_TEST_CASE(rotation_y) {
   double angle = M_PI/3.0;
-  Transformation transform = Transformation::Rotation(Transformation::Y, angle);
+  Transformation transform;
+  transform.Rotate(Transformation::Y, angle);
   double matrix[4][4] = {{             0.5, 0.0, std::sqrt(0.75), 0.0},
                          {             0.0, 1.0,             0.0, 0.0},
                          {-std::sqrt(0.75), 0.0,             0.5, 0.0},
@@ -87,7 +90,8 @@ BOOST_AUTO_TEST_CASE(rotation_y) {
 
 BOOST_AUTO_TEST_CASE(rotation_z) {
   double angle = M_PI/4.0;
-  Transformation transform = Transformation::Rotation(Transformation::Z, angle);
+  Transformation transform;
+  transform.Rotate(Transformation::Z, angle);
   double matrix[4][4] = {{std::sqrt(0.5), -std::sqrt(0.5), 0.0, 0.0},
                          {std::sqrt(0.5),  std::sqrt(0.5), 0.0, 0.0},
                          {           0.0,             0.0, 1.0, 0.0},
@@ -98,13 +102,25 @@ BOOST_AUTO_TEST_CASE(rotation_z) {
 
 BOOST_AUTO_TEST_CASE(composition) {
   double angle = M_PI/4.0;
-  Transformation transform;
-  transform.Transform(Transformation::Translation(4.0, 0.0, 0.0));
-  transform.Transform(Transformation::Rotation(Transformation::Z, angle));
-  transform.Transform(Transformation::Translation(0.0, std::sqrt(2.0), 3.0));
-  double matrix[4][4] = {{std::sqrt(0.5), -std::sqrt(0.5), 0.0, 3.0},
-                         {std::sqrt(0.5),  std::sqrt(0.5), 0.0, 1.0},
-                         {           0.0,             0.0, 1.0, 3.0},
-                         {           0.0,             0.0, 0.0, 1.0}};
-  CheckClose(transform, matrix, 0.001);
+  Transformation transform1;
+  transform1.Translate(4.0, 0.0, 0.0);
+  double matrix1[4][4] = {{1.0, 0.0, 0.0, 4.0},
+                          {0.0, 1.0, 0.0, 0.0},
+                          {0.0, 0.0, 1.0, 0.0},
+                          {0.0, 0.0, 0.0, 1.0}};
+  CheckEquality(transform1, matrix1);
+  Transformation transform2;
+  transform2.Rotate(Transformation::Z, angle);
+  transform2.Translate(0.0, std::sqrt(2.0), 3.0);
+  transform1.Transform(transform2);
+  double matrix2[4][4] = {{std::sqrt(0.5), -std::sqrt(0.5), 0.0, -1.0},
+                          {std::sqrt(0.5),  std::sqrt(0.5), 0.0,  1.0},
+                          {           0.0,             0.0, 1.0,  3.0},
+                          {           0.0,             0.0, 0.0,  1.0}};
+  double matrix3[4][4] = {{std::sqrt(0.5), -std::sqrt(0.5), 0.0, 3.0},
+                          {std::sqrt(0.5),  std::sqrt(0.5), 0.0, 1.0},
+                          {           0.0,             0.0, 1.0, 3.0},
+                          {           0.0,             0.0, 0.0, 1.0}};
+  CheckClose(transform2, matrix2, 0.001);
+  CheckClose(transform1, matrix3, 0.001);
 }

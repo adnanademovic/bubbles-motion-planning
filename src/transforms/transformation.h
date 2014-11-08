@@ -27,6 +27,8 @@
 #ifndef COM_ADEMOVIC_BUBBLESMP_TRANSFORMS_TRANSFORMATION_H_
 #define COM_ADEMOVIC_BUBBLESMP_TRANSFORMS_TRANSFORMATION_H_
 
+#include <mutex>
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -40,14 +42,16 @@ class Transformation {
     Z = 2,
   };
   Transformation();
-  static Transformation Rotation(Axis axis, double angle);
-  static Transformation Translation(double x, double y, double z);
+  void Rotate(Axis axis, double angle);
+  void Translate(double x, double y, double z);
   void Transform(const Transformation& transform);
   double coefficient(int i, int j) const;
 
  private:
   double rotation[3][3];
   double translation[3];
+
+  mutable std::mutex matrices_mutex;
 };
 
 }  // namespace transforms

@@ -40,7 +40,7 @@ Transformation::Transformation() {
   rotation[0][0] = rotation[1][1] = rotation[2][2] = 1.0;
 }
 
-Transformation Transformation::Rotation(Axis axis, double angle) {
+void Transformation::Rotate(Axis axis, double angle) {
   Transformation transform;
   int n1 = (axis + 1) % 3;
   int n2 = (axis + 2) % 3;
@@ -48,18 +48,20 @@ Transformation Transformation::Rotation(Axis axis, double angle) {
   transform.rotation[n2][n2] = std::cos(angle);
   transform.rotation[n1][n2] = -std::sin(angle);
   transform.rotation[n2][n1] = std::sin(angle);
-  return transform;
+  Transform(transform);
 }
 
-Transformation Transformation::Translation(double x, double y, double z) {
+void Transformation::Translate(double x, double y, double z) {
   Transformation transform;
   transform.translation[0] = x;
   transform.translation[1] = y;
   transform.translation[2] = z;
-  return transform;
+  Transform(transform);
 }
 
 void Transformation::Transform(const Transformation& transform) {
+  std::lock_guard<std::mutex> matrices_guard(matrices_mutex);
+
   for (int i = 0; i != 3; ++i)
     for (int j = 0; j != 3; ++j)
       translation[i] += rotation[i][j] * transform.translation[j];
@@ -77,6 +79,8 @@ void Transformation::Transform(const Transformation& transform) {
 }
 
 double Transformation::coefficient(int i, int j) const {
+  std::lock_guard<std::mutex> matrices_guard(matrices_mutex);
+
   return (i==3)
       ? ((j==3) ? 1.0 : 0.0)
       : ((j==3) ? translation[i] : rotation[i][j]);
