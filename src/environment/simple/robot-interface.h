@@ -33,6 +33,7 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace environment {
+namespace simple {
 
 // Defines interface for querying a robot's interaction with its environment.
 class RobotInterface {
@@ -46,6 +47,7 @@ class RobotInterface {
   RobotInterface() {};
 };
 
+}  // namespace simple
 }  // namespace environment
 }  // namespace bubblesmp
 }  // namespace ademovic
