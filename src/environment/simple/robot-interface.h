@@ -41,7 +41,7 @@ namespace simple {
 class RobotInterface {
  public:
   virtual ~RobotInterface() {};
-  virtual void set_coordinates(std::vector<double> coordinates) = 0;
+  virtual void set_coordinates(const std::vector<double>& coordinates) = 0;
   virtual std::vector<double> coordinates() const = 0;
   virtual double DistanceToObstacle(
       const ObstacleInterface& obstacle) const = 0;
