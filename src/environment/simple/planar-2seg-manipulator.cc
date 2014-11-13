@@ -45,6 +45,7 @@ Planar2SegManipulator::Planar2SegManipulator(
 
 void Planar2SegManipulator::set_coordinates(
     const std::vector<double>& coordinates) {
+  std::lock_guard<std::mutex> guard(guard_mutex_);
   coordinates_ = coordinates;
   mid_x_ = segment_1_length_ * std::cos(coordinates[0]);
   mid_y_ = segment_1_length_ * std::sin(coordinates[0]);
@@ -53,11 +54,13 @@ void Planar2SegManipulator::set_coordinates(
 }
 
 std::vector<double> Planar2SegManipulator::coordinates() const {
+  std::lock_guard<std::mutex> guard(guard_mutex_);
   return coordinates_;
 }
 
 double Planar2SegManipulator::DistanceToObstacle(
     const ObstacleInterface& obstacle) const {
+  std::lock_guard<std::mutex> guard(guard_mutex_);
   return std::min(
       obstacle.DistanceToLine(0.0, 0.0, 0.0, mid_x_, mid_y_, 0.0),
       obstacle.DistanceToLine(mid_x_, mid_y_, 0.0, tip_x_, tip_y_, 0.0));

@@ -28,6 +28,7 @@
 #define COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_SIMPLE_PLANAR_2SEG_MANIPULATOR_H_
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include "robot-interface.h"
@@ -49,6 +50,8 @@ class Planar2SegManipulator : public RobotInterface {
   std::vector<double> coordinates_;
   double mid_x_, mid_y_, tip_x_, tip_y_;
   double segment_1_length_, segment_2_length_;
+  
+  mutable std::mutex guard_mutex_;
 };
 
 }  // namespace simple
