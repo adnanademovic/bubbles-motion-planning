@@ -32,21 +32,29 @@
 
 using ::com::ademovic::bubblesmp::environment::simple::Planar2SegManipulator;
 
-BOOST_AUTO_TEST_CASE(constructor) {
-  Planar2SegManipulator manipulator(1.0, 2.0);
-  std::vector<double> input{0.0, 0.0};
-  std::vector<double> output = manipulator.coordinates();
-
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      output.begin(), output.end(), input.begin(), input.end());
+void CheckCloseCollections(std::vector<double> a, std::vector<double> b) {
+  BOOST_CHECK_EQUAL(a.size(), b.size());
+  for (unsigned int i = 0; i != a.size(); ++i)
+    BOOST_CHECK_CLOSE(a[i], b[i], 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(set_coordinates) {
-  Planar2SegManipulator manipulator(1.0, 2.0);
-  std::vector<double> input{0.2, 0.3};
-  manipulator.set_coordinates({0.2, 0.3});
-  std::vector<double> output = manipulator.coordinates();
+BOOST_AUTO_TEST_CASE(constructor) {
+  Planar2SegManipulator manipulator(2.0, 1.0);
+  CheckCloseCollections(manipulator.coordinates(), {0.0, 0.0});
+  CheckCloseCollections(manipulator.FurthestDistances(), {3.0, 1.0});
+}
 
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      output.begin(), output.end(), input.begin(), input.end());
+BOOST_AUTO_TEST_CASE(folded_elbow) {
+  Planar2SegManipulator manipulator(2.0, 1.0);
+  manipulator.set_coordinates({M_PI / 4.0, M_PI / 1.5});
+  CheckCloseCollections(manipulator.coordinates(), {M_PI / 4.0, M_PI / 1.5});
+  CheckCloseCollections(manipulator.FurthestDistances(), {2.0, 1.0});
+}
+
+BOOST_AUTO_TEST_CASE(almost_straight_elbow) {
+  Planar2SegManipulator manipulator(2.0, 1.0);
+  manipulator.set_coordinates({M_PI / 4.0, M_PI / 4.0});
+  CheckCloseCollections(manipulator.coordinates(), {M_PI / 4.0, M_PI / 4.0});
+  CheckCloseCollections(manipulator.FurthestDistances(),
+                        {std::sqrt(std::sqrt(8.0) + 5.0), 1.0});
 }

@@ -45,11 +45,13 @@ class Planar2SegManipulator : public RobotInterface {
   void set_coordinates(const std::vector<double>& coordinates);
   std::vector<double> coordinates() const;
   double DistanceToObstacle(const ObstacleInterface& obstacle) const;
+  std::vector<double> FurthestDistances() const;
 
  private:
   std::vector<double> coordinates_;
   double mid_x_, mid_y_, tip_x_, tip_y_;
   double segment_1_length_, segment_2_length_;
+  std::vector<double> joint_reaches_;
   
   mutable std::mutex guard_mutex_;
 };

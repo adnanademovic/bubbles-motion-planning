@@ -45,6 +45,7 @@ class RobotInterface {
   virtual std::vector<double> coordinates() const = 0;
   virtual double DistanceToObstacle(
       const ObstacleInterface& obstacle) const = 0;
+  virtual std::vector<double> FurthestDistances() const = 0;
 
  protected:
   RobotInterface() {};

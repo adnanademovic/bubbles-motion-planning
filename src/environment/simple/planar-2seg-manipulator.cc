@@ -39,7 +39,8 @@ namespace simple {
 Planar2SegManipulator::Planar2SegManipulator(
     double segment_1_length, double segment_2_length)
     : coordinates_(2, 0.0), mid_x_(0.0), mid_y_(0.0), tip_x_(0.0), tip_y_(0.0),
-      segment_1_length_(segment_1_length), segment_2_length_(segment_2_length) {
+      segment_1_length_(segment_1_length), segment_2_length_(segment_2_length),
+      joint_reaches_(2, 0.0) {
     set_coordinates({0.0, 0.0});
 }
 
@@ -47,10 +48,15 @@ void Planar2SegManipulator::set_coordinates(
     const std::vector<double>& coordinates) {
   std::lock_guard<std::mutex> guard(guard_mutex_);
   coordinates_ = coordinates;
-  mid_x_ = segment_1_length_ * std::cos(coordinates[0]);
-  mid_y_ = segment_1_length_ * std::sin(coordinates[0]);
-  tip_x_ = mid_x_ + segment_2_length_ * std::cos(coordinates[1]);
-  tip_y_ = mid_y_ + segment_2_length_ * std::sin(coordinates[1]);
+  double angle = coordinates[0];
+  mid_x_ = segment_1_length_ * std::cos(angle);
+  mid_y_ = segment_1_length_ * std::sin(angle);
+  angle += coordinates[1];
+  tip_x_ = mid_x_ + segment_2_length_ * std::cos(angle);
+  tip_y_ = mid_y_ + segment_2_length_ * std::sin(angle);
+  joint_reaches_[0] =
+      std::max(segment_1_length_, std::sqrt(tip_x_ * tip_x_ + tip_y_ * tip_y_));
+  joint_reaches_[1] = segment_2_length_;
 }
 
 std::vector<double> Planar2SegManipulator::coordinates() const {
@@ -64,6 +70,11 @@ double Planar2SegManipulator::DistanceToObstacle(
   return std::min(
       obstacle.DistanceToLine(0.0, 0.0, 0.0, mid_x_, mid_y_, 0.0),
       obstacle.DistanceToLine(mid_x_, mid_y_, 0.0, tip_x_, tip_y_, 0.0));
+}
+
+std::vector<double> Planar2SegManipulator::FurthestDistances() const {
+  std::lock_guard<std::mutex> guard(guard_mutex_);
+  return joint_reaches_;
 }
 
 }  // namespace simple
