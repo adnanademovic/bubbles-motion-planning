@@ -46,12 +46,14 @@ class Transformation {
   void Translate(double x, double y, double z);
   void Transform(const Transformation& transform);
   double coefficient(int i, int j) const;
+  void ApplyTo(
+      double rotation[3][3], double translation[3]) const;
 
  private:
-  double rotation[3][3];
-  double translation[3];
+  double rotation_[3][3];
+  double translation_[3];
 
-  mutable std::mutex matrices_mutex;
+  mutable std::mutex matrices_mutex_;
 };
 
 }  // namespace transforms

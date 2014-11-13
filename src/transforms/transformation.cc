@@ -35,55 +35,74 @@ namespace bubblesmp {
 namespace transforms {
 
 Transformation::Transformation() {
-  std::memset(rotation, 0, sizeof(rotation));
-  std::memset(translation, 0, sizeof(translation));
-  rotation[0][0] = rotation[1][1] = rotation[2][2] = 1.0;
+  std::memset(rotation_, 0, sizeof(rotation_));
+  std::memset(translation_, 0, sizeof(translation_));
+  rotation_[0][0] = rotation_[1][1] = rotation_[2][2] = 1.0;
 }
 
 void Transformation::Rotate(Axis axis, double angle) {
   Transformation transform;
   int n1 = (axis + 1) % 3;
   int n2 = (axis + 2) % 3;
-  transform.rotation[n1][n1] = std::cos(angle);
-  transform.rotation[n2][n2] = std::cos(angle);
-  transform.rotation[n1][n2] = -std::sin(angle);
-  transform.rotation[n2][n1] = std::sin(angle);
+  transform.rotation_[n1][n1] = std::cos(angle);
+  transform.rotation_[n2][n2] = std::cos(angle);
+  transform.rotation_[n1][n2] = -std::sin(angle);
+  transform.rotation_[n2][n1] = std::sin(angle);
   Transform(transform);
 }
 
 void Transformation::Translate(double x, double y, double z) {
   Transformation transform;
-  transform.translation[0] = x;
-  transform.translation[1] = y;
-  transform.translation[2] = z;
+  transform.translation_[0] = x;
+  transform.translation_[1] = y;
+  transform.translation_[2] = z;
   Transform(transform);
 }
 
 void Transformation::Transform(const Transformation& transform) {
-  std::lock_guard<std::mutex> matrices_guard(matrices_mutex);
+  double rotation[3][3];
+  double translation[3];
+  for (int i = 0; i != 3; ++i)
+    for (int j = 0; j != 3; ++j)
+      rotation[i][j] = rotation_[i][j];
+  for (int i = 0; i != 3; ++i)
+    translation[i] = translation_[i];
+
+  transform.ApplyTo(rotation, translation);
+
+  std::lock_guard<std::mutex> matrices_guard(matrices_mutex_);
+  for (int i = 0; i != 3; ++i)
+    for (int j = 0; j != 3; ++j)
+      rotation_[i][j] = rotation[i][j];
+  for (int i = 0; i != 3; ++i)
+    translation_[i] = translation[i];
+}
+
+double Transformation::coefficient(int i, int j) const {
+  std::lock_guard<std::mutex> matrices_guard(matrices_mutex_);
+  return (i==3)
+      ? ((j==3) ? 1.0 : 0.0)
+      : ((j==3) ? translation_[i] : rotation_[i][j]);
+}
+
+void Transformation::ApplyTo(
+    double rotation[3][3], double translation[3]) const {
+  std::lock_guard<std::mutex> matrices_guard(matrices_mutex_);
 
   for (int i = 0; i != 3; ++i)
     for (int j = 0; j != 3; ++j)
-      translation[i] += rotation[i][j] * transform.translation[j];
+      translation[i] += rotation[i][j] * translation_[j];
 
   double result[3][3];
   std::memset(result, 0, sizeof(result));
   for (int i = 0; i != 3; ++i)
     for (int j = 0; j != 3; ++j)
       for (int k = 0; k != 3; ++k)
-        result[i][j] += rotation[i][k] * transform.rotation[k][j];
+        result[i][j] += rotation[i][k] * rotation_[k][j];
 
   for (int i = 0; i != 3; ++i)
     for (int j = 0; j != 3; ++j)
       rotation[i][j] = result[i][j];
-}
-
-double Transformation::coefficient(int i, int j) const {
-  std::lock_guard<std::mutex> matrices_guard(matrices_mutex);
-
-  return (i==3)
-      ? ((j==3) ? 1.0 : 0.0)
-      : ((j==3) ? translation[i] : rotation[i][j]);
 }
 
 }  // namespace transforms
