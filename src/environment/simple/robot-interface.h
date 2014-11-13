@@ -29,6 +29,8 @@
 
 #include <vector>
 
+#include "obstacle-interface.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -41,7 +43,8 @@ class RobotInterface {
   virtual ~RobotInterface() {};
   virtual void set_coordinates(std::vector<double> coordinates) = 0;
   virtual std::vector<double> coordinates() const = 0;
-  virtual double DistanceToObstacles() const = 0;
+  virtual double DistanceToObstacle(
+      const ObstacleInterface& obstacle) const = 0;
 
  protected:
   RobotInterface() {};
