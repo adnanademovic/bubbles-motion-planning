@@ -47,18 +47,16 @@ void CheckCloseCollections(std::vector<double> a, std::vector<double> b) {
 }
 
 BOOST_AUTO_TEST_CASE(bubble_test_one_obstacle) {
-  auto obstacles = new std::vector<std::shared_ptr<ObstacleInterface> >;
-  obstacles->emplace_back(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
-  BubbleSource source(new Planar2SegManipulator(2.0, 1.0), obstacles);
+  BubbleSource source(new Planar2SegManipulator(2.0, 1.0));
+  source.AddObstacle(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
   CheckCloseCollections(
       source.GetBubbleDimensions({0.0, 0.0}), {1.0 / 3.0, 1.0});
 }
 
 BOOST_AUTO_TEST_CASE(bubble_test_two_obstacles) {
-  auto obstacles = new std::vector<std::shared_ptr<ObstacleInterface> >;
-  obstacles->emplace_back(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
-  obstacles->emplace_back(new ObstacleSphere(0.0, 6.0, 0.0, 1.0));
-  BubbleSource source(new Planar2SegManipulator(1.5, 1.0), obstacles);
+  BubbleSource source(new Planar2SegManipulator(1.5, 1.0));
+  source.AddObstacle(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
+  source.AddObstacle(new ObstacleSphere(0.0, 6.0, 0.0, 1.0));
   CheckCloseCollections(
       source.GetBubbleDimensions({M_PI / 2.0, 0.0}), {1.0, 2.5});
 }

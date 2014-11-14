@@ -34,10 +34,9 @@ namespace bubblesmp {
 namespace environment {
 namespace simple {
 
-BubbleSource::BubbleSource(
-    RobotInterface* robot,
-    std::vector<std::shared_ptr<ObstacleInterface> >* obstacles)
-    : robot_(robot), obstacles_(obstacles) {}
+BubbleSource::BubbleSource(RobotInterface* robot)
+    : robot_(robot),
+      obstacles_(new std::vector<std::shared_ptr<ObstacleInterface> >) {}
 
 std::vector<double> BubbleSource::GetBubbleDimensions(
       const std::vector<double>& coordinates) const {
@@ -46,7 +45,7 @@ std::vector<double> BubbleSource::GetBubbleDimensions(
   robot_->set_coordinates(coordinates);
 
   double distance = std::numeric_limits<double>::infinity();
-  for (std::shared_ptr<ObstacleInterface> obstacle : *obstacles_) {
+  for (auto obstacle : *obstacles_) {
     distance = std::min(distance, robot_->DistanceToObstacle(*obstacle));
   }
 
@@ -59,6 +58,18 @@ std::vector<double> BubbleSource::GetBubbleDimensions(
   }
 
   return output;
+}
+
+void BubbleSource::AddObstacle(ObstacleInterface* obstacle) {
+  obstacles_->emplace_back(obstacle);
+}
+
+void BubbleSource::AddObstacle(std::shared_ptr<ObstacleInterface> obstacle) {
+  obstacles_->emplace_back(obstacle);
+}
+
+void BubbleSource::ClearObstacles() {
+  obstacles_.reset(new std::vector<std::shared_ptr<ObstacleInterface> >);
 }
 
 }  // namespace simple

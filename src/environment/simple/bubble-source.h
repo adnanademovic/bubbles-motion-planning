@@ -43,11 +43,16 @@ namespace simple {
 
 class BubbleSource : public BubbleSourceInterface {
  public:
-  BubbleSource(
-      RobotInterface* robot,
-      std::vector<std::shared_ptr<ObstacleInterface> >* obstacles);
+  // The class instance takes ownership of RobotInterface.
+  BubbleSource(RobotInterface* robot);
+
   std::vector<double> GetBubbleDimensions(
       const std::vector<double>& coordinates) const;
+
+  // The class instance takes ownership of RobotInterface.
+  void AddObstacle(ObstacleInterface* obstacle);
+  void AddObstacle(std::shared_ptr<ObstacleInterface> obstacle);
+  void ClearObstacles();
 
  private:
   std::unique_ptr<RobotInterface> robot_;

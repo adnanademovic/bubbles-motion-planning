@@ -62,11 +62,22 @@ class MockObstacle : public ObstacleInterface {
 };
 
 BOOST_AUTO_TEST_CASE(connects_properly) {
-  auto obstacles = new std::vector<std::shared_ptr<ObstacleInterface> >;
-  obstacles->emplace_back(new MockObstacle(5.0));
-  obstacles->emplace_back(new MockObstacle(2.0));
-  BubbleSource source(new MockRobot, obstacles);
+  BubbleSource source(new MockRobot);
+  source.AddObstacle(new MockObstacle(5.0));
+  source.AddObstacle(std::shared_ptr<ObstacleInterface>(new MockObstacle(2.0)));
   std::vector<double> input{0.5, 1.0, 2.0};
+  std::vector<double> output = source.GetBubbleDimensions({0.0, 0.0, 0.0});
+  BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(),
+                                input.begin(), input.end());
+}
+
+BOOST_AUTO_TEST_CASE(clear_obstacles) {
+  BubbleSource source(new MockRobot);
+  source.AddObstacle(new MockObstacle(5.0));
+  source.AddObstacle(new MockObstacle(2.0));
+  source.ClearObstacles();
+  source.AddObstacle(new MockObstacle(6.0));
+  std::vector<double> input{1.5, 3.0, 6.0};
   std::vector<double> output = source.GetBubbleDimensions({0.0, 0.0, 0.0});
   BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(),
                                 input.begin(), input.end());
