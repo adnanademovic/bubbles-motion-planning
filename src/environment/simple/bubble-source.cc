@@ -1,0 +1,68 @@
+//
+// Copyright (c) 2014, Adnan Ademovic
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// * Redistributions of source code must retain the above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+// * Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+#include "bubble-source.h"
+
+#include <limits>
+
+namespace com {
+namespace ademovic {
+namespace bubblesmp {
+namespace environment {
+namespace simple {
+
+BubbleSource::BubbleSource(
+    RobotInterface* robot,
+    std::vector<std::shared_ptr<ObstacleInterface> >* obstacles)
+    : robot_(robot), obstacles_(obstacles) {}
+
+std::vector<double> BubbleSource::GetBubbleDimensions(
+      const std::vector<double>& coordinates) const {
+  std::lock_guard<std::mutex> object_mutex_lock(object_mutex_);
+
+  robot_->set_coordinates(coordinates);
+
+  double distance = std::numeric_limits<double>::infinity();
+  for (std::shared_ptr<ObstacleInterface> obstacle : *obstacles_) {
+    distance = std::min(distance, robot_->DistanceToObstacle(*obstacle));
+  }
+
+  std::vector<double> output;
+  for (double subdistance : robot_->FurthestDistances()) {
+    if (subdistance == 0.0)
+      output.push_back(std::numeric_limits<double>::infinity());
+    else
+      output.push_back(distance / subdistance);
+  }
+
+  return output;
+}
+
+}  // namespace simple
+}  // namespace environment
+}  // namespace bubblesmp
+}  // namespace ademovic
+}  // namespace com
