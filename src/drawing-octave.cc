@@ -50,7 +50,8 @@ int main() {
   bs->AddObstacle(new ObstacleSphere(3.0, 3.0, 0.0, 1.0));
   std::shared_ptr<BubbleSourceInterface> bubble_source(bs);
   double step = 3.1415 / 50.0;
-  printf("environment = [];\nenvironment2 = [];\n");
+  printf("environment = [];\n");
+  bool has_environment = false;
   for (int i = -50; i < 50; ++i)
     for (int j = -50; j < 50; ++j) {
       double x = i * step;
@@ -61,13 +62,13 @@ int main() {
         bubble_sum += dimension;
       if (bubble_sum == 0.0) {
         printf("environment = [environment; %lf %lf];\n", x, y);
-      } else if (bubble_sum < 0.5) {
-        printf("environment2 = [environment2; %lf %lf];\n", x, y);
+        has_environment = true;
       }
     }
   BubbleTree bubble_tree(2, {0, 0}, bubble_source);
-  printf("plot(environment(:,1),environment(:,2),'ro');\nhold on;\n");
-  printf("plot(environment2(:,1),environment2(:,2),'co');\n");
+  printf("figure;\nhold on;\n");
+  if (has_environment)
+    printf("plot(environment(:,1),environment(:,2),'ro');\n");
   printf("axis([-3.5 3.5 -3.5 3.5]);\n");
   connect(bubble_tree, {2, 2});
   connect(bubble_tree, {-1, 0});
