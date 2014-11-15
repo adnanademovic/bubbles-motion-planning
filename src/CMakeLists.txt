@@ -3,3 +3,10 @@ add_subdirectory(environment)
 add_subdirectory(transforms)
 
 add_library(bubble bubble.cc)
+
+# Tests
+
+add_executable(bubble_test bubble_test.cc)
+target_link_libraries(bubble_test bubble boost_unit_test_framework)
+add_test(BUBBLE_TEST ${CMAKE_CURRENT_BINARY_DIR}/bubble_test)
+

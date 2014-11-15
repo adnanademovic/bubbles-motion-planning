@@ -38,6 +38,10 @@ class Bubble {
   Bubble(const std::vector<double>& position, const std::vector<double>& size);
   std::vector<double> position() const;
   std::vector<double> size() const;
+  bool Contains(const std::vector<double>& q) const;
+  // Returns coordinates at which a line connecting the bubble center and q
+  // intersects the bubble's hull.
+  std::vector<double> IntersectsHullAt(const std::vector<double>& q) const;
 
  private:
   std::vector<double> position_;

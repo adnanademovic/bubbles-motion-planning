@@ -26,6 +26,8 @@
 
 #include "bubble.h"
 
+#include <cmath>
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -40,6 +42,29 @@ std::vector<double> Bubble::position() const {
 
 std::vector<double> Bubble::size() const {
   return size_;
+}
+
+bool Bubble::Contains(const std::vector<double>& q) const {
+  unsigned int axis_count = position_.size();
+  double distance = 0.0;
+  for (unsigned int i = 0; i < axis_count; ++i) {
+    distance += std::abs(q[i] - position_[i]) / size_[i];
+  }
+  return (distance < 1.0);
+}
+
+std::vector<double> Bubble::IntersectsHullAt(
+    const std::vector<double>& q) const {
+  unsigned int axis_count = position_.size();
+  double distance = 0.0;
+  std::vector<double> new_q(axis_count, 0.0);
+  for (unsigned int i = 0; i < axis_count; ++i) {
+    new_q[i] = q[i] - position_[i];
+    distance += std::abs(new_q[i]) / size_[i];
+  }
+  for (unsigned int i = 0; i < axis_count; ++i)
+    new_q[i] = position_[i] + new_q[i] / distance;
+  return new_q;
 }
 
 }  // namespace bubblesmp
