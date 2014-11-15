@@ -27,7 +27,10 @@
 #ifndef COM_ADEMOVIC_BUBBLESMP_BUBBLE_RRT_H_
 #define COM_ADEMOVIC_BUBBLESMP_BUBBLE_RRT_H_
 
+#include <memory>
 #include <vector>
+
+#include "bubble-tree.h"
 
 namespace com {
 namespace ademovic {
@@ -35,7 +38,16 @@ namespace bubblesmp {
 
 class BubbleRrt {
  public:
-  BubbleRrt() {};
+  // Takes ownership of bubble_source.
+  BubbleRrt(const std::vector<double>& q_src, const std::vector<double>& q_dst,
+            int max_bubbles_per_branch,
+            std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
+
+  bool Step(const std::vector<double>& q);
+
+ private:
+  std::vector<std::unique_ptr<BubbleTree> > src_trees_;
+  std::vector<std::unique_ptr<BubbleTree> > dst_trees_;
 };
 
 }  // namespace bubblesmp
