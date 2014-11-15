@@ -10,11 +10,12 @@ target_link_libraries(bubble-rrt bubble-tree)
 
 add_executable(drawing-octave drawing-octave.cc)
 target_link_libraries(drawing-octave
-                      bubble-tree
+                      bubble-rrt
                       bubble-source
-                      planar-2seg-manipulator
+                      bubble-tree
+                      obstacle-rectangle
                       obstacle-sphere
-                      obstacle-rectangle)
+                      planar-2seg-manipulator)
 
 # Tests
 

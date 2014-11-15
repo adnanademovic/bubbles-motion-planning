@@ -26,6 +26,7 @@
 
 #include <cstdio>
 
+#include "bubble-rrt.h"
 #include "bubble-tree.h"
 #include "environment/simple/bubble-source.h"
 #include "environment/simple/obstacle-rectangle.h"
@@ -36,11 +37,27 @@ using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::environment::simple;
 
-void connect(BubbleTree& bubble_tree, const std::vector<double>& point) {
-  if (bubble_tree.Connect(point)) {
-    printf("plot(%lf, %lf, 'k*');\n", point[0], point[1]);
+void connect(BubbleRrt& bubble_rrt, const std::vector<double>& point) {
+  if (bubble_rrt.Step(point)) {
+    printf("plot(%lf, %lf, 'mo');\n", point[0], point[1]);
   } else {
-    printf("plot(%lf, %lf, 'm*');\n", point[0], point[1]);
+    printf("plot(%lf, %lf, 'k*');\n", point[0], point[1]);
+  }
+}
+
+void doTree(BubbleTree* tree) {
+  for (const auto& node : tree->nodes_) {
+    auto pos = node->bubble->position();
+    auto siz = node->bubble->size();
+    printf("plot(%lf, %lf, 'gx');\n", pos[0], pos[1]);
+    printf("plot([%lf %lf %lf %lf %lf], [%lf %lf %lf %lf %lf], 'b');\n",
+        pos[0], pos[0] + siz[0], pos[0], pos[0] - siz[0], pos[0],
+        pos[1] + siz[1], pos[1], pos[1] - siz[1], pos[1], pos[1] + siz[1]);
+    if (node->parent) {
+      auto pos_par = node->parent->bubble->position();
+      printf("plot([%lf %lf], [%lf %lf], 'k');\n",
+          pos[0], pos_par[0], pos[1], pos_par[1]);
+    }
   }
 }
 
@@ -65,33 +82,24 @@ int main() {
         has_environment = true;
       }
     }
-  BubbleTree bubble_tree(2, {0, 0}, bubble_source);
+  BubbleRrt bubble_rrt({0, 0}, {2, -2}, 3, bubble_source);
   printf("figure;\nhold on;\n");
   if (has_environment)
     printf("plot(environment(:,1),environment(:,2),'ro');\n");
   printf("axis([-3.5 3.5 -3.5 3.5]);\n");
-  connect(bubble_tree, {2, 2});
-  connect(bubble_tree, {-1, 0});
-  connect(bubble_tree, {-1, 2});
-  connect(bubble_tree, {0, -1});
-  connect(bubble_tree, {2, -1});
-  connect(bubble_tree, {0, -3});
-  connect(bubble_tree, {1, -3});
-  connect(bubble_tree, {2, -2.9});
-  connect(bubble_tree, {2, -3});
-  connect(bubble_tree, {2, -1.5});
-  for (const auto& node : bubble_tree.nodes_) {
-    auto pos = node->bubble->position();
-    auto siz = node->bubble->size();
-    printf("plot(%lf, %lf, 'gx');\n", pos[0], pos[1]);
-    printf("plot([%lf %lf %lf %lf %lf], [%lf %lf %lf %lf %lf], 'b');\n",
-        pos[0], pos[0] + siz[0], pos[0], pos[0] - siz[0], pos[0],
-        pos[1] + siz[1], pos[1], pos[1] - siz[1], pos[1], pos[1] + siz[1]);
-    if (node->parent) {
-      auto pos_par = node->parent->bubble->position();
-      printf("plot([%lf %lf], [%lf %lf], 'k');\n",
-          pos[0], pos_par[0], pos[1], pos_par[1]);
-    }
-  }
+  connect(bubble_rrt, {2, 2});
+  connect(bubble_rrt, {-1, 0});
+  connect(bubble_rrt, {-1, 2});
+  connect(bubble_rrt, {0, -1});
+  connect(bubble_rrt, {2, -1});
+  connect(bubble_rrt, {0, -3});
+  connect(bubble_rrt, {1, -3});
+  connect(bubble_rrt, {2, -2.9});
+  connect(bubble_rrt, {2, -3});
+  connect(bubble_rrt, {2, -1.5});
+  for (const auto& tree : bubble_rrt.src_trees_)
+    doTree(tree.get());
+  for (const auto& tree : bubble_rrt.dst_trees_)
+    doTree(tree.get());
   return 0;
 }

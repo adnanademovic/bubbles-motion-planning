@@ -45,7 +45,6 @@ class BubbleRrt {
 
   bool Step(const std::vector<double>& q);
 
- private:
   std::vector<std::unique_ptr<BubbleTree> > src_trees_;
   std::vector<std::unique_ptr<BubbleTree> > dst_trees_;
 };
