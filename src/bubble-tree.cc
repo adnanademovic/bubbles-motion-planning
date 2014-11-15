@@ -47,9 +47,7 @@ BubbleTree::BubbleTree(
     int max_bubbles_per_branch, const std::vector<double>& root,
     std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
     : max_bubbles_per_branch_(max_bubbles_per_branch),
-      bubble_source_(bubble_source), start_point_{root, nullptr} {
-  AddNode(root, nullptr);
-}
+      bubble_source_(bubble_source), start_point_{root, nullptr} {}
 
 bool BubbleTree::Connect(const std::vector<double>& q_target) {
   for (const std::unique_ptr<Node>& node : nodes_) {
