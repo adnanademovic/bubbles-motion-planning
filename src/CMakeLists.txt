@@ -5,6 +5,8 @@ add_subdirectory(transforms)
 add_library(bubble bubble.cc)
 add_library(bubble-tree bubble-tree.cc)
 target_link_libraries(bubble-tree bubble)
+add_library(bubble-rrt bubble-rrt.cc)
+target_link_libraries(bubble-rrt bubble-tree)
 
 # Tests
 
