@@ -32,7 +32,8 @@
 
 using ::com::ademovic::bubblesmp::environment::simple::Planar2SegManipulator;
 
-void CheckCloseCollections(std::vector<double> a, std::vector<double> b) {
+void CheckCloseCollections(
+    const std::vector<double>& a, const std::vector<double>& b) {
   BOOST_CHECK_EQUAL(a.size(), b.size());
   for (unsigned int i = 0; i != a.size(); ++i)
     BOOST_CHECK_CLOSE(a[i], b[i], 0.001);
