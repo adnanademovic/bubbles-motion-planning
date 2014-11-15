@@ -60,14 +60,17 @@ Bubble* BubbleSource::NewBubble(const std::vector<double>& coordinates) const {
 }
 
 void BubbleSource::AddObstacle(ObstacleInterface* obstacle) {
+  std::lock_guard<std::mutex> object_mutex_lock(object_mutex_);
   obstacles_->emplace_back(obstacle);
 }
 
 void BubbleSource::AddObstacle(std::shared_ptr<ObstacleInterface> obstacle) {
+  std::lock_guard<std::mutex> object_mutex_lock(object_mutex_);
   obstacles_->emplace_back(obstacle);
 }
 
 void BubbleSource::ClearObstacles() {
+  std::lock_guard<std::mutex> object_mutex_lock(object_mutex_);
   obstacles_.reset(new std::vector<std::shared_ptr<ObstacleInterface> >);
 }
 
