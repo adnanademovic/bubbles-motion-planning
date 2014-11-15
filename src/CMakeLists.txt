@@ -6,6 +6,14 @@ add_library(bubble bubble.cc)
 add_library(bubble-tree bubble-tree.cc)
 target_link_libraries(bubble-tree bubble)
 
+add_executable(drawing-octave drawing-octave.cc)
+target_link_libraries(drawing-octave
+                      bubble-tree
+                      bubble-source
+                      planar-2seg-manipulator
+                      obstacle-sphere
+                      obstacle-rectangle)
+
 # Tests
 
 add_executable(bubble_test bubble_test.cc)
