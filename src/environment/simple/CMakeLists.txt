@@ -19,9 +19,9 @@ target_link_libraries(planar-2seg-manipulator_test planar-2seg-manipulator boost
 add_test(PLANAR_2SEG_MANIPULATOR_TEST ${CMAKE_CURRENT_BINARY_DIR}/planar-2seg-manipulator_test)
 
 add_executable(bubble-source_test bubble-source_test.cc)
-target_link_libraries(bubble-source_test bubble-source boost_unit_test_framework)
+target_link_libraries(bubble-source_test bubble-source bubble boost_unit_test_framework)
 add_test(BUBBLE_SOURCE_TEST ${CMAKE_CURRENT_BINARY_DIR}/bubble-source_test)
 
 add_executable(planar-2seg-bubble-source_test planar-2seg-bubble-source_test.cc)
-target_link_libraries(planar-2seg-bubble-source_test planar-2seg-manipulator bubble-source obstacle-sphere obstacle-rectangle boost_unit_test_framework)
+target_link_libraries(planar-2seg-bubble-source_test planar-2seg-manipulator bubble-source bubble obstacle-sphere obstacle-rectangle boost_unit_test_framework)
 add_test(PLANAR_2SEG_BUBBLE_SOURCE_TEST ${CMAKE_CURRENT_BINARY_DIR}/planar-2seg-bubble-source_test)

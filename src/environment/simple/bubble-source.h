@@ -46,8 +46,7 @@ class BubbleSource : public BubbleSourceInterface {
   // The class instance takes ownership of RobotInterface.
   BubbleSource(RobotInterface* robot);
 
-  std::vector<double> GetBubbleDimensions(
-      const std::vector<double>& coordinates) const;
+  Bubble* NewBubble(const std::vector<double>& coordinates) const;
 
   // The class instance takes ownership of RobotInterface.
   void AddObstacle(ObstacleInterface* obstacle);

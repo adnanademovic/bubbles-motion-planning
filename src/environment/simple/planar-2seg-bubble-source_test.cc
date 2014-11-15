@@ -26,6 +26,7 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE BubbleSource
+#include "../../bubble.h"
 #include "bubble-source.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
@@ -34,6 +35,7 @@
 #include "obstacle-sphere.h"
 #include "planar-2seg-manipulator.h"
 
+using ::com::ademovic::bubblesmp::Bubble;
 using ::com::ademovic::bubblesmp::environment::simple::BubbleSource;
 using ::com::ademovic::bubblesmp::environment::simple::ObstacleInterface;
 using ::com::ademovic::bubblesmp::environment::simple::ObstacleRectangle;
@@ -49,14 +51,14 @@ void CheckCloseCollections(std::vector<double> a, std::vector<double> b) {
 BOOST_AUTO_TEST_CASE(bubble_test_one_obstacle) {
   BubbleSource source(new Planar2SegManipulator(2.0, 1.0));
   source.AddObstacle(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
-  CheckCloseCollections(
-      source.GetBubbleDimensions({0.0, 0.0}), {1.0 / 3.0, 1.0});
+  std::unique_ptr<Bubble> output(source.NewBubble({0.0, 0.0}));
+  CheckCloseCollections(output->size(), {1.0 / 3.0, 1.0});
 }
 
 BOOST_AUTO_TEST_CASE(bubble_test_two_obstacles) {
   BubbleSource source(new Planar2SegManipulator(1.5, 1.0));
   source.AddObstacle(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
   source.AddObstacle(new ObstacleSphere(0.0, 6.0, 0.0, 1.0));
-  CheckCloseCollections(
-      source.GetBubbleDimensions({M_PI / 2.0, 0.0}), {1.0, 2.5});
+  std::unique_ptr<Bubble> output(source.NewBubble({M_PI / 2.0, 0.0}));
+  CheckCloseCollections(output->size(), {1.0, 2.5});
 }

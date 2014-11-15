@@ -38,8 +38,7 @@ BubbleSource::BubbleSource(RobotInterface* robot)
     : robot_(robot),
       obstacles_(new std::vector<std::shared_ptr<ObstacleInterface> >) {}
 
-std::vector<double> BubbleSource::GetBubbleDimensions(
-      const std::vector<double>& coordinates) const {
+Bubble* BubbleSource::NewBubble(const std::vector<double>& coordinates) const {
   std::lock_guard<std::mutex> object_mutex_lock(object_mutex_);
 
   robot_->set_coordinates(coordinates);
@@ -57,7 +56,7 @@ std::vector<double> BubbleSource::GetBubbleDimensions(
       output.push_back(distance / subdistance);
   }
 
-  return output;
+  return new Bubble(coordinates, output);
 }
 
 void BubbleSource::AddObstacle(ObstacleInterface* obstacle) {

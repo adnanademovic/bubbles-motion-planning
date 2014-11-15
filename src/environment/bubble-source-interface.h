@@ -29,6 +29,8 @@
 
 #include <vector>
 
+#include "../bubble.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -39,8 +41,8 @@ namespace environment {
 class BubbleSourceInterface {
  public:
   virtual ~BubbleSourceInterface() {};
-  virtual std::vector<double> GetBubbleDimensions(
-      const std::vector<double>& coordinates) const = 0;
+  // Caller needs to handle ownership of the returned Bubble.
+  virtual Bubble* NewBubble(const std::vector<double>& coordinates) const = 0;
 
  protected:
   BubbleSourceInterface() {};

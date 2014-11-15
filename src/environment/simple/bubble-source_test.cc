@@ -26,10 +26,12 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE BubbleSource
+#include "../../bubble.h"
 #include "bubble-source.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
 
+using ::com::ademovic::bubblesmp::Bubble;
 using ::com::ademovic::bubblesmp::environment::simple::BubbleSource;
 using ::com::ademovic::bubblesmp::environment::simple::ObstacleInterface;
 using ::com::ademovic::bubblesmp::environment::simple::RobotInterface;
@@ -66,8 +68,9 @@ BOOST_AUTO_TEST_CASE(connects_properly) {
   source.AddObstacle(new MockObstacle(5.0));
   source.AddObstacle(std::shared_ptr<ObstacleInterface>(new MockObstacle(2.0)));
   std::vector<double> input{0.5, 1.0, 2.0};
-  std::vector<double> output = source.GetBubbleDimensions({0.0, 0.0, 0.0});
-  BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(),
+  std::unique_ptr<Bubble> output(source.NewBubble({0.0, 0.0, 0.0}));
+  std::vector<double> output_size(output->size());
+  BOOST_CHECK_EQUAL_COLLECTIONS(output_size.begin(), output_size.end(),
                                 input.begin(), input.end());
 }
 
@@ -78,7 +81,8 @@ BOOST_AUTO_TEST_CASE(clear_obstacles) {
   source.ClearObstacles();
   source.AddObstacle(new MockObstacle(6.0));
   std::vector<double> input{1.5, 3.0, 6.0};
-  std::vector<double> output = source.GetBubbleDimensions({0.0, 0.0, 0.0});
-  BOOST_CHECK_EQUAL_COLLECTIONS(output.begin(), output.end(),
+  std::unique_ptr<Bubble> output(source.NewBubble({0.0, 0.0, 0.0}));
+  std::vector<double> output_size(output->size());
+  BOOST_CHECK_EQUAL_COLLECTIONS(output_size.begin(), output_size.end(),
                                 input.begin(), input.end());
 }
