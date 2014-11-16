@@ -31,12 +31,14 @@
 #include <utility>
 #include <vector>
 
+#include "../random-point-generator-interface.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace generators {
 
-class SimpleGenerator {
+class SimpleGenerator : public RandomPointGeneratorInterface {
  public:
   SimpleGenerator(const std::vector<std::pair<double, double> >& limits);
   std::vector<double> NextPoint();
