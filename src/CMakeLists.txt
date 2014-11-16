@@ -16,7 +16,8 @@ target_link_libraries(drawing-octave
                       bubble-tree
                       obstacle-rectangle
                       obstacle-sphere
-                      planar-2seg-manipulator)
+                      planar-2seg-manipulator
+                      simple-generator)
 
 # Tests
 

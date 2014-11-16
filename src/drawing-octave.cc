@@ -32,18 +32,12 @@
 #include "environment/simple/obstacle-rectangle.h"
 #include "environment/simple/obstacle-sphere.h"
 #include "environment/simple/planar-2seg-manipulator.h"
+#include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::environment::simple;
-
-void connect(BubbleRrt& bubble_rrt, const std::vector<double>& point) {
-  if (bubble_rrt.Step(point)) {
-    printf("plot(%lf, %lf, 'mo');\n", point[0], point[1]);
-  } else {
-    printf("plot(%lf, %lf, 'k*');\n", point[0], point[1]);
-  }
-}
+using namespace com::ademovic::bubblesmp::generators;
 
 void doTree(BubbleTree* tree) {
   for (const auto& node : tree->nodes_) {
@@ -82,21 +76,14 @@ int main() {
         has_environment = true;
       }
     }
-  BubbleRrt bubble_rrt({0, 0}, {2, -2}, 3, bubble_source);
+  double pi = 3.1415;
+  BubbleRrt bubble_rrt({0, 0}, {2, -2}, 3, bubble_source,
+                       new SimpleGenerator({{-pi, pi}, {-pi, pi}}));
   printf("figure;\nhold on;\n");
   if (has_environment)
     printf("plot(environment(:,1),environment(:,2),'ro');\n");
   printf("axis([-3.5 3.5 -3.5 3.5]);\n");
-  connect(bubble_rrt, {2, 2});
-  connect(bubble_rrt, {-1, 0});
-  connect(bubble_rrt, {-1, 2});
-  connect(bubble_rrt, {0, -1});
-  connect(bubble_rrt, {2, -1});
-  connect(bubble_rrt, {0, -3});
-  connect(bubble_rrt, {1, -3});
-  connect(bubble_rrt, {2, -2.9});
-  connect(bubble_rrt, {2, -3});
-  connect(bubble_rrt, {2, -1.5});
+  bubble_rrt.Run(100);
   for (const auto& tree : bubble_rrt.src_trees_)
     doTree(tree.get());
   for (const auto& tree : bubble_rrt.dst_trees_)
