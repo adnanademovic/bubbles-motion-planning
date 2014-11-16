@@ -95,6 +95,7 @@ bool BubbleRrt::Step(const std::vector<double>& q) {
   if (src_connect > -1 && dst_connect > -1) {
     return true;
   }
+  return false;
 }
 
 }  // namespace bubblesmp
