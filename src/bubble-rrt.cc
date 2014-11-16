@@ -83,12 +83,12 @@ bool BubbleRrt::Step(const std::vector<double>& q) {
   int src_connect = -1;
   int dst_connect = -1;
   for (unsigned int i = 0; i < srcs_connected.size(); ++i)
-    if (srcs_connected[i]) {
+    if (*(srcs_connected[i])) {
       src_connect = static_cast<int>(i);
       break;
     }
   for (unsigned int i = 0; i < dsts_connected.size(); ++i)
-    if (dsts_connected[i]) {
+    if (*(dsts_connected[i])) {
       dst_connect = static_cast<int>(i);
       break;
     }
