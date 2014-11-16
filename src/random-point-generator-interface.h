@@ -36,7 +36,7 @@ namespace bubblesmp {
 class RandomPointGeneratorInterface {
  public:
   virtual ~RandomPointGeneratorInterface() {};
-  std::vector<double> NextPoint();
+  virtual std::vector<double> NextPoint() = 0;
 
  protected:
   RandomPointGeneratorInterface() {};
