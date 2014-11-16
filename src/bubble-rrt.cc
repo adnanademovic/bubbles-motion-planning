@@ -43,12 +43,25 @@ void step_thread(BubbleTree* bubble_tree, const std::vector<double>& q,
 BubbleRrt::BubbleRrt(
     const std::vector<double>& q_src, const std::vector<double>& q_dst,
     int max_bubbles_per_branch,
-    std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
-    : src_trees_(0), dst_trees_(0) {
+    std::shared_ptr<environment::BubbleSourceInterface> bubble_source,
+    RandomPointGeneratorInterface* random_point_generator)
+    : random_point_generator_(random_point_generator),
+      src_trees_(0), dst_trees_(0) {
   src_trees_.emplace_back(
       new BubbleTree(max_bubbles_per_branch, q_src, bubble_source));
   dst_trees_.emplace_back(
       new BubbleTree(max_bubbles_per_branch, q_dst, bubble_source));
+}
+
+bool BubbleRrt::Run(int max_steps) {
+  for (int i = 0; i < max_steps; ++i)
+    if (Step())
+      return true;
+  return false;
+}
+
+bool BubbleRrt::Step() {
+  return Step(random_point_generator_->NextPoint());
 }
 
 bool BubbleRrt::Step(const std::vector<double>& q) {

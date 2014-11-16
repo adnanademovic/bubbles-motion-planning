@@ -31,6 +31,7 @@
 #include <vector>
 
 #include "bubble-tree.h"
+#include "random-point-generator-interface.h"
 
 namespace com {
 namespace ademovic {
@@ -38,14 +39,18 @@ namespace bubblesmp {
 
 class BubbleRrt {
  public:
-  // Takes ownership of bubble_source.
+  // Takes ownership of bubble source and random point generator.
   BubbleRrt(const std::vector<double>& q_src, const std::vector<double>& q_dst,
             int max_bubbles_per_branch,
-            std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
+            std::shared_ptr<environment::BubbleSourceInterface> bubble_source,
+            RandomPointGeneratorInterface* random_point_generator);
 
+  bool Run(int max_steps);
+  bool Step();
   bool Step(const std::vector<double>& q);
 
  private:
+  std::unique_ptr<RandomPointGeneratorInterface> random_point_generator_;
   std::vector<std::unique_ptr<BubbleTree> > src_trees_;
   std::vector<std::unique_ptr<BubbleTree> > dst_trees_;
 };
