@@ -24,38 +24,27 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_BUBBLE_RRT_H_
-#define COM_ADEMOVIC_BUBBLESMP_BUBBLE_RRT_H_
-
-#include <memory>
-#include <vector>
-
-#include "bubble-tree.h"
-#include "random-point-generator-interface.h"
+#include "simple-generator.h"
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+namespace generators {
 
-class BubbleRrt {
- public:
-  // Takes ownership of bubble source and random point generator.
-  BubbleRrt(const std::vector<double>& q_src, const std::vector<double>& q_dst,
-            int max_bubbles_per_branch,
-            std::shared_ptr<environment::BubbleSourceInterface> bubble_source,
-            RandomPointGeneratorInterface* random_point_generator);
+SimpleGenerator::SimpleGenerator(
+    const std::vector<std::pair<double, double> >& limits) {
+  for (const std::pair<double, double>& limit : limits)
+    distributions_.emplace_back(limit.first, limit.second);
+}
 
-  bool Run(int max_steps);
-  bool Step();
-  bool Step(const std::vector<double>& q);
+std::vector<double> SimpleGenerator::NextPoint() {
+  std::vector<double> point;
+  for (auto& distribution : distributions_)
+    point.push_back(distribution(generator_));
+  return point;
+}
 
-  std::unique_ptr<RandomPointGeneratorInterface> random_point_generator_;
-  std::vector<std::unique_ptr<BubbleTree> > src_trees_;
-  std::vector<std::unique_ptr<BubbleTree> > dst_trees_;
-};
-
+}  // namespace generators
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com
-
-#endif  // COM_ADEMOVIC_BUBBLESMP_BUBBLE_RRT_H_
