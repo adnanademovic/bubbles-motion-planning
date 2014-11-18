@@ -39,19 +39,20 @@ using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::environment::simple;
 using namespace com::ademovic::bubblesmp::generators;
 
-void doTree(BubbleTree* tree) {
-  for (const auto& node : tree->nodes_) {
-    auto pos = node->bubble->position();
-    auto siz = node->bubble->size();
+void doTree(std::vector<std::shared_ptr<Bubble> > bubbles) {
+  std::vector<double> prev_pos(0);
+  for (const auto& bubble : bubbles) {
+    auto pos = bubble->position();
+    auto siz = bubble->size();
     printf("plot(%lf, %lf, 'gx');\n", pos[0], pos[1]);
     printf("plot([%lf %lf %lf %lf %lf], [%lf %lf %lf %lf %lf], 'b');\n",
         pos[0], pos[0] + siz[0], pos[0], pos[0] - siz[0], pos[0],
         pos[1] + siz[1], pos[1], pos[1] - siz[1], pos[1], pos[1] + siz[1]);
-    if (node->parent) {
-      auto pos_par = node->parent->bubble->position();
+    if (!prev_pos.empty()) {
       printf("plot([%lf %lf], [%lf %lf], 'k');\n",
-          pos[0], pos_par[0], pos[1], pos_par[1]);
+          pos[0], prev_pos[0], pos[1], prev_pos[1]);
     }
+    prev_pos = pos;
   }
 }
 
@@ -84,9 +85,6 @@ int main() {
     printf("plot(environment(:,1),environment(:,2),'ro');\n");
   printf("axis([-3.5 3.5 -3.5 3.5]);\n");
   bubble_rrt.Run(100);
-  for (const auto& tree : bubble_rrt.src_trees_)
-    doTree(tree.get());
-  for (const auto& tree : bubble_rrt.dst_trees_)
-    doTree(tree.get());
+  doTree(bubble_rrt.GetSolution());
   return 0;
 }

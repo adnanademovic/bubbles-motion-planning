@@ -51,6 +51,7 @@ class BubbleRrt {
   bool Step(const std::vector<double>& q);
   std::vector<std::shared_ptr<Bubble> > GetSolution() const;
 
+ private:
   std::unique_ptr<RandomPointGeneratorInterface> random_point_generator_;
   std::vector<std::unique_ptr<BubbleTree> > src_trees_;
   std::vector<std::unique_ptr<BubbleTree> > dst_trees_;

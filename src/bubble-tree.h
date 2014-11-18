@@ -57,8 +57,6 @@ class BubbleTree {
   bool Connect(const std::vector<double>& q_target);
   Node* GetNewestNode() const;
 
-  std::vector<std::unique_ptr<Node> > nodes_;
-
  private:
   struct AttachmentPoint {
     double Distance(const std::vector<double>& q) const;
@@ -75,6 +73,7 @@ class BubbleTree {
   std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;
   AttachmentPoint start_point_;
   std::vector<AttachmentPoint> attachment_points_;
+  std::vector<std::unique_ptr<Node> > nodes_;
 };
 
 }  // namespace bubblesmp
