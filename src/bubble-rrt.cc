@@ -27,6 +27,7 @@
 #include "bubble-rrt.h"
 
 #include <thread>
+#include <queue>
 
 namespace com {
 namespace ademovic {
@@ -46,7 +47,7 @@ BubbleRrt::BubbleRrt(
     std::shared_ptr<environment::BubbleSourceInterface> bubble_source,
     RandomPointGeneratorInterface* random_point_generator)
     : random_point_generator_(random_point_generator),
-      src_trees_(0), dst_trees_(0) {
+      src_trees_(0), dst_trees_(0), connection_{-1, -1}, done_(false) {
   src_trees_.emplace_back(
       new BubbleTree(max_bubbles_per_branch, q_src, bubble_source));
   dst_trees_.emplace_back(
@@ -65,6 +66,8 @@ bool BubbleRrt::Step() {
 }
 
 bool BubbleRrt::Step(const std::vector<double>& q) {
+  if (done_)
+    return true;
   std::vector<std::unique_ptr<bool> > srcs_connected, dsts_connected;
   std::vector<std::thread> threads;
   for (std::unique_ptr<BubbleTree>& tree : src_trees_) {
@@ -93,9 +96,27 @@ bool BubbleRrt::Step(const std::vector<double>& q) {
       break;
     }
   if (src_connect > -1 && dst_connect > -1) {
+    connection_ = std::pair<int, int>{src_connect, dst_connect};
+    done_ = true;
     return true;
   }
   return false;
+}
+
+std::vector<std::shared_ptr<Bubble> > BubbleRrt::GetSolution() const {
+  if (!done_)
+    return std::vector<std::shared_ptr<Bubble> >(0);
+  std::deque<BubbleTree::Node*> nodes;
+  nodes.push_back(src_trees_[connection_.first]->GetNewestNode());
+  nodes.push_back(dst_trees_[connection_.second]->GetNewestNode());
+  while (nodes.front()->parent != nullptr)
+    nodes.push_front(nodes.front()->parent);
+  while (nodes.back()->parent != nullptr)
+    nodes.push_back(nodes.back()->parent);
+  std::vector<std::shared_ptr<Bubble> > solution;
+  for (BubbleTree::Node* node : nodes)
+    solution.emplace_back(node->bubble);
+  return solution;
 }
 
 }  // namespace bubblesmp

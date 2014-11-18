@@ -28,6 +28,7 @@
 #define COM_ADEMOVIC_BUBBLESMP_BUBBLE_RRT_H_
 
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "bubble-tree.h"
@@ -48,10 +49,13 @@ class BubbleRrt {
   bool Run(int max_steps);
   bool Step();
   bool Step(const std::vector<double>& q);
+  std::vector<std::shared_ptr<Bubble> > GetSolution() const;
 
   std::unique_ptr<RandomPointGeneratorInterface> random_point_generator_;
   std::vector<std::unique_ptr<BubbleTree> > src_trees_;
   std::vector<std::unique_ptr<BubbleTree> > dst_trees_;
+  std::pair<int, int> connection_;
+  bool done_;
 };
 
 }  // namespace bubblesmp

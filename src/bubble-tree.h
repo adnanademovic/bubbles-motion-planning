@@ -47,7 +47,7 @@ class BubbleTree {
     // Does not take ownership of parent.
     Node(Bubble* bubble, Node* parent)
         : bubble(bubble), parent(parent) {}
-    std::unique_ptr<Bubble> bubble;
+    std::shared_ptr<Bubble> bubble;
     Node* parent;
   };
 
@@ -55,6 +55,7 @@ class BubbleTree {
              std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
 
   bool Connect(const std::vector<double>& q_target);
+  Node* GetNewestNode() const;
 
   std::vector<std::unique_ptr<Node> > nodes_;
 
