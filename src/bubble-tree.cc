@@ -99,6 +99,10 @@ bool BubbleTree::Connect(Node* node, const std::vector<double>& q_target) {
   return false;
 }
 
+BubbleTree::Node* BubbleTree::GetNewestNode() const {
+  return nodes_.back().get();
+}
+
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com
