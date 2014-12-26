@@ -51,10 +51,9 @@ class Planar2SegManipulator : public RobotInterface {
 
  private:
   std::vector<double> coordinates_;
-  double mid_x_, mid_y_, tip_x_, tip_y_;
+  double mid_x_, mid_y_;
   double part_s1_x_, part_s1_y_, part_s2_x_, part_s2_y_;
   double segment_1_length_, segment_2_length_;
-  std::vector<double> joint_reaches_;
   int parts_per_segment_;
   
   mutable std::mutex guard_mutex_;

@@ -38,7 +38,7 @@ namespace simple {
 
 Planar2SegManipulator::Planar2SegManipulator(
     double segment_1_length, double segment_2_length, int parts_per_segment)
-    : coordinates_(2, 0.0), mid_x_(0.0), mid_y_(0.0), tip_x_(0.0), tip_y_(0.0),
+    : coordinates_(2, 0.0), mid_x_(0.0), mid_y_(0.0),
       segment_1_length_(segment_1_length), segment_2_length_(segment_2_length),
       parts_per_segment_(parts_per_segment) {
     set_coordinates({0.0, 0.0});
@@ -52,12 +52,12 @@ void Planar2SegManipulator::set_coordinates(
   mid_x_ = segment_1_length_ * std::cos(angle);
   mid_y_ = segment_1_length_ * std::sin(angle);
   angle += coordinates[1];
-  tip_x_ = mid_x_ + segment_2_length_ * std::cos(angle);
-  tip_y_ = mid_y_ + segment_2_length_ * std::sin(angle);
+  double tip_x = mid_x_ + segment_2_length_ * std::cos(angle);
+  double tip_y = mid_y_ + segment_2_length_ * std::sin(angle);
   part_s1_x_ = mid_x_ / parts_per_segment_;
   part_s1_y_ = mid_y_ / parts_per_segment_;
-  part_s2_x_ = (tip_x_ - mid_x_) / parts_per_segment_;
-  part_s2_y_ = (tip_y_ - mid_x_) / parts_per_segment_;
+  part_s2_x_ = (tip_x - mid_x_) / parts_per_segment_;
+  part_s2_y_ = (tip_y - mid_x_) / parts_per_segment_;
 }
 
 std::vector<double> Planar2SegManipulator::coordinates() const {
