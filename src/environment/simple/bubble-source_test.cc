@@ -42,11 +42,15 @@ class MockRobot : public RobotInterface {
   virtual std::vector<double> coordinates() const {
     return {0.0, 0.0, 0.0};
   };
-  virtual double DistanceToObstacle(const ObstacleInterface& obstacle) const {
+  virtual double DistanceToObstacle(
+      const ObstacleInterface& obstacle, int part) const {
     return obstacle.DistanceToLine(0.0, 0.0, 0.0, 1.0, 1.0, 0.0);
   }
-  virtual std::vector<double> FurthestDistances() const {
+  virtual std::vector<double> FurthestDistances(int part) const {
     return {4.0, 2.0, 1.0};
+  }
+  virtual int PartCount() const {
+    return 10;
   }
 };
 
