@@ -50,16 +50,18 @@ void CheckCloseCollections(
 }
 
 BOOST_AUTO_TEST_CASE(bubble_test_one_obstacle) {
-  BubbleSource source(new Planar2SegManipulator(2.0, 1.0));
+  BubbleSource source(new Planar2SegManipulator(2.0, 1.0, 1));
   source.AddObstacle(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
   std::unique_ptr<Bubble> output(source.NewBubble({0.0, 0.0}));
   CheckCloseCollections(output->size(), {1.0 / 3.0, 1.0});
 }
 
 BOOST_AUTO_TEST_CASE(bubble_test_two_obstacles) {
-  BubbleSource source(new Planar2SegManipulator(1.5, 1.0));
+  BubbleSource source(new Planar2SegManipulator(1.5, 1.0, 1));
   source.AddObstacle(new ObstacleRectangle(4.0, -3.0, 5.0, 3.0));
   source.AddObstacle(new ObstacleSphere(0.0, 6.0, 0.0, 1.0));
   std::unique_ptr<Bubble> output(source.NewBubble({M_PI / 2.0, 0.0}));
   CheckCloseCollections(output->size(), {1.0, 2.5});
 }
+
+// TODO: add more tests

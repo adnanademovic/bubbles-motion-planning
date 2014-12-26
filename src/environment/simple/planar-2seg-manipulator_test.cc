@@ -40,22 +40,24 @@ void CheckCloseCollections(
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
-  Planar2SegManipulator manipulator(2.0, 1.0);
+  Planar2SegManipulator manipulator(2.0, 1.0, 1);
   CheckCloseCollections(manipulator.coordinates(), {0.0, 0.0});
-  CheckCloseCollections(manipulator.FurthestDistances(), {3.0, 1.0});
+  CheckCloseCollections(manipulator.FurthestDistances(2), {3.0, 1.0});
 }
 
 BOOST_AUTO_TEST_CASE(folded_elbow) {
-  Planar2SegManipulator manipulator(2.0, 1.0);
+  Planar2SegManipulator manipulator(2.0, 1.0, 1);
   manipulator.set_coordinates({M_PI / 4.0, M_PI / 1.5});
   CheckCloseCollections(manipulator.coordinates(), {M_PI / 4.0, M_PI / 1.5});
-  CheckCloseCollections(manipulator.FurthestDistances(), {2.0, 1.0});
+  CheckCloseCollections(manipulator.FurthestDistances(2), {2.0, 1.0});
 }
 
 BOOST_AUTO_TEST_CASE(almost_straight_elbow) {
-  Planar2SegManipulator manipulator(2.0, 1.0);
+  Planar2SegManipulator manipulator(2.0, 1.0, 1);
   manipulator.set_coordinates({M_PI / 4.0, M_PI / 4.0});
   CheckCloseCollections(manipulator.coordinates(), {M_PI / 4.0, M_PI / 4.0});
-  CheckCloseCollections(manipulator.FurthestDistances(),
+  CheckCloseCollections(manipulator.FurthestDistances(2),
                         {std::sqrt(std::sqrt(8.0) + 5.0), 1.0});
 }
+
+// TODO: add more tests

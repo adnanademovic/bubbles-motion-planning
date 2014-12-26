@@ -43,17 +43,24 @@ Bubble* BubbleSource::NewBubble(const std::vector<double>& coordinates) const {
 
   robot_->set_coordinates(coordinates);
 
-  double distance = std::numeric_limits<double>::infinity();
-  for (auto obstacle : *obstacles_) {
-    distance = std::min(distance, robot_->DistanceToObstacle(*obstacle));
-  }
+  std::vector<double> output(
+      coordinates.size(), std::numeric_limits<double>::infinity());
+  int part_count = robot_->PartCount();
 
-  std::vector<double> output;
-  for (double subdistance : robot_->FurthestDistances()) {
-    if (subdistance == 0.0)
-      output.push_back(std::numeric_limits<double>::infinity());
-    else
-      output.push_back(distance / subdistance);
+  for (int part = 0; part < part_count; ++part) {
+    double distance = std::numeric_limits<double>::infinity();
+    for (auto obstacle : *obstacles_) {
+      distance = std::min(
+          distance, robot_->DistanceToObstacle(*obstacle, part));
+    }
+
+    int segment = 0;
+
+    for (double subdistance : robot_->FurthestDistances(part)) {
+      if (subdistance != 0.0)
+        output[segment] = std::min(output[segment], distance / subdistance);
+      ++segment;
+    }
   }
 
   return new Bubble(coordinates, output);

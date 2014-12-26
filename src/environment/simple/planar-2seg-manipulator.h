@@ -41,17 +41,21 @@ namespace simple {
 
 class Planar2SegManipulator : public RobotInterface {
  public:
-  Planar2SegManipulator(double segment_1_length, double segment_2_length);
+  Planar2SegManipulator(
+      double segment_1_length, double segment_2_length, int parts_per_segment);
   void set_coordinates(const std::vector<double>& coordinates);
   std::vector<double> coordinates() const;
-  double DistanceToObstacle(const ObstacleInterface& obstacle) const;
-  std::vector<double> FurthestDistances() const;
+  double DistanceToObstacle(const ObstacleInterface& obstacle, int part) const;
+  std::vector<double> FurthestDistances(int part) const;
+  int PartCount() const;
 
  private:
   std::vector<double> coordinates_;
   double mid_x_, mid_y_, tip_x_, tip_y_;
+  double part_s1_x_, part_s1_y_, part_s2_x_, part_s2_y_;
   double segment_1_length_, segment_2_length_;
   std::vector<double> joint_reaches_;
+  int parts_per_segment_;
   
   mutable std::mutex guard_mutex_;
 };
