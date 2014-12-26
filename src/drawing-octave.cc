@@ -57,7 +57,7 @@ void doTree(std::vector<std::shared_ptr<Bubble> > bubbles) {
 }
 
 int main() {
-  BubbleSource* bs = new BubbleSource(new Planar2SegManipulator(3.0, 2.0));
+  BubbleSource* bs = new BubbleSource(new Planar2SegManipulator(3.0, 2.0, 10));
   bs->AddObstacle(new ObstacleRectangle(-3.0, -3.0, -2.0, -2.0));
   bs->AddObstacle(new ObstacleSphere(3.0, 3.0, 0.0, 1.0));
   std::shared_ptr<BubbleSourceInterface> bubble_source(bs);
