@@ -47,23 +47,23 @@ BubbleTree::BubbleTree(
     int max_bubbles_per_branch, const std::vector<double>& root,
     std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
     : max_bubbles_per_branch_(max_bubbles_per_branch),
-      bubble_source_(bubble_source), start_point_{root, nullptr} {}
+      bubble_source_(bubble_source), start_point_{root, nullptr},
+      index_(flann::KDTreeIndexParams(4)) {}
 
 bool BubbleTree::Connect(const std::vector<double>& q_target) {
-  for (const std::unique_ptr<Node>& node : nodes_) {
-    if (node->bubble->Contains(q_target)) {
-      return Connect(node.get(), q_target);
-    }
-  }
-  double distance = start_point_.Distance(q_target);
-  AttachmentPoint& connection_point = start_point_;
-  for (AttachmentPoint& point : attachment_points_) {
-    double new_distance = point.Distance(q_target);
-    if (new_distance < distance) {
-      distance = new_distance;
-      connection_point = point;
-    }
-  }
+  // Momentarily removed checking if some bubble contains the point.
+  //for (const std::unique_ptr<Node>& node : nodes_) {
+  //  if (node->bubble->Contains(q_target)) {
+  //    return Connect(node.get(), q_target);
+  //  }
+  //}
+  std::vector<std::vector<int> > indices(1, std::vector<int>(1, 0));
+  std::vector<std::vector<double> > distances(1, std::vector<double>(1, 0.0));
+  index_.knnSearch(
+      flann::Matrix<double>(
+          std::vector<double>(q_target).data(), 1, q_target.size()),
+      indices, distances, 1, flann::SearchParams(128));
+  AttachmentPoint& connection_point = attachment_points_[indices[0][0]];
   return Connect(
       AddNode(connection_point.position, connection_point.parent), q_target);
 }
@@ -79,8 +79,10 @@ BubbleTree::Node* BubbleTree::AddNode(
   for (unsigned int i = 0; i < axis_count; ++i) {
     point[i] = position[i] + size[i];
     attachment_points_.push_back(AttachmentPoint{point, current_node});
+    index_.addPoints(flann::Matrix<double>(point.data(), 1, point.size()));
     point[i] = position[i] - size[i];
     attachment_points_.push_back(AttachmentPoint{point, current_node});
+    index_.addPoints(flann::Matrix<double>(point.data(), 1, point.size()));
     point[i] = position[i];
   }
   return current_node;

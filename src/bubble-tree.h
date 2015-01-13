@@ -30,6 +30,8 @@
 #include <memory>
 #include <vector>
 
+#include <flann/flann.hpp>
+
 #include "bubble.h"
 #include "environment/bubble-source-interface.h"
 
@@ -74,6 +76,8 @@ class BubbleTree {
   AttachmentPoint start_point_;
   std::vector<AttachmentPoint> attachment_points_;
   std::vector<std::unique_ptr<Node> > nodes_;
+
+  flann::Index<flann::L2<double> > index_;
 };
 
 }  // namespace bubblesmp
