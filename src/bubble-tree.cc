@@ -48,7 +48,12 @@ BubbleTree::BubbleTree(
     std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
     : max_bubbles_per_branch_(max_bubbles_per_branch),
       bubble_source_(bubble_source), start_point_{root, nullptr},
-      index_(flann::KDTreeIndexParams(4)) {}
+      attachment_points_(1, AttachmentPoint{root, nullptr}),
+      index_(flann::Matrix<double>(
+        std::vector<double>(root).data(), 1, root.size()),
+             flann::KDTreeIndexParams(8)) {
+  index_.buildIndex();
+}
 
 bool BubbleTree::Connect(const std::vector<double>& q_target) {
   // Momentarily removed checking if some bubble contains the point.
