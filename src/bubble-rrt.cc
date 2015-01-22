@@ -103,19 +103,19 @@ bool BubbleRrt::Step(const std::vector<double>& q) {
   return false;
 }
 
-std::vector<std::shared_ptr<Bubble> > BubbleRrt::GetSolution() const {
+std::vector<std::shared_ptr<TreePoint> > BubbleRrt::GetSolution() const {
   if (!done_)
-    return std::vector<std::shared_ptr<Bubble> >(0);
-  std::deque<BubbleTree::Node*> nodes;
+    return std::vector<std::shared_ptr<TreePoint> >(0);
+  std::deque<TreeNode*> nodes;
   nodes.push_back(src_trees_[connection_.first]->GetNewestNode());
   nodes.push_back(dst_trees_[connection_.second]->GetNewestNode());
   while (nodes.front()->parent != nullptr)
     nodes.push_front(nodes.front()->parent);
   while (nodes.back()->parent != nullptr)
     nodes.push_back(nodes.back()->parent);
-  std::vector<std::shared_ptr<Bubble> > solution;
-  for (BubbleTree::Node* node : nodes)
-    solution.emplace_back(node->bubble);
+  std::vector<std::shared_ptr<TreePoint> > solution;
+  for (TreeNode* node : nodes)
+    solution.emplace_back(node->point);
   return solution;
 }
 

@@ -24,45 +24,35 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "bubble.h"
+#ifndef COM_ADEMOVIC_BUBBLESMP_TREE_NODE_H_
+#define COM_ADEMOVIC_BUBBLESMP_TREE_NODE_H_
 
-#include <cmath>
+#include <memory>
+#include <vector>
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-Bubble::Bubble(const std::vector<double>& position,
-               const std::vector<double>& size)
-    : TreePoint(position), size_(size) {}
+class TreePoint {
+ public:
+  TreePoint(const std::vector<double>& position);
+  std::vector<double> position() const;
+ private:
+  std::vector<double> position_;
+};
 
-std::vector<double> Bubble::size() const {
-  return size_;
-}
-
-bool Bubble::Contains(const std::vector<double>& q) const {
-  unsigned int axis_count = position().size();
-  double distance = 0.0;
-  for (unsigned int i = 0; i < axis_count; ++i) {
-    distance += std::abs(q[i] - position()[i]) / size_[i];
-  }
-  return (distance < 1.0);
-}
-
-std::vector<double> Bubble::IntersectsHullAt(
-    const std::vector<double>& q) const {
-  unsigned int axis_count = position().size();
-  double distance = 0.0;
-  std::vector<double> new_q(axis_count, 0.0);
-  for (unsigned int i = 0; i < axis_count; ++i) {
-    new_q[i] = q[i] - position()[i];
-    distance += std::abs(new_q[i]) / size_[i];
-  }
-  for (unsigned int i = 0; i < axis_count; ++i)
-    new_q[i] = position()[i] + new_q[i] / distance;
-  return new_q;
-}
+struct TreeNode {
+  // Takes ownership of point.
+  // Does not take ownership of parent.
+  TreeNode(TreePoint* point, TreeNode* parent)
+      : point(point), parent(parent) {}
+  std::shared_ptr<TreePoint> point;
+  TreeNode* parent;
+};
 
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com
+
+#endif  // COM_ADEMOVIC_BUBBLESMP_TREE_NODE_H_

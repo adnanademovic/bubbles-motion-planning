@@ -4,12 +4,14 @@ add_subdirectory(generators)
 add_subdirectory(transforms)
 
 add_library(bubble bubble.cc)
-add_library(bubble-tree bubble-tree.cc)
-target_link_libraries(bubble-tree bubble flann_cpp)
+target_link_libraries(bubble tree-node)
 add_library(bubble-rrt bubble-rrt.cc)
 target_link_libraries(bubble-rrt bubble-tree)
+add_library(bubble-tree bubble-tree.cc)
+target_link_libraries(bubble-tree bubble flann_cpp)
+add_library(tree-node tree-node.cc)
 
-# Tests
+  # Tests
 
 add_executable(bubble_test bubble_test.cc)
 target_link_libraries(bubble_test bubble boost_unit_test_framework)

@@ -29,14 +29,15 @@
 
 #include <vector>
 
+#include "tree-node.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-class Bubble {
+class Bubble : public TreePoint {
  public:
   Bubble(const std::vector<double>& position, const std::vector<double>& size);
-  std::vector<double> position() const;
   std::vector<double> size() const;
   bool Contains(const std::vector<double>& q) const;
   // Returns coordinates at which a line connecting the bubble center and q
@@ -44,7 +45,6 @@ class Bubble {
   std::vector<double> IntersectsHullAt(const std::vector<double>& q) const;
 
  private:
-  std::vector<double> position_;
   std::vector<double> size_;
 };
 

@@ -44,38 +44,29 @@ namespace bubblesmp {
 // multiple threads.
 class BubbleTree {
  public:
-  struct Node {
-    // Takes ownership of bubble.
-    // Does not take ownership of parent.
-    Node(Bubble* bubble, Node* parent)
-        : bubble(bubble), parent(parent) {}
-    std::shared_ptr<Bubble> bubble;
-    Node* parent;
-  };
-
   BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
              std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
 
   bool Connect(const std::vector<double>& q_target);
-  Node* GetNewestNode() const;
+  TreeNode* GetNewestNode() const;
 
  private:
   struct AttachmentPoint {
     double Distance(const std::vector<double>& q) const;
     std::vector<double> position;
-    Node* parent;
+    TreeNode* parent;
   };
 
   // Does not take ownership of parent.
   // Has ownership of returned pointer.
-  Node* AddNode(const std::vector<double>& q, Node* parent);
-  bool Connect(Node* node, const std::vector<double>& q_target);
+  TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
+  bool Connect(TreeNode* node, const std::vector<double>& q_target);
 
   int max_bubbles_per_branch_;
   std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;
   AttachmentPoint start_point_;
   std::vector<AttachmentPoint> attachment_points_;
-  std::vector<std::unique_ptr<Node> > nodes_;
+  std::vector<std::unique_ptr<TreeNode> > nodes_;
 
   flann::Index<flann::L2<double> > index_;
 };

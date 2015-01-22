@@ -56,12 +56,6 @@ BubbleTree::BubbleTree(
 }
 
 bool BubbleTree::Connect(const std::vector<double>& q_target) {
-  // Momentarily removed checking if some bubble contains the point.
-  //for (const std::unique_ptr<Node>& node : nodes_) {
-  //  if (node->bubble->Contains(q_target)) {
-  //    return Connect(node.get(), q_target);
-  //  }
-  //}
   std::vector<std::vector<int> > indices(1, std::vector<int>(1, 0));
   std::vector<std::vector<double> > distances(1, std::vector<double>(1, 0.0));
   index_.knnSearch(
@@ -73,12 +67,13 @@ bool BubbleTree::Connect(const std::vector<double>& q_target) {
       AddNode(connection_point.position, connection_point.parent), q_target);
 }
 
-BubbleTree::Node* BubbleTree::AddNode(
-    const std::vector<double>& q, Node* parent) {
-  Node* current_node = new Node(bubble_source_->NewBubble(q), parent);
+TreeNode* BubbleTree::AddNode(
+    const std::vector<double>& q, TreeNode* parent) {
+  TreeNode* current_node = new TreeNode(bubble_source_->NewBubble(q), parent);
+  Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
   nodes_.emplace_back(current_node);
-  std::vector<double> position = current_node->bubble->position();
-  std::vector<double> size = current_node->bubble->size();
+  std::vector<double> position = current_bubble->position();
+  std::vector<double> size = current_bubble->size();
   std::vector<double> point = position;
   unsigned int axis_count = position.size();
   for (unsigned int i = 0; i < axis_count; ++i) {
@@ -93,20 +88,22 @@ BubbleTree::Node* BubbleTree::AddNode(
   return current_node;
 }
 
-bool BubbleTree::Connect(Node* node, const std::vector<double>& q_target) {
-  Node* current_node = node;
+bool BubbleTree::Connect(TreeNode* node, const std::vector<double>& q_target) {
+  TreeNode* current_node = node;
+  Bubble* current_bubble;
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
-    if (current_node->bubble->Contains(q_target)) {
+    current_bubble = static_cast<Bubble*>(current_node->point.get());
+    if (current_bubble->Contains(q_target)) {
       AddNode(q_target, current_node);
       return true;
     }
     current_node = AddNode(
-        current_node->bubble->IntersectsHullAt(q_target), current_node);
+        current_bubble->IntersectsHullAt(q_target), current_node);
   }
   return false;
 }
 
-BubbleTree::Node* BubbleTree::GetNewestNode() const {
+TreeNode* BubbleTree::GetNewestNode() const {
   return nodes_.back().get();
 }
 

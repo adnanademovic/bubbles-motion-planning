@@ -24,43 +24,17 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "bubble.h"
-
-#include <cmath>
+#include "tree-node.h"
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-Bubble::Bubble(const std::vector<double>& position,
-               const std::vector<double>& size)
-    : TreePoint(position), size_(size) {}
+TreePoint::TreePoint(const std::vector<double>& position)
+    : position_(position) {}
 
-std::vector<double> Bubble::size() const {
-  return size_;
-}
-
-bool Bubble::Contains(const std::vector<double>& q) const {
-  unsigned int axis_count = position().size();
-  double distance = 0.0;
-  for (unsigned int i = 0; i < axis_count; ++i) {
-    distance += std::abs(q[i] - position()[i]) / size_[i];
-  }
-  return (distance < 1.0);
-}
-
-std::vector<double> Bubble::IntersectsHullAt(
-    const std::vector<double>& q) const {
-  unsigned int axis_count = position().size();
-  double distance = 0.0;
-  std::vector<double> new_q(axis_count, 0.0);
-  for (unsigned int i = 0; i < axis_count; ++i) {
-    new_q[i] = q[i] - position()[i];
-    distance += std::abs(new_q[i]) / size_[i];
-  }
-  for (unsigned int i = 0; i < axis_count; ++i)
-    new_q[i] = position()[i] + new_q[i] / distance;
-  return new_q;
+std::vector<double> TreePoint::position() const {
+  return position_;
 }
 
 }  // namespace bubblesmp
