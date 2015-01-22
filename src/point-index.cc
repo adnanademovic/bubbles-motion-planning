@@ -24,45 +24,36 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
-#define COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
-
-#include <memory>
-#include <vector>
-
-#include "bubble.h"
 #include "point-index.h"
-#include "environment/bubble-source-interface.h"
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-// Should run in one thread, due to sequential nature of "Connect". Thus it is
-// not made threadsafe, but supports a threadsafe BubbleSource to be used in
-// multiple threads.
-class BubbleTree {
- public:
-  BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
-             std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
+PointIndex::PointIndex(const std::vector<double>& q_root)
+    : attachment_points_(1, AttachmentPoint{q_root, nullptr}),
+      index_(flann::Matrix<double>(
+                 std::vector<double>(q_root).data(), 1, q_root.size()),
+             flann::KDTreeIndexParams(8)) {
+  index_.buildIndex();
+}
 
-  bool Connect(const std::vector<double>& q_target);
-  TreeNode* GetNewestNode() const;
+void PointIndex::AddPoint(const std::vector<double>& q, TreeNode* parent) {
+  attachment_points_.push_back(AttachmentPoint{q, parent});
+  index_.addPoints(
+      flann::Matrix<double>(std::vector<double>(q).data(), 1, q.size()));
+}
 
- private:
-  // Does not take ownership of parent.
-  // Has ownership of returned pointer.
-  TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
-  bool Connect(TreeNode* node, const std::vector<double>& q_target);
-
-  int max_bubbles_per_branch_;
-  PointIndex point_index_;
-  std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;
-  std::vector<std::unique_ptr<TreeNode> > nodes_;
-};
+AttachmentPoint PointIndex::GetNearestPoint(
+    const std::vector<double>& q) const {
+  std::vector<std::vector<int> > indices(1, std::vector<int>(1, 0));
+  std::vector<std::vector<double> > distances(1, std::vector<double>(1, 0.0));
+  index_.knnSearch(
+      flann::Matrix<double>(std::vector<double>(q).data(), 1, q.size()),
+      indices, distances, 1, flann::SearchParams(128));
+  return attachment_points_[indices[0][0]];
+}
 
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com
-
-#endif  // COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_

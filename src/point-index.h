@@ -24,45 +24,40 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
-#define COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
+#ifndef COM_ADEMOVIC_BUBBLESMP_POINT_INDEX_H_
+#define COM_ADEMOVIC_BUBBLESMP_POINT_INDEX_H_
 
-#include <memory>
 #include <vector>
 
-#include "bubble.h"
-#include "point-index.h"
-#include "environment/bubble-source-interface.h"
+#include <flann/flann.hpp>
+
+#include "tree-node.h"
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-// Should run in one thread, due to sequential nature of "Connect". Thus it is
-// not made threadsafe, but supports a threadsafe BubbleSource to be used in
-// multiple threads.
-class BubbleTree {
- public:
-  BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
-             std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
+struct AttachmentPoint {
+  std::vector<double> position;
+  TreeNode* parent;
+};
 
-  bool Connect(const std::vector<double>& q_target);
-  TreeNode* GetNewestNode() const;
+// Not threadsafe, use in single thread.
+class PointIndex {
+ public:
+  PointIndex(const std::vector<double>& q_root);
+
+  // PointIndex doesn't take ownership of parent
+  void AddPoint(const std::vector<double>& q, TreeNode* parent);
+  AttachmentPoint GetNearestPoint(const std::vector<double>& q) const;
 
  private:
-  // Does not take ownership of parent.
-  // Has ownership of returned pointer.
-  TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
-  bool Connect(TreeNode* node, const std::vector<double>& q_target);
-
-  int max_bubbles_per_branch_;
-  PointIndex point_index_;
-  std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;
-  std::vector<std::unique_ptr<TreeNode> > nodes_;
+  std::vector<AttachmentPoint> attachment_points_;
+  flann::Index<flann::L2<double> > index_;
 };
 
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com
 
-#endif  // COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
+#endif  // COM_ADEMOVIC_BUBBLESMP_POINT_INDEX_H_
