@@ -5,22 +5,24 @@ add_subdirectory(transforms)
 
 add_library(bubble bubble.cc)
 target_link_libraries(bubble tree-node)
-add_library(bubble-rrt bubble-rrt.cc)
-target_link_libraries(bubble-rrt bubble-tree)
+add_library(rrt rrt.cc)
+target_link_libraries(rrt rrt-tree)
 add_library(bubble-tree bubble-tree.cc)
-target_link_libraries(bubble-tree bubble point-index)
+target_link_libraries(bubble-tree bubble rrt-tree)
 add_library(point-index point-index.cc)
 target_link_libraries(point-index tree-node flann_cpp)
+add_library(rrt-tree rrt-tree.cc)
+target_link_libraries(rrt-tree point-index)
 add_library(tree-node tree-node.cc)
 
 add_executable(example-main example-main.cc)
 target_link_libraries(example-main
-                      bubble-rrt
+                      abb-irb120-manipulator
                       bubble-source
                       bubble-tree
                       obstacle-rectangle
                       obstacle-sphere
-                      abb-irb120-manipulator
+                      rrt
                       simple-generator)
 
 # Tests

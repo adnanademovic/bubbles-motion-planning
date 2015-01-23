@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "bubble-rrt.h"
+#include "rrt.h"
 
 #include <thread>
 #include <queue>
@@ -34,48 +34,43 @@ namespace ademovic {
 namespace bubblesmp {
 namespace {
 
-void step_thread(BubbleTree* bubble_tree, const std::vector<double>& q,
+void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
                  bool* return_value) {
-  *return_value = bubble_tree->Connect(q);
+  *return_value = rrt_tree->Connect(q);
 }
 
 }  // namespace
 
-BubbleRrt::BubbleRrt(
-    const std::vector<double>& q_src, const std::vector<double>& q_dst,
-    int max_bubbles_per_branch,
-    std::shared_ptr<environment::BubbleSourceInterface> bubble_source,
-    RandomPointGeneratorInterface* random_point_generator)
+Rrt::Rrt(RrtTree* src_tree, RrtTree* dst_tree,
+         RandomPointGeneratorInterface* random_point_generator)
     : random_point_generator_(random_point_generator),
       src_trees_(0), dst_trees_(0), connection_{-1, -1}, done_(false) {
-  src_trees_.emplace_back(
-      new BubbleTree(max_bubbles_per_branch, q_src, bubble_source));
-  dst_trees_.emplace_back(
-      new BubbleTree(max_bubbles_per_branch, q_dst, bubble_source));
+  src_trees_.emplace_back(src_tree);
+  dst_trees_.emplace_back(dst_tree);
 }
 
-bool BubbleRrt::Run(int max_steps) {
+bool Rrt::Run(int max_steps) {
   for (int i = 0; i < max_steps; ++i)
     if (Step())
       return true;
   return false;
 }
 
-bool BubbleRrt::Step() {
+bool Rrt::Step() {
   return Step(random_point_generator_->NextPoint());
 }
 
-bool BubbleRrt::Step(const std::vector<double>& q) {
+bool Rrt::Step(const std::vector<double>& q) {
   if (done_)
     return true;
   std::vector<std::unique_ptr<bool> > srcs_connected, dsts_connected;
   std::vector<std::thread> threads;
-  for (std::unique_ptr<BubbleTree>& tree : src_trees_) {
+  for (std::unique_ptr<RrtTree>& tree : src_trees_) {
     srcs_connected.emplace_back(new bool(false));
     threads.emplace_back(
         step_thread, tree.get(), q, srcs_connected.back().get());
   }
-  for (std::unique_ptr<BubbleTree>& tree : dst_trees_) {
+  for (std::unique_ptr<RrtTree>& tree : dst_trees_) {
     dsts_connected.emplace_back(new bool(false));
     threads.emplace_back(
         step_thread, tree.get(), q, dsts_connected.back().get());
@@ -103,7 +98,7 @@ bool BubbleRrt::Step(const std::vector<double>& q) {
   return false;
 }
 
-std::vector<std::shared_ptr<TreePoint> > BubbleRrt::GetSolution() const {
+std::vector<std::shared_ptr<TreePoint> > Rrt::GetSolution() const {
   if (!done_)
     return std::vector<std::shared_ptr<TreePoint> >(0);
   std::deque<TreeNode*> nodes;

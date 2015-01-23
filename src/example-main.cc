@@ -26,7 +26,7 @@
 
 #include <cstdio>
 
-#include "bubble-rrt.h"
+#include "rrt.h"
 #include "bubble-tree.h"
 #include "environment/simple/abb-irb120-manipulator.h"
 #include "environment/simple/bubble-source.h"
@@ -62,41 +62,52 @@ int main() {
   limits[4].second = 2.09439;
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
-
-  BubbleSource* bs = new BubbleSource(new AbbIrb120Manipulator);
-	double position = 250;
-	double bottom = 400.0;
-  double movement = 150.0;
-  for (int j = -1; j < 2; j += 2)
-    for (int i = 0; i < 5; i++)
-    {
-      bs->AddObstacle(new ObstacleSphere(
-            position + movement,
-            j * (-position + movement),
-            bottom + i * movement/2,
-            50));
-      bs->AddObstacle(new ObstacleSphere(
-            position - movement,
-            j * (-position - movement),
-            bottom + i * movement/2,
-            50));
-      bs->AddObstacle(new ObstacleSphere(
-            position - movement + ( i + .5) * movement / 2.5,
-            j * (-position - movement + (i + .5) * movement / 2.5),
-            bottom - 50,
-            50));
-      bs->AddObstacle(new ObstacleSphere(
-            position - movement + (i + .5) * movement / 2.5,
-            j * (-position - movement + (i + .5) * movement / 2.5),
-            bottom - 50 + movement * 3,
-            50));
-    }
-  std::shared_ptr<BubbleSourceInterface> bubble_source(bs);
-  BubbleRrt bubble_rrt({-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-                        3.1415/2.0, 3.1415/4.0, 3.1415/2.0},
-                       {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-                        -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
-                       3, bubble_source, new SimpleGenerator(limits));
+  std::vector<BubbleSource*> bubble_sources;
+  for (int sources = 0; sources < 2; ++sources) {
+    BubbleSource* bs = new BubbleSource(new AbbIrb120Manipulator);
+    double position = 250;
+    double bottom = 400.0;
+    double movement = 150.0;
+    for (int j = -1; j < 2; j += 2)
+      for (int i = 0; i < 5; i++)
+      {
+        bs->AddObstacle(new ObstacleSphere(
+              position + movement,
+              j * (-position + movement),
+              bottom + i * movement/2,
+              50));
+        bs->AddObstacle(new ObstacleSphere(
+              position - movement,
+              j * (-position - movement),
+              bottom + i * movement/2,
+              50));
+        bs->AddObstacle(new ObstacleSphere(
+              position - movement + ( i + .5) * movement / 2.5,
+              j * (-position - movement + (i + .5) * movement / 2.5),
+              bottom - 50,
+              50));
+        bs->AddObstacle(new ObstacleSphere(
+              position - movement + (i + .5) * movement / 2.5,
+              j * (-position - movement + (i + .5) * movement / 2.5),
+              bottom - 50 + movement * 3,
+              50));
+      }
+    bubble_sources.push_back(bs);
+  }
+  std::shared_ptr<BubbleSourceInterface> src_bubble_source(bubble_sources[0]);
+  std::shared_ptr<BubbleSourceInterface> dst_bubble_source(bubble_sources[1]);
+  int bubbles_per_branch = 3;
+  RrtTree* src_tree = new BubbleTree(
+      bubbles_per_branch,
+      {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
+       3.1415/2.0, 3.1415/4.0, 3.1415/2.0},
+      src_bubble_source);
+  RrtTree* dst_tree = new BubbleTree(
+      bubbles_per_branch,
+      {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
+       -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
+      src_bubble_source);
+  Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
   int step = 1;
   while (!bubble_rrt.Step()) {
     if (step++ % 100 != 0)

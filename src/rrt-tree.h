@@ -24,15 +24,13 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
-#define COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
+#ifndef COM_ADEMOVIC_BUBBLESMP_RRT_TREE_H_
+#define COM_ADEMOVIC_BUBBLESMP_RRT_TREE_H_
 
 #include <memory>
 #include <vector>
 
-#include "bubble.h"
-#include "rrt-tree.h"
-#include "environment/bubble-source-interface.h"
+#include "point-index.h"
 
 namespace com {
 namespace ademovic {
@@ -41,24 +39,24 @@ namespace bubblesmp {
 // Should run in one thread, due to sequential nature of "Connect". Thus it is
 // not made threadsafe, but supports a threadsafe BubbleSource to be used in
 // multiple threads.
-class BubbleTree : public RrtTree {
+class RrtTree {
  public:
-  BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
-             std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
+  RrtTree(const std::vector<double>& root);
 
- private:
-  // Does not take ownership of parent.
-  // Has ownership of returned pointer.
-  virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
+  bool Connect(const std::vector<double>& q_target);
+  TreeNode* GetNewestNode() const;
+
+ protected:
+  virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent) = 0;
   virtual bool ConnectLine(
-      TreeNode* node, const std::vector<double>& q_target);
+      TreeNode* node, const std::vector<double>& q_target) = 0;
 
-  int max_bubbles_per_branch_;
-  std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;
+  PointIndex point_index_;
+  std::vector<std::unique_ptr<TreeNode> > nodes_;
 };
 
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com
 
-#endif  // COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
+#endif  // COM_ADEMOVIC_BUBBLESMP_RRT_TREE_H_

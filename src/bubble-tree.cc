@@ -33,14 +33,8 @@ namespace bubblesmp {
 BubbleTree::BubbleTree(
     int max_bubbles_per_branch, const std::vector<double>& root,
     std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
-    : max_bubbles_per_branch_(max_bubbles_per_branch),
-      point_index_(root), bubble_source_(bubble_source) {}
-
-bool BubbleTree::Connect(const std::vector<double>& q_target) {
-  AttachmentPoint connection_point = point_index_.GetNearestPoint(q_target);
-  return Connect(
-      AddNode(connection_point.position, connection_point.parent), q_target);
-}
+    : RrtTree(root), max_bubbles_per_branch_(max_bubbles_per_branch),
+      bubble_source_(bubble_source) {}
 
 TreeNode* BubbleTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
@@ -61,7 +55,8 @@ TreeNode* BubbleTree::AddNode(
   return current_node;
 }
 
-bool BubbleTree::Connect(TreeNode* node, const std::vector<double>& q_target) {
+bool BubbleTree::ConnectLine(
+    TreeNode* node, const std::vector<double>& q_target) {
   TreeNode* current_node = node;
   Bubble* current_bubble;
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
@@ -74,10 +69,6 @@ bool BubbleTree::Connect(TreeNode* node, const std::vector<double>& q_target) {
         current_bubble->IntersectsHullAt(q_target), current_node);
   }
   return false;
-}
-
-TreeNode* BubbleTree::GetNewestNode() const {
-  return nodes_.back().get();
 }
 
 }  // namespace bubblesmp
