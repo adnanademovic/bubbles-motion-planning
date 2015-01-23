@@ -106,7 +106,7 @@ int main() {
       bubbles_per_branch,
       {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
        -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
-      src_bubble_source);
+      dst_bubble_source);
   Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
   int step = 1;
   while (!bubble_rrt.Step()) {
