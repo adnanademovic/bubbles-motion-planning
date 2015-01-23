@@ -108,10 +108,9 @@ int main() {
        -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
       dst_bubble_source);
   Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
-  int step = 1;
+  int step = 0;
   while (!bubble_rrt.Step()) {
-    if (step++ % 100 != 0)
-      fprintf(stderr, "Current step: %6d\n", step);
+    fprintf(stderr, "Current step: %6d\n", ++step);
   }
   fprintf(stderr, "Final step: %6d\n", step);
   OutputPath(bubble_rrt.GetSolution());
