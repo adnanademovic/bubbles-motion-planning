@@ -58,13 +58,28 @@ TreeNode* BubbleTree::AddNode(
 bool BubbleTree::ConnectLine(
     TreeNode* node, const std::vector<double>& q_target) {
   TreeNode* current_node = node;
-  Bubble* current_bubble;
+  Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
+
+  double previous_bubble_size = 0.0;
+  for (double element : current_bubble->size()) {
+    previous_bubble_size += element;
+  }
+
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
     current_bubble = static_cast<Bubble*>(current_node->point.get());
     if (current_bubble->Contains(q_target)) {
       AddNode(q_target, current_node);
       return true;
     }
+
+    double current_bubble_size = 0.0;
+    for (double element : current_bubble->size()) {
+      current_bubble_size += element;
+    }
+    if (current_bubble_size < 0.1 * previous_bubble_size) {
+      return false;
+    }
+
     current_node = AddNode(
         current_bubble->IntersectsHullAt(q_target), current_node);
   }
