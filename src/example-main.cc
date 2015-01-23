@@ -67,7 +67,7 @@ int main() {
     BubbleSource* bs = new BubbleSource(new AbbIrb120Manipulator);
     double position = 250;
     double bottom = 400.0;
-    double movement = 150.0;
+    double movement = 100.0;
     for (int j = -1; j < 2; j += 2)
       for (int i = 0; i < 5; i++)
       {
@@ -96,7 +96,7 @@ int main() {
   }
   std::shared_ptr<BubbleSourceInterface> src_bubble_source(bubble_sources[0]);
   std::shared_ptr<BubbleSourceInterface> dst_bubble_source(bubble_sources[1]);
-  int bubbles_per_branch = 3;
+  int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
       bubbles_per_branch,
       {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
