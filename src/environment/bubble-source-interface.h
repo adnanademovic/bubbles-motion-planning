@@ -43,6 +43,7 @@ class BubbleSourceInterface {
   virtual ~BubbleSourceInterface() {};
   // Caller needs to handle ownership of the returned Bubble.
   virtual Bubble* NewBubble(const std::vector<double>& coordinates) const = 0;
+  virtual bool IsCollision(const std::vector<double>& coordinates) const = 0;
 
  protected:
   BubbleSourceInterface() {};

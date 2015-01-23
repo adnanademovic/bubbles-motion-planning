@@ -90,3 +90,13 @@ BOOST_AUTO_TEST_CASE(clear_obstacles) {
   BOOST_CHECK_EQUAL_COLLECTIONS(output_size.begin(), output_size.end(),
                                 input.begin(), input.end());
 }
+
+BOOST_AUTO_TEST_CASE(check_collisions) {
+  std::vector<double> input{1.5, 3.0, 6.0};
+  BubbleSource source(new MockRobot);
+  source.AddObstacle(new MockObstacle(0.0));
+  BOOST_CHECK_EQUAL(source.IsCollision(input), true);
+  source.ClearObstacles();
+  source.AddObstacle(new MockObstacle(5.0));
+  BOOST_CHECK_EQUAL(source.IsCollision(input), false);
+}
