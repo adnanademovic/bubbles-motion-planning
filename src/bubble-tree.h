@@ -51,7 +51,7 @@ class BubbleTree : public RrtTree {
   // Has ownership of returned pointer.
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
   virtual bool ConnectLine(
-      TreeNode* node, const std::vector<double>& q_target);
+      const AttachmentPoint& point, const std::vector<double>& q_target);
 
   int max_bubbles_per_branch_;
   std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;

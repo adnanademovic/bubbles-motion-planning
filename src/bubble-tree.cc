@@ -56,8 +56,8 @@ TreeNode* BubbleTree::AddNode(
 }
 
 bool BubbleTree::ConnectLine(
-    TreeNode* node, const std::vector<double>& q_target) {
-  TreeNode* current_node = node;
+    const AttachmentPoint& point, const std::vector<double>& q_target) {
+  TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
 
   double previous_bubble_size = 0.0;

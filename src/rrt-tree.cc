@@ -35,8 +35,7 @@ RrtTree::RrtTree(const std::vector<double>& root)
 
 bool RrtTree::Connect(const std::vector<double>& q_target) {
   AttachmentPoint connection_point = point_index_.GetNearestPoint(q_target);
-  return ConnectLine(
-      AddNode(connection_point.position, connection_point.parent), q_target);
+  return ConnectLine(connection_point, q_target);
 }
 
 TreeNode* RrtTree::GetNewestNode() const {
