@@ -68,6 +68,9 @@ Bubble* BubbleSource::NewBubble(const std::vector<double>& coordinates) const {
 
 bool BubbleSource::IsCollision(const std::vector<double>& coordinates) const {
   std::lock_guard<std::mutex> object_mutex_lock(object_mutex_);
+
+  robot_->set_coordinates(coordinates);
+
   int part_count = robot_->PartCount();
   for (int part = 0; part < part_count; ++part)
     for (auto obstacle : *obstacles_)
