@@ -26,13 +26,16 @@
 
 #include "simple-generator.h"
 
+#include <chrono>
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace generators {
 
 SimpleGenerator::SimpleGenerator(
-    const std::vector<std::pair<double, double> >& limits) {
+    const std::vector<std::pair<double, double> >& limits)
+    : generator_(std::chrono::system_clock::now().time_since_epoch().count()) {
   for (const std::pair<double, double>& limit : limits)
     distributions_.emplace_back(limit.first, limit.second);
 }
