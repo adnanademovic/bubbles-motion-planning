@@ -5,6 +5,7 @@ add_library(obstacle-sphere obstacle-sphere.cc)
 add_library(obstacle-rectangle obstacle-rectangle.cc)
 add_library(planar-2seg-manipulator planar-2seg-manipulator.cc)
 add_library(bubble-source bubble-source.cc)
+target_link_libraries(bubble-source bubble)
 
 # Tests
 
