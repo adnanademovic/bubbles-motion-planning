@@ -37,6 +37,17 @@ target_link_libraries(classic-main
                       rrt
                       simple-generator)
 
+add_executable(compare-main compare-main.cc)
+target_link_libraries(compare-main
+                      abb-irb120-manipulator
+                      bubble-source
+                      bubble-tree
+                      classic-tree
+                      obstacle-rectangle
+                      obstacle-sphere
+                      rrt
+                      simple-generator)
+
 # Tests
 
 add_executable(bubble_test bubble_test.cc)
