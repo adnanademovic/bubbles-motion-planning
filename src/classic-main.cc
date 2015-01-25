@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#include <cmath>
 #include <cstdio>
 
 #include "rrt.h"
@@ -39,11 +40,15 @@ using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::environment::simple;
 using namespace com::ademovic::bubblesmp::generators;
 
+constexpr double pi() {
+  return std::atan(1)*4;
+}
+
 void OutputPath(std::vector<std::shared_ptr<TreePoint> > bubbles) {
   std::vector<double> prev_pos(0);
   for (const auto& bubble : bubbles) {
     for (const auto& pos : bubble->position())
-      printf("%lf ", pos * 180.0 / 3.1415);
+      printf("%lf ", pos * 180.0 / pi());
     printf("\n");
   }
 }
@@ -96,7 +101,7 @@ int main() {
   }
   std::shared_ptr<BubbleSourceInterface> src_bubble_source(bubble_sources[0]);
   std::shared_ptr<BubbleSourceInterface> dst_bubble_source(bubble_sources[1]);
-  double max_step = 0.02;
+  double max_step = pi()/50.0;
   RrtTree* src_tree = new ClassicTree(
       max_step,
       {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,

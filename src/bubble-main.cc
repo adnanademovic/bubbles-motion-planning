@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#include <cmath>
 #include <cstdio>
 
 #include "rrt.h"
@@ -39,11 +40,15 @@ using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::environment::simple;
 using namespace com::ademovic::bubblesmp::generators;
 
+constexpr double pi() {
+  return std::atan(1)*4;
+}
+
 void OutputPath(std::vector<std::shared_ptr<TreePoint> > bubbles) {
   std::vector<double> prev_pos(0);
   for (const auto& bubble : bubbles) {
     for (const auto& pos : bubble->position())
-      printf("%lf ", pos * 180.0 / 3.1415);
+      printf("%lf ", pos * 180.0 / pi());
     printf("\n");
   }
 }
