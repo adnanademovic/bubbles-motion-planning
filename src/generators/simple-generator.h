@@ -40,6 +40,8 @@ namespace generators {
 
 class SimpleGenerator : public RandomPointGeneratorInterface {
  public:
+  SimpleGenerator(
+      const std::vector<std::pair<double, double> >& limits, unsigned seed);
   SimpleGenerator(const std::vector<std::pair<double, double> >& limits);
   std::vector<double> NextPoint();
 

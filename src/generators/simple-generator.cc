@@ -33,12 +33,18 @@ namespace ademovic {
 namespace bubblesmp {
 namespace generators {
 
+
 SimpleGenerator::SimpleGenerator(
-    const std::vector<std::pair<double, double> >& limits)
-    : generator_(std::chrono::system_clock::now().time_since_epoch().count()) {
+    const std::vector<std::pair<double, double> >& limits, unsigned seed)
+    : generator_(seed) {
   for (const std::pair<double, double>& limit : limits)
     distributions_.emplace_back(limit.first, limit.second);
 }
+
+SimpleGenerator::SimpleGenerator(
+    const std::vector<std::pair<double, double> >& limits)
+    : SimpleGenerator(
+        limits, std::chrono::system_clock::now().time_since_epoch().count()) {}
 
 std::vector<double> SimpleGenerator::NextPoint() {
   std::vector<double> point;
