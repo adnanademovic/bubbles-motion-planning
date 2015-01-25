@@ -24,8 +24,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
-#define COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
+#ifndef COM_ADEMOVIC_BUBBLESMP_CLASSIC_TREE_H_
+#define COM_ADEMOVIC_BUBBLESMP_CLASSIC_TREE_H_
 
 #include <memory>
 #include <vector>
@@ -63,4 +63,4 @@ class ClassicTree : public RrtTree {
 }  // namespace ademovic
 }  // namespace com
 
-#endif  // COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
+#endif  // COM_ADEMOVIC_BUBBLESMP_CLASSIC_TREE_H_
