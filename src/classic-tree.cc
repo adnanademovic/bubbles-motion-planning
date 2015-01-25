@@ -33,9 +33,9 @@ namespace ademovic {
 namespace bubblesmp {
 
 ClassicTree::ClassicTree(
-    double max_step, const std::vector<double>& root,
+    double max_step, int substeps, const std::vector<double>& root,
     std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
-    : RrtTree(root), eps_(max_step),
+    : RrtTree(root), eps_(max_step / substeps), substeps_(substeps),
       root_node(new TreeNode(new TreePoint(root), nullptr)),
       bubble_source_(bubble_source) {
   AddNode(root, root_node.get());
@@ -75,11 +75,12 @@ bool ClassicTree::ConnectLine(
       current = q_target;
 
     if (bubble_source_->IsCollision(current)) {
-      if (!s)
+      int steps_shortened = s - s % substeps_;
+      if (!steps_shortened)
         return false;
       current = point.position;
       for (unsigned int i = 0; i < axis_count; ++i)
-        current[i] += step[i] * s;
+        current[i] += step[i] * steps_shortened;
       AddNode(current, point.parent);
       return false;
     }

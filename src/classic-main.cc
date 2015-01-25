@@ -102,13 +102,14 @@ int main() {
   std::shared_ptr<BubbleSourceInterface> src_bubble_source(bubble_sources[0]);
   std::shared_ptr<BubbleSourceInterface> dst_bubble_source(bubble_sources[1]);
   double max_step = pi()/50.0;
+  int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
-      max_step,
+      max_step, ministeps_per_step,
       {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
        3.1415/2.0, 3.1415/4.0, 3.1415/2.0},
       src_bubble_source);
   RrtTree* dst_tree = new ClassicTree(
-      max_step,
+      max_step, ministeps_per_step,
       {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
        -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
       dst_bubble_source);

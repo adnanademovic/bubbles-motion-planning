@@ -43,7 +43,7 @@ namespace bubblesmp {
 class ClassicTree : public RrtTree {
  public:
   ClassicTree(
-      double max_step, const std::vector<double>& root,
+      double max_step, int substeps, const std::vector<double>& root,
       std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
 
  private:
@@ -54,6 +54,7 @@ class ClassicTree : public RrtTree {
       const AttachmentPoint& point, const std::vector<double>& q_target);
 
   double eps_;
+  int substeps_;
   std::unique_ptr<TreeNode> root_node;
   std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;
 };
