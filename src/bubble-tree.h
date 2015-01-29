@@ -32,7 +32,7 @@
 
 #include "bubble.h"
 #include "rrt-tree.h"
-#include "environment/bubble-source-interface.h"
+#include "environment/environment-feedback-interface.h"
 
 namespace com {
 namespace ademovic {
@@ -44,7 +44,8 @@ namespace bubblesmp {
 class BubbleTree : public RrtTree {
  public:
   BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
-             std::shared_ptr<environment::BubbleSourceInterface> bubble_source);
+             std::shared_ptr<
+                 environment::EnvironmentFeedbackInterface> bubble_source);
 
  private:
   // Does not take ownership of parent.
@@ -54,7 +55,7 @@ class BubbleTree : public RrtTree {
       const AttachmentPoint& point, const std::vector<double>& q_target);
 
   int max_bubbles_per_branch_;
-  std::shared_ptr<environment::BubbleSourceInterface> bubble_source_;
+  std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source_;
 };
 
 }  // namespace bubblesmp

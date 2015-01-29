@@ -24,8 +24,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_BUBBLE_SOURCE_INTERFACE_H_
-#define COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_BUBBLE_SOURCE_INTERFACE_H_
+#ifndef COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_ENVIRONMENT_FEEDBACK_INTERFACE_H_
+#define COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_ENVIRONMENT_FEEDBACK_INTERFACE_H_
 
 #include <vector>
 
@@ -36,17 +36,17 @@ namespace ademovic {
 namespace bubblesmp {
 namespace environment {
 
-// Defines interface for getting bubble sizes based on coordinates of
-// configuration space.
-class BubbleSourceInterface {
+// Defines interface for getting bubble sizes and collision info based on
+// coordinates of configuration space.
+class EnvironmentFeedbackInterface {
  public:
-  virtual ~BubbleSourceInterface() {};
+  virtual ~EnvironmentFeedbackInterface() {}
   // Caller needs to handle ownership of the returned Bubble.
   virtual Bubble* NewBubble(const std::vector<double>& coordinates) const = 0;
   virtual bool IsCollision(const std::vector<double>& coordinates) const = 0;
 
  protected:
-  BubbleSourceInterface() {};
+  EnvironmentFeedbackInterface() {}
 };
 
 }  // namespace environment
@@ -54,4 +54,4 @@ class BubbleSourceInterface {
 }  // namespace ademovic
 }  // namespace com
 
-#endif  // COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_BUBBLE_SOURCE_INTERFACE_H_
+#endif  // COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_ENVIRONMENT_FEEDBACK_INTERFACE_H_

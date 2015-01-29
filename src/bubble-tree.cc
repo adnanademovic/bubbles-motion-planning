@@ -32,7 +32,7 @@ namespace bubblesmp {
 
 BubbleTree::BubbleTree(
     int max_bubbles_per_branch, const std::vector<double>& root,
-    std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
+    std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source)
     : RrtTree(root), max_bubbles_per_branch_(max_bubbles_per_branch),
       bubble_source_(bubble_source) {}
 

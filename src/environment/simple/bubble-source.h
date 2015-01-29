@@ -31,7 +31,7 @@
 #include <mutex>
 #include <vector>
 
-#include "../bubble-source-interface.h"
+#include "../environment-feedback-interface.h"
 #include "obstacle-interface.h"
 #include "robot-interface.h"
 
@@ -41,7 +41,7 @@ namespace bubblesmp {
 namespace environment {
 namespace simple {
 
-class BubbleSource : public BubbleSourceInterface {
+class BubbleSource : public EnvironmentFeedbackInterface {
  public:
   // The class instance takes ownership of RobotInterface.
   BubbleSource(RobotInterface* robot);

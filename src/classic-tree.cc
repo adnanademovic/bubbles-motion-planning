@@ -34,10 +34,10 @@ namespace bubblesmp {
 
 ClassicTree::ClassicTree(
     double max_step, int substeps, const std::vector<double>& root,
-    std::shared_ptr<environment::BubbleSourceInterface> bubble_source)
+    std::shared_ptr<environment::EnvironmentFeedbackInterface> collision_source)
     : RrtTree(root), eps_(max_step / substeps), substeps_(substeps),
       root_node(new TreeNode(new TreePoint(root), nullptr)),
-      bubble_source_(bubble_source) {
+      collision_source_(collision_source) {
   AddNode(root, root_node.get());
 }
 
@@ -74,7 +74,7 @@ bool ClassicTree::ConnectLine(
     if (s == max_steps - 1)
       current = q_target;
 
-    if (bubble_source_->IsCollision(current)) {
+    if (collision_source_->IsCollision(current)) {
       int steps_shortened = s - s % substeps_;
       if (!steps_shortened)
         return false;
