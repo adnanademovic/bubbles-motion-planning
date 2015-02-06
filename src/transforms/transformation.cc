@@ -35,8 +35,8 @@ namespace bubblesmp {
 namespace transforms {
 
 Transformation::Transformation() {
-  std::memset(rotation_, 0, sizeof(rotation_));
-  std::memset(translation_, 0, sizeof(translation_));
+  memset(rotation_, 0, sizeof(rotation_));
+  memset(translation_, 0, sizeof(translation_));
   rotation_[0][0] = rotation_[1][1] = rotation_[2][2] = 1.0;
 }
 
@@ -44,10 +44,10 @@ void Transformation::Rotate(Axis axis, double angle) {
   Transformation transform;
   int n1 = (axis + 1) % 3;
   int n2 = (axis + 2) % 3;
-  transform.rotation_[n1][n1] = std::cos(angle);
-  transform.rotation_[n2][n2] = std::cos(angle);
-  transform.rotation_[n1][n2] = -std::sin(angle);
-  transform.rotation_[n2][n1] = std::sin(angle);
+  transform.rotation_[n1][n1] = cos(angle);
+  transform.rotation_[n2][n2] = cos(angle);
+  transform.rotation_[n1][n2] = -sin(angle);
+  transform.rotation_[n2][n1] = sin(angle);
   Transform(transform);
 }
 
@@ -94,7 +94,7 @@ void Transformation::ApplyTo(
       translation[i] += rotation[i][j] * translation_[j];
 
   double result[3][3];
-  std::memset(result, 0, sizeof(result));
+  memset(result, 0, sizeof(result));
   for (int i = 0; i != 3; ++i)
     for (int j = 0; j != 3; ++j)
       for (int k = 0; k != 3; ++k)
