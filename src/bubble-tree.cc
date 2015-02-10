@@ -47,9 +47,9 @@ TreeNode* BubbleTree::AddNode(
   unsigned int axis_count = position.size();
   for (unsigned int i = 0; i < axis_count; ++i) {
     point[i] = position[i] + size[i];
-    point_index_.AddPoint(point, parent);
+    point_index_.AddPoint(point, current_node);
     point[i] = position[i] - size[i];
-    point_index_.AddPoint(point, parent);
+    point_index_.AddPoint(point, current_node);
     point[i] = position[i];
   }
   return current_node;
