@@ -17,6 +17,14 @@ add_library(rrt-tree rrt-tree.cc)
 target_link_libraries(rrt-tree point-index)
 add_library(tree-node tree-node.cc)
 
+add_executable(twoseg-bubble-main twoseg-bubble-main.cc)
+target_link_libraries(twoseg-bubble-main
+                      bubble-tree
+                      pqp-environment
+                      pqp-environment-feedback
+                      rrt
+                      simple-generator)
+
 add_executable(bubble-main bubble-main.cc)
 target_link_libraries(bubble-main
                       abb-irb120-manipulator
