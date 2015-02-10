@@ -26,15 +26,19 @@
 
 #include "bubble-tree.h"
 
+#include <algorithm>
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
+
 BubbleTree::BubbleTree(
+    const std::vector<std::pair<double, double> >& limits,
     int max_bubbles_per_branch, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source)
     : RrtTree(root), max_bubbles_per_branch_(max_bubbles_per_branch),
-      bubble_source_(bubble_source) {}
+      bubble_source_(bubble_source), limits_(limits) {}
 
 TreeNode* BubbleTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
@@ -45,10 +49,10 @@ TreeNode* BubbleTree::AddNode(
   std::vector<double> size = current_bubble->size();
   std::vector<double> point = position;
   unsigned int axis_count = position.size();
-  for (unsigned int i = 0; i < axis_count; ++i) {
-    point[i] = position[i] + size[i];
+  for (size_t i = 0; i < axis_count; ++i) {
+    point[i] = std::min(limits_[i].second, position[i] + size[i]);
     point_index_.AddPoint(point, current_node);
-    point[i] = position[i] - size[i];
+    point[i] = std::max(limits_[i].first, position[i] - size[i]);
     point_index_.AddPoint(point, current_node);
     point[i] = position[i];
   }

@@ -97,12 +97,12 @@ void RunBubbleTree(unsigned seed) {
       bubble_sources[1]);
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
-      bubbles_per_branch,
+      limits, bubbles_per_branch,
       {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
        3.1415/2.0, 3.1415/4.0, 3.1415/2.0},
       src_bubble_source);
   RrtTree* dst_tree = new BubbleTree(
-      bubbles_per_branch,
+      limits, bubbles_per_branch,
       {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
        -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
       dst_bubble_source);

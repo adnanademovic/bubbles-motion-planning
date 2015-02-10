@@ -28,6 +28,7 @@
 #define COM_ADEMOVIC_BUBBLESMP_BUBBLE_TREE_H_
 
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "bubble.h"
@@ -43,9 +44,10 @@ namespace bubblesmp {
 // multiple threads.
 class BubbleTree : public RrtTree {
  public:
-  BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
-             std::shared_ptr<
-                 environment::EnvironmentFeedbackInterface> bubble_source);
+  BubbleTree(const std::vector<std::pair<double, double> >& limits,
+             int max_bubbles_per_branch, const std::vector<double>& root,
+             std::shared_ptr<environment::EnvironmentFeedbackInterface>
+             bubble_source);
 
  private:
   // Does not take ownership of parent.
@@ -56,6 +58,7 @@ class BubbleTree : public RrtTree {
 
   int max_bubbles_per_branch_;
   std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source_;
+  std::vector<std::pair<double, double> > limits_;
 };
 
 }  // namespace bubblesmp
