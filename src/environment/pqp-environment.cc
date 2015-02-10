@@ -211,6 +211,7 @@ PqpEnvironment::DistanceProfile PqpEnvironment::GetDistanceProfile(
   DistanceProfile distances;
   int segment = -1;
 
+  double p[3], p_prev[3];
   for (int part = 0; part < part_count_; ++part) {
     if (is_joint_start_[part]) {
       if (segment > -1)
@@ -230,17 +231,28 @@ PqpEnvironment::DistanceProfile PqpEnvironment::GetDistanceProfile(
         distance_res.Distance() - variance_, std::vector<double>(0));
 
     std::vector<double>* radiuses = &(distances.back().second);
-    double p[3];
     setPointPosition(R, T, p, cylinders_[part].first);
     for (int seg = 0; seg <= segment; ++seg) {
-      double d1 = PointDistanceToVector(
+      double d1 = std::min(
+          PointDistanceToVector(
               p[0] - ax_P[seg][0], p[1] - ax_P[seg][1], p[2] - ax_P[seg][2],
-              ax_O[seg][0], ax_O[seg][1], ax_O[seg][2]);
-      double d2 = PointDistanceToVector(
+              ax_O[seg][0], ax_O[seg][1], ax_O[seg][2]),
+          PointDistanceToVector(
               p[0] - ax_P[seg][0], p[1] - ax_P[seg][1], p[2] - ax_P[seg][2],
-              -ax_O[seg][0], -ax_O[seg][1], -ax_O[seg][2]);
+              -ax_O[seg][0], -ax_O[seg][1], -ax_O[seg][2]));
+      double d2 = std::min(
+          PointDistanceToVector(
+              p_prev[0] - ax_P[seg][0], p_prev[1] - ax_P[seg][1],
+              p_prev[2] - ax_P[seg][2],
+              ax_O[seg][0], ax_O[seg][1], ax_O[seg][2]),
+          PointDistanceToVector(
+              p_prev[0] - ax_P[seg][0], p_prev[1] - ax_P[seg][1],
+              p_prev[2] - ax_P[seg][2],
+              -ax_O[seg][0], -ax_O[seg][1], -ax_O[seg][2]));
       radiuses->push_back(cylinders_[part].second + std::max(d1, d2));
     }
+    for (int i = 0; i < 3; ++i)
+      p_prev[i] = p[i];
   }
 
   return distances;

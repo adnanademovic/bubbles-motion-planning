@@ -162,7 +162,6 @@ BOOST_AUTO_TEST_CASE(trivial_distance_two_part) {
   BOOST_CHECK_CLOSE(d[1].second[0], 11.0, 1.0);
 }
 
-
 BOOST_AUTO_TEST_CASE(two_segment_distance) {
   MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n");
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
@@ -203,5 +202,15 @@ BOOST_AUTO_TEST_CASE(two_segment_distance) {
   BOOST_CHECK_EQUAL(d[1].second.size(), 2);
   BOOST_CHECK_CLOSE(d[1].first, 17.78, AbsToRelTolerance(17.78, 0.11));
   BOOST_CHECK_CLOSE(d[1].second[0], 19.498, 1.0);
+  BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
+
+  d = environment.GetDistanceProfile({0.0, 2.5});
+  BOOST_CHECK_EQUAL(d.size(), 2);
+  BOOST_CHECK_EQUAL(d[0].second.size(), 1);
+  BOOST_CHECK_CLOSE(d[0].first, 15.0, AbsToRelTolerance(15.0, 0.11));
+  BOOST_CHECK_CLOSE(d[0].second[0], 11.0, 1.0);
+  BOOST_CHECK_EQUAL(d[1].second.size(), 2);
+  BOOST_CHECK_CLOSE(d[1].first, 15.0, AbsToRelTolerance(5.0, 0.11));
+  BOOST_CHECK_CLOSE(d[1].second[0], 11.0, 1.0);
   BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
 }
