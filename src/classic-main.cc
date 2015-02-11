@@ -29,15 +29,13 @@
 
 #include "rrt.h"
 #include "classic-tree.h"
-#include "environment/simple/abb-irb120-manipulator.h"
-#include "environment/simple/bubble-source.h"
-#include "environment/simple/obstacle-rectangle.h"
-#include "environment/simple/obstacle-sphere.h"
+#include "environment/environment-feedback-interface.h"
+#include "environment/pqp-environment.h"
+#include "environment/pqp-environment-feedback.h"
 #include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
-using namespace com::ademovic::bubblesmp::environment::simple;
 using namespace com::ademovic::bubblesmp::generators;
 
 constexpr double pi() {
@@ -67,60 +65,44 @@ int main() {
   limits[4].second = 2.09439;
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
-  std::vector<BubbleSource*> bubble_sources;
-  for (int sources = 0; sources < 2; ++sources) {
-    BubbleSource* bs = new BubbleSource(new AbbIrb120Manipulator);
-    double position = 250;
-    double bottom = 400.0;
-    double movement = 100.0;
-    for (int j = -1; j < 2; j += 2)
-      for (int i = 0; i < 5; i++)
-      {
-        bs->AddObstacle(new ObstacleSphere(
-              position + movement,
-              j * (-position + movement),
-              bottom + i * movement/2,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement,
-              j * (-position - movement),
-              bottom + i * movement/2,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement + ( i + .5) * movement / 2.5,
-              j * (-position - movement + (i + .5) * movement / 2.5),
-              bottom - 50,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement + (i + .5) * movement / 2.5,
-              j * (-position - movement + (i + .5) * movement / 2.5),
-              bottom - 50 + movement * 3,
-              50));
-      }
-    bubble_sources.push_back(bs);
-  }
-  std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
-      bubble_sources[0]);
-  std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
-      bubble_sources[1]);
+
+  std::string config("../models/abb.conf");
+  std::string obstacle("../models/obs1.mdl");
+  std::vector<std::string> segments;
+  segments.emplace_back("../models/SEG_0.mdl");
+  segments.emplace_back("../models/SEG_1.mdl");
+  segments.emplace_back("../models/SEG_2.mdl");
+  segments.emplace_back("../models/SEG_3.mdl");
+  segments.emplace_back("../models/SEG_4.mdl");
+  segments.emplace_back("../models/SEG_5.mdl");
+  double threshold = 1.0;
+  std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
+
+  std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
+      new PqpEnvironmentFeedback(new PqpEnvironment(
+          config, segments, obstacle, threshold, parts_per_segment))); 
+  std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
+      new PqpEnvironmentFeedback(new PqpEnvironment(
+          config, segments, obstacle, threshold, parts_per_segment))); 
+
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
       max_step, ministeps_per_step,
-      {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-       3.1415/2.0, 3.1415/4.0, 3.1415/2.0},
-      src_bubble_source);
+      {-pi() / 4.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
+       pi() / 20.0, pi() / 20.0, pi() / 20.0},
+      src_collision_source);
   RrtTree* dst_tree = new ClassicTree(
       max_step, ministeps_per_step,
-      {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-       -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
-      dst_bubble_source);
-  Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
+      {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
+       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      dst_collision_source);
+  Rrt classic_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
   int step = 0;
-  while (!bubble_rrt.Step()) {
+  while (!classic_rrt.Step()) {
     fprintf(stderr, "Current step: %6d\n", ++step);
   }
   fprintf(stderr, "Final step: %6d\n", step);
-  OutputPath(bubble_rrt.GetSolution());
+  OutputPath(classic_rrt.GetSolution());
   return 0;
 }

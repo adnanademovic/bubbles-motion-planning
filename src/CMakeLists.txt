@@ -27,21 +27,17 @@ target_link_libraries(twoseg-bubble-main
 
 add_executable(bubble-main bubble-main.cc)
 target_link_libraries(bubble-main
-                      abb-irb120-manipulator
-                      bubble-source
                       bubble-tree
-                      obstacle-rectangle
-                      obstacle-sphere
+                      pqp-environment
+                      pqp-environment-feedback
                       rrt
                       simple-generator)
 
 add_executable(classic-main classic-main.cc)
 target_link_libraries(classic-main
-                      abb-irb120-manipulator
-                      bubble-source
                       classic-tree
-                      obstacle-rectangle
-                      obstacle-sphere
+                      pqp-environment
+                      pqp-environment-feedback
                       rrt
                       simple-generator)
 
