@@ -1,5 +1,6 @@
-# Build folder
+# Build folder and folder containing models
 /build/
+/models/
 
 # Compiled Object files
 *.slo
