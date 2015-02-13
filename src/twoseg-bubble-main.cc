@@ -152,6 +152,7 @@ int main() {
          "hold on;\n"
          "plot(configs(:,1), configs(:,2), 'b');\n"
          "axis([-pi pi -pi pi]);"
-         "hold off;\n");
+         "hold off;\n"
+         "pause;\n");
   return 0;
 }
