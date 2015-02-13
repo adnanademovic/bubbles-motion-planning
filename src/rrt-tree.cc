@@ -31,7 +31,7 @@ namespace ademovic {
 namespace bubblesmp {
 
 RrtTree::RrtTree(const std::vector<double>& root)
-    : point_index_(root) {}
+    : point_index_(root, new TreeNode(new TreePoint(root), nullptr)) {}
 
 bool RrtTree::Connect(const std::vector<double>& q_target) {
   AttachmentPoint connection_point = point_index_.GetNearestPoint(q_target);

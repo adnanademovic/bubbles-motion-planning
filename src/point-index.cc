@@ -30,9 +30,9 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-PointIndex::PointIndex(const std::vector<double>& q_root)
-    : attachment_points_(1, AttachmentPoint{q_root, nullptr}),
-      index_(flann::Matrix<double>(
+PointIndex::PointIndex(const std::vector<double>& q_root, TreeNode* root_node)
+    : attachment_points_(1, AttachmentPoint{q_root, root_node}),
+      root_node_(root_node), index_(flann::Matrix<double>(
                  std::vector<double>(q_root).data(), 1, q_root.size()),
              flann::KDTreeIndexParams(8)) {
   index_.buildIndex();

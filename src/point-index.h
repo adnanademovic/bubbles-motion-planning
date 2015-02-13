@@ -45,7 +45,8 @@ struct AttachmentPoint {
 // Not threadsafe, use in single thread.
 class PointIndex {
  public:
-  PointIndex(const std::vector<double>& q_root);
+  // PointIndex takes ownership of root_node
+  PointIndex(const std::vector<double>& q_root, TreeNode* root_node);
 
   // PointIndex doesn't take ownership of parent
   void AddPoint(const std::vector<double>& q, TreeNode* parent);
@@ -53,6 +54,7 @@ class PointIndex {
 
  private:
   std::vector<AttachmentPoint> attachment_points_;
+  std::unique_ptr<TreeNode> root_node_;
   flann::Index<flann::L2<double> > index_;
 };
 
