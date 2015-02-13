@@ -51,7 +51,7 @@ void DrawLine(
     delta.push_back(goal[i] - start[i]);
   double distance = 0.0;
   for (double diff : delta)
-    distance += diff;
+    distance += abs(diff);
   if (distance < max_step) {
     for (const auto& pos : goal)
       printf("%lf ", pos * 180.0 / pi());
