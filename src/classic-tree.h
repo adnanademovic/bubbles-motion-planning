@@ -56,7 +56,6 @@ class ClassicTree : public RrtTree {
 
   double eps_;
   int substeps_;
-  std::unique_ptr<TreeNode> root_node;
   std::shared_ptr<environment::EnvironmentFeedbackInterface> collision_source_;
 };
 

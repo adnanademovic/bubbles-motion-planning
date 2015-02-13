@@ -36,10 +36,7 @@ ClassicTree::ClassicTree(
     double max_step, int substeps, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedbackInterface> collision_source)
     : RrtTree(root), eps_(max_step / substeps), substeps_(substeps),
-      root_node(new TreeNode(new TreePoint(root), nullptr)),
-      collision_source_(collision_source) {
-  AddNode(root, root_node.get());
-}
+      collision_source_(collision_source) {}
 
 TreeNode* ClassicTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
