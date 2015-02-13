@@ -42,12 +42,37 @@ constexpr double pi() {
   return std::atan(1)*4;
 }
 
-void OutputPath(std::vector<std::shared_ptr<TreePoint> > bubbles) {
-  for (const auto& bubble : bubbles) {
-    for (const auto& pos : bubble->position())
+// Does not draw start point
+void DrawLine(
+    const std::vector<double>& start, const std::vector<double>& goal) {
+  double max_step = 0.05;
+  std::vector<double> delta;
+  for (size_t i = 0; i < start.size(); ++i)
+    delta.push_back(goal[i] - start[i]);
+  double distance = 0.0;
+  for (double diff : delta)
+    distance += diff;
+  if (distance < max_step) {
+    for (const auto& pos : goal)
       printf("%lf ", pos * 180.0 / pi());
     printf("\n");
+  } else {
+    int steps = (int)(distance / max_step + 1);
+    for (size_t i = 0; i < delta.size(); ++i)
+      delta[i] /= steps;
+    for (int i = 1; i <= steps; ++i) {
+      for (size_t j = 0; j < start.size(); ++j)
+        printf("%lf ", (start[j] + i * delta[j]) * 180.0 / pi());
+      printf("\n");
+    }
   }
+}
+
+void OutputPath(std::vector<std::shared_ptr<TreePoint> > points) {
+  if (!points.empty())
+    DrawLine(points[0]->position(), points[0]->position());
+  for (size_t i = 1; i < points.size(); ++i)
+    DrawLine(points[i - 1]->position(), points[i]->position());
 }
 
 struct TestCase {
