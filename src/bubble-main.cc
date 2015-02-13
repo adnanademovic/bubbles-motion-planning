@@ -51,7 +51,37 @@ void OutputPath(std::vector<std::shared_ptr<TreePoint> > bubbles) {
   }
 }
 
+struct TestCase {
+  std::vector<double> start;
+  std::vector<double> goal;
+  std::string obstacle;
+};
+
 int main() {
+  std::vector<TestCase> test_cases;
+  // Trivial test case
+  test_cases.push_back({
+      {-pi() / 4.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
+       pi() / 20.0, pi() / 20.0, pi() / 20.0},
+      {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
+       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      "../models/obs1.mdl"});
+  // Easy test case
+  test_cases.push_back({
+      {-pi() / 3.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
+       pi() / 20.0, pi() / 20.0, pi() / 20.0},
+      {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
+       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      "../models/obs2.mdl"});
+  // Hard test case
+  test_cases.push_back({
+      {-pi() / 2.0, pi() / 4.0 + pi() / 50.0, pi() / 4.0 - pi() / 50.0,
+       pi() / 20.0, pi() / 20.0, pi() / 20.0},
+      {pi() / 2.0, pi() / 4.0 - pi() / 50.0, pi() / 4.0 + pi() / 50.0,
+       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      "../models/obs3.mdl"});
+  int test = 2;
+
   std::vector<std::pair<double, double> > limits(6);
   limits[0].first = -2.87979;
   limits[0].second = 2.87979;
@@ -67,7 +97,6 @@ int main() {
   limits[5].second = 6.98131;
   
   std::string config("../models/abb.conf");
-  std::string obstacle("../models/obs1.mdl");
   std::vector<std::string> segments;
   segments.emplace_back("../models/SEG_0.mdl");
   segments.emplace_back("../models/SEG_1.mdl");
@@ -80,22 +109,18 @@ int main() {
 
   std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, obstacle, threshold, parts_per_segment))); 
+          config, segments, test_cases[test].obstacle, threshold,
+          parts_per_segment)));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, obstacle, threshold, parts_per_segment))); 
+          config, segments, test_cases[test].obstacle, threshold,
+          parts_per_segment)));
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch,
-      {-pi() / 4.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
-       pi() / 20.0, pi() / 20.0, pi() / 20.0},
-      src_bubble_source);
+      limits, bubbles_per_branch, test_cases[test].start, src_bubble_source);
   RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch,
-      {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
-       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      dst_bubble_source);
+      limits, bubbles_per_branch, test_cases[test].goal, dst_bubble_source);
 
   Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
   int step = 0;
