@@ -43,7 +43,6 @@ constexpr double pi() {
 }
 
 void OutputPath(std::vector<std::shared_ptr<TreePoint> > bubbles) {
-  std::vector<double> prev_pos(0);
   for (const auto& bubble : bubbles) {
     for (const auto& pos : bubble->position())
       printf("%lf ", pos * 180.0 / pi());
