@@ -75,9 +75,9 @@ int main() {
       "../models/obs2.mdl"});
   // Hard test case
   test_cases.push_back({
-      {-pi() / 2.0, pi() / 4.0 + pi() / 50.0, pi() / 4.0 - pi() / 50.0,
+      {-pi() / 2.0, pi() / 4.0 + pi() / 50.0, -pi() / 4.0 - pi() / 50.0,
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
-      {pi() / 2.0, pi() / 4.0 - pi() / 50.0, pi() / 4.0 + pi() / 50.0,
+      {pi() / 2.0, pi() / 4.0 - pi() / 50.0, -pi() / 4.0 + pi() / 50.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
       "../models/obs3.mdl"});
   int test = 2;
