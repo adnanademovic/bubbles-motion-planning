@@ -25,6 +25,14 @@ target_link_libraries(twoseg-bubble-main
                       rrt
                       simple-generator)
 
+add_executable(twoseg-classic-main twoseg-classic-main.cc)
+target_link_libraries(twoseg-classic-main
+                      classic-tree
+                      pqp-environment
+                      pqp-environment-feedback
+                      rrt
+                      simple-generator)
+
 add_executable(bubble-main bubble-main.cc)
 target_link_libraries(bubble-main
                       bubble-tree
