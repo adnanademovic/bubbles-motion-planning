@@ -30,93 +30,60 @@
 #include "rrt.h"
 #include "bubble-tree.h"
 #include "classic-tree.h"
-#include "environment/simple/abb-irb120-manipulator.h"
-#include "environment/simple/bubble-source.h"
-#include "environment/simple/obstacle-rectangle.h"
-#include "environment/simple/obstacle-sphere.h"
+#include "environment/environment-feedback-interface.h"
+#include "environment/pqp-environment.h"
+#include "environment/pqp-environment-feedback.h"
 #include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
-using namespace com::ademovic::bubblesmp::environment::simple;
 using namespace com::ademovic::bubblesmp::generators;
 
 constexpr double pi() {
   return std::atan(1)*4;
 }
 
-void RunBubbleTree(unsigned seed) {
-  std::vector<std::pair<double, double> > limits(6);
-  limits[0].first = -2.87979;
-  limits[0].second = 2.87979;
-  limits[1].first = -1.91986;
-  limits[1].second = 1.91986;
-  limits[2].first = -1.57079;
-  limits[2].second = 1.22173;
-  limits[3].first = -2.79252;
-  limits[3].second = 2.79252;
-  limits[4].first = -2.09439;
-  limits[4].second = 2.09439;
-  limits[5].first = -6.98131;
-  limits[5].second = 6.98131;
-  std::vector<BubbleSource*> bubble_sources;
-  for (int sources = 0; sources < 2; ++sources) {
-    BubbleSource* bs = new BubbleSource(new AbbIrb120Manipulator);
-    double position = 250;
-    double bottom = 400.0;
-    double movement = 100.0;
-    for (int j = -1; j < 2; j += 2)
-      for (int i = 0; i < 5; i++)
-      {
-        bs->AddObstacle(new ObstacleSphere(
-              position + movement,
-              j * (-position + movement),
-              bottom + i * movement/2,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement,
-              j * (-position - movement),
-              bottom + i * movement/2,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement + ( i + .5) * movement / 2.5,
-              j * (-position - movement + (i + .5) * movement / 2.5),
-              bottom - 50,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement + (i + .5) * movement / 2.5,
-              j * (-position - movement + (i + .5) * movement / 2.5),
-              bottom - 50 + movement * 3,
-              50));
-      }
-    bubble_sources.push_back(bs);
+// Does not draw start point
+void DrawLine(
+    const std::vector<double>& start, const std::vector<double>& goal) {
+  double max_step = 0.05;
+  std::vector<double> delta;
+  for (size_t i = 0; i < start.size(); ++i)
+    delta.push_back(goal[i] - start[i]);
+  double distance = 0.0;
+  for (double diff : delta)
+    distance += abs(diff);
+  if (distance < max_step) {
+    for (const auto& pos : goal)
+      printf("%lf ", pos * 180.0 / pi());
+    printf("\n");
+  } else {
+    int steps = (int)(distance / max_step + 1);
+    for (size_t i = 0; i < delta.size(); ++i)
+      delta[i] /= steps;
+    for (int i = 1; i <= steps; ++i) {
+      for (size_t j = 0; j < start.size(); ++j)
+        printf("%lf ", (start[j] + i * delta[j]) * 180.0 / pi());
+      printf("\n");
+    }
   }
-  std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
-      bubble_sources[0]);
-  std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
-      bubble_sources[1]);
-  int bubbles_per_branch = 50;
-  RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch,
-      {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-       3.1415/2.0, 3.1415/4.0, 3.1415/2.0},
-      src_bubble_source);
-  RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch,
-      {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-       -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
-      dst_bubble_source);
-  Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits, seed));
-  int step = 0;
-  while (!bubble_rrt.Step()) {
-    if (++step > 5000)
-      break;
-  }
-  fprintf(stderr, "Done Bubble seed: %u\n", seed);
-  printf("bubble = [bubble %d];\n", step);
 }
 
-void RunClassicTree(unsigned seed) {
+void OutputPath(std::vector<std::shared_ptr<TreePoint> > points) {
+  if (!points.empty())
+    DrawLine(points[0]->position(), points[0]->position());
+  for (size_t i = 1; i < points.size(); ++i)
+    DrawLine(points[i - 1]->position(), points[i]->position());
+}
+
+struct TestCase {
+  std::string name;
+  std::vector<double> start;
+  std::vector<double> goal;
+  std::string obstacle;
+};
+
+void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   std::vector<std::pair<double, double> > limits(6);
   limits[0].first = -2.87979;
   limits[0].second = 2.87979;
@@ -130,71 +97,133 @@ void RunClassicTree(unsigned seed) {
   limits[4].second = 2.09439;
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
-  std::vector<BubbleSource*> bubble_sources;
-  for (int sources = 0; sources < 2; ++sources) {
-    BubbleSource* bs = new BubbleSource(new AbbIrb120Manipulator);
-    double position = 250;
-    double bottom = 400.0;
-    double movement = 100.0;
-    for (int j = -1; j < 2; j += 2)
-      for (int i = 0; i < 5; i++)
-      {
-        bs->AddObstacle(new ObstacleSphere(
-              position + movement,
-              j * (-position + movement),
-              bottom + i * movement/2,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement,
-              j * (-position - movement),
-              bottom + i * movement/2,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement + ( i + .5) * movement / 2.5,
-              j * (-position - movement + (i + .5) * movement / 2.5),
-              bottom - 50,
-              50));
-        bs->AddObstacle(new ObstacleSphere(
-              position - movement + (i + .5) * movement / 2.5,
-              j * (-position - movement + (i + .5) * movement / 2.5),
-              bottom - 50 + movement * 3,
-              50));
-      }
-    bubble_sources.push_back(bs);
-  }
+
+  std::string config("../models/abb.conf");
+  std::vector<std::string> segments;
+  segments.emplace_back("../models/SEG_1.mdl");
+  segments.emplace_back("../models/SEG_2.mdl");
+  segments.emplace_back("../models/SEG_3.mdl");
+  segments.emplace_back("../models/SEG_4.mdl");
+  segments.emplace_back("../models/SEG_5.mdl");
+  segments.emplace_back("../models/SEG_6.mdl");
+  double threshold = 1.0;
+  std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
+
   std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
-      bubble_sources[0]);
+      new PqpEnvironmentFeedback(new PqpEnvironment(
+          config, segments, test_case.obstacle, threshold,
+          parts_per_segment)));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
-      bubble_sources[1]);
+      new PqpEnvironmentFeedback(new PqpEnvironment(
+          config, segments, test_case.obstacle, threshold,
+          parts_per_segment)));
+
+  int bubbles_per_branch = 50;
+  RrtTree* src_tree = new BubbleTree(
+      limits, bubbles_per_branch, test_case.start, src_bubble_source);
+  RrtTree* dst_tree = new BubbleTree(
+      limits, bubbles_per_branch, test_case.goal, dst_bubble_source);
+
+  Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits, seed));
+  int step = 0;
+  while (!bubble_rrt.Step())
+    if (++step > 5000)
+      break;
+  fprintf(stderr, "Done Bubble seed: %u; case: %s\n",
+          seed, test_case.name.c_str());
+  printf("bubble_%s = [bubble_%s %d];\n",
+         test_case.name.c_str(), test_case.name.c_str(), step);
+}
+
+void RunClassicTree(unsigned seed, const TestCase& test_case) {
+  std::vector<std::pair<double, double> > limits(6);
+  limits[0].first = -2.87979;
+  limits[0].second = 2.87979;
+  limits[1].first = -1.91986;
+  limits[1].second = 1.91986;
+  limits[2].first = -1.57079;
+  limits[2].second = 1.22173;
+  limits[3].first = -2.79252;
+  limits[3].second = 2.79252;
+  limits[4].first = -2.09439;
+  limits[4].second = 2.09439;
+  limits[5].first = -6.98131;
+  limits[5].second = 6.98131;
+
+  std::string config("../models/abb.conf");
+  std::vector<std::string> segments;
+  segments.emplace_back("../models/SEG_1.mdl");
+  segments.emplace_back("../models/SEG_2.mdl");
+  segments.emplace_back("../models/SEG_3.mdl");
+  segments.emplace_back("../models/SEG_4.mdl");
+  segments.emplace_back("../models/SEG_5.mdl");
+  segments.emplace_back("../models/SEG_6.mdl");
+  double threshold = 1.0;
+  std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
+
+  std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
+      new PqpEnvironmentFeedback(new PqpEnvironment(
+          config, segments, test_case.obstacle, threshold,
+          parts_per_segment)));
+  std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
+      new PqpEnvironmentFeedback(new PqpEnvironment(
+          config, segments, test_case.obstacle, threshold,
+          parts_per_segment)));
+
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
-      max_step, ministeps_per_step,
-      {-3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-       3.1415/2.0, 3.1415/4.0, 3.1415/2.0},
-      src_bubble_source);
+      max_step, ministeps_per_step, test_case.start, src_collision_source);
   RrtTree* dst_tree = new ClassicTree(
-      max_step, ministeps_per_step,
-      {3.1415/4.0, 3.1415/3.0, -3.1415/3.0,
-       -3.1415/2.0, -3.1415/4.0, -3.1415/2.0},
-      dst_bubble_source);
-  Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits, seed));
+      max_step, ministeps_per_step, test_case.goal, dst_collision_source);
+  Rrt classic_rrt(src_tree, dst_tree, new SimpleGenerator(limits, seed));
   int step = 0;
-  while (!bubble_rrt.Step()) {
+  while (!classic_rrt.Step())
     if (++step > 5000)
       break;
-  }
-  fprintf(stderr, "Done Classic seed: %u\n", seed);
-  printf("classic = [classic %d];\n", step);
+  fprintf(stderr, "Done Classic seed: %u; case: %s\n",
+          seed, test_case.name.c_str());
+  printf("classic_%s = [classic_%s %d];\n",
+         test_case.name.c_str(), test_case.name.c_str(), step);
 }
 
 int main() {
-  printf("bubble = [];\n");
-  printf("classic = [];\n");
-  for (unsigned i = 0; i < 100; ++i) {
+  std::vector<TestCase> test_cases;
+  // Trivial test case
+  test_cases.push_back({
+      "trivial",
+      {-pi() / 4.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
+       pi() / 20.0, pi() / 20.0, pi() / 20.0},
+      {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
+       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      "../models/obs1.mdl"});
+  // Easy test case
+  test_cases.push_back({
+      "easy",
+      {-pi() / 3.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
+       pi() / 20.0, pi() / 20.0, pi() / 20.0},
+      {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
+       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      "../models/obs2.mdl"});
+  // Hard test case
+  test_cases.push_back({
+      "hard",
+      {-pi() / 2.0, pi() / 4.0 + pi() / 50.0, -pi() / 4.0 - pi() / 50.0,
+       pi() / 20.0, pi() / 20.0, pi() / 20.0},
+      {pi() / 2.0, pi() / 4.0 - pi() / 50.0, -pi() / 4.0 + pi() / 50.0,
+       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      "../models/obs3.mdl"});
+
+  for (const TestCase& test_case : test_cases) {
+    printf("bubble_%s = [];\n", test_case.name.c_str());
+    printf("classic_%s = [];\n", test_case.name.c_str());
+  }
+  for (unsigned i = 0; i < 50; ++i) {
     fprintf(stderr, "Step: %u\n", i);
-    RunBubbleTree(i * 100);
-    RunClassicTree(i * 100);
+    for (const TestCase& test_case : test_cases) {
+      RunBubbleTree(i * 100, test_case);
+      RunClassicTree(i * 100, test_case);
+    }
   }
   return 0;
 }

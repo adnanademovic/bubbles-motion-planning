@@ -51,12 +51,10 @@ target_link_libraries(classic-main
 
 add_executable(compare-main compare-main.cc)
 target_link_libraries(compare-main
-                      abb-irb120-manipulator
-                      bubble-source
                       bubble-tree
                       classic-tree
-                      obstacle-rectangle
-                      obstacle-sphere
+                      pqp-environment
+                      pqp-environment-feedback
                       rrt
                       simple-generator)
 
