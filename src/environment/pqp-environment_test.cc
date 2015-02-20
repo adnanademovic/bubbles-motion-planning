@@ -28,6 +28,7 @@
 #define BOOST_TEST_MODULE PqpEnvironment
 #include "pqp-environment.h"
 #include <boost/test/unit_test.hpp>
+#include <cstdio>
 
 using ::com::ademovic::bubblesmp::environment::PqpEnvironment;
 
@@ -56,7 +57,7 @@ BOOST_AUTO_TEST_CASE(trivial_collision) {
 BOOST_AUTO_TEST_CASE(two_segment_collision) {
   MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n");
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
-  MakeFile("seg2.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
+  MakeFile("seg2.testfile", "20 0 0\n10 0 1\n10 0 -1\n");
   MakeFile("env.testfile", "8 -10 -10\n8 -10 10\n8 10 0\n");
   
   PqpEnvironment environment(
@@ -71,8 +72,8 @@ BOOST_AUTO_TEST_CASE(two_segment_collision) {
 BOOST_AUTO_TEST_CASE(three_segment_collision) {
   MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n5 0 0 0\n");
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
-  MakeFile("seg2.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
-  MakeFile("seg3.testfile", "5 0 0\n0 0 1\n0 0 -1\n");
+  MakeFile("seg2.testfile", "20 0 0\n10 0 1\n10 0 -1\n");
+  MakeFile("seg3.testfile", "25 0 0\n20 0 1\n20 0 -1\n");
   MakeFile("env.testfile", "8 -20 -10\n8 -20 10\n8 20 0\n");
   
   PqpEnvironment environment(
@@ -85,14 +86,33 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
   BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, -1.57}), true);
 }
 
+BOOST_AUTO_TEST_CASE(three_segment_transformation_stacking) {
+  MakeFile("conf.testfile", "10 1.57 0 0\n10 0 0 0\n5 0 0 0\n");
+  MakeFile("seg1.testfile", "0 10 0\n0 0 1\n0 0 -1\n");
+  MakeFile("seg2.testfile", "0 20 0\n0 10 1\n0 10 -1\n");
+  MakeFile("seg3.testfile", "0 25 0\n0 20 1\n0 20 -1\n");
+  MakeFile("env.testfile", "8 -20 -10\n8 -20 10\n8 20 0\n");
+
+  PqpEnvironment environment(
+      "conf.testfile", {"seg1.testfile", "seg2.testfile", "seg3.testfile"},
+      "env.testfile", 0.1, {1, 1, 1});
+
+  BOOST_CHECK_EQUAL(environment.IsCollision({-1.57, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({-0.78, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({-0.78, 0.78, 0.0}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({-0.78, 0.78, -1.57}), true);
+}
+
+
+
 BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
   MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n5 0 0 0\n");
   MakeFile("seg11.testfile", "5 0 0\n0 0 1\n0 0 -1\n");
   MakeFile("seg12.testfile", "10 0 0\n5 0 1\n5 0 -1\n");
-  MakeFile("seg21.testfile", "5 0 0\n0 0 1\n0 0 -1\n");
-  MakeFile("seg22.testfile", "10 0 0\n5 0 1\n5 0 -1\n");
-  MakeFile("seg31.testfile", "2.5 0 0\n0 0 1\n0 0 -1\n");
-  MakeFile("seg32.testfile", "5 0 0\n2.5 0 1\n2.5 0 -1\n");
+  MakeFile("seg21.testfile", "15 0 0\n10 0 1\n10 0 -1\n");
+  MakeFile("seg22.testfile", "20 0 0\n15 0 1\n15 0 -1\n");
+  MakeFile("seg31.testfile", "22.5 0 0\n20 0 1\n20 0 -1\n");
+  MakeFile("seg32.testfile", "25 0 0\n22.5 0 1\n22.5 0 -1\n");
   MakeFile("env.testfile", "8 -20 -10\n8 -20 10\n8 20 0\n");
   
   PqpEnvironment environment(
@@ -165,7 +185,7 @@ BOOST_AUTO_TEST_CASE(trivial_distance_two_part) {
 BOOST_AUTO_TEST_CASE(two_segment_distance) {
   MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n");
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
-  MakeFile("seg2.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
+  MakeFile("seg2.testfile", "20 0 0\n10 0 1\n10 0 -1\n");
   MakeFile("env.testfile", "25 -20 -10\n25 -20 10\n25 20 0\n");
   
   PqpEnvironment environment(

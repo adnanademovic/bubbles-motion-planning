@@ -28,6 +28,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 
 namespace com {
 namespace ademovic {
@@ -90,6 +91,7 @@ double PointDistanceToVector(double pos_x, double pos_y, double pos_z,
 
 // TODO: Make parsing more sophisticated and do proper parsing
 PQP_Model* ParseModel(const std::string& filename, int* counter,
+                      transforms::Transformation* t,
                       double x, double y, double z, double* l, double* r) {
   FILE* f = fopen(filename.c_str(), "r");
   PQP_REAL p[3][3];
@@ -103,6 +105,7 @@ PQP_Model* ParseModel(const std::string& filename, int* counter,
     p[subindex / 3][subindex % 3] = input;
     if (subindex % 3 == 2) {
       int part = subindex / 3;
+      t->MovePoint(p[part]);
       *l = std::max(*l, Dot(p[part][0], p[part][1], p[part][2], x, y, z));
       *r = std::max(*r, PointDistanceToVector(
             p[part][0], p[part][1], p[part][2], x * (*l), y * (*l), z * (*l)));
@@ -159,12 +162,14 @@ PqpEnvironment::PqpEnvironment(
       y /= vector_length;
       z /= vector_length;
     }
-    parts_.emplace_back(ParseModel(part, &counter, x, y, z, &l, &r));
+    parts_.emplace_back(ParseModel(
+          part, &counter, dh_inverted_[segment_index].get(), x, y, z, &l, &r));
     cylinders_.emplace_back(std::vector<double>{x * l, y * l, z * l}, r);
     part_index++;
   }
   double l, r;
-  environment_.reset(ParseModel(environment, &counter, 0.0, 0.0, 0.0, &l, &r));
+  environment_.reset(ParseModel(
+        environment, &counter, dh_inverted_[0].get(), 0.0, 0.0, 0.0, &l, &r));
 }
 
 bool PqpEnvironment::IsCollision(const std::vector<double>& q) const {
@@ -267,6 +272,8 @@ void PqpEnvironment::LoadDh(const std::string& filename) {
   double param[4];
   int subindex = 0;
   double input;
+  // each part gets transformed ignoring the last coordinate transform
+  dh_inverted_.emplace_back(new transforms::Transformation);
   while (fscanf(f, "%lf", &input) != EOF) {
     param[subindex] = input;
     subindex++;
@@ -277,6 +284,12 @@ void PqpEnvironment::LoadDh(const std::string& filename) {
       t->Rotate(transforms::Transformation::Z, param[1]);
       t->Translate(param[0], 0.0, param[2]);
       t->Rotate(transforms::Transformation::X, param[3]);
+      dh_inverted_.emplace_back(new transforms::Transformation);
+      t = dh_inverted_.back().get();
+      t->Rotate(transforms::Transformation::X, -param[3]);
+      t->Translate(-param[0], 0.0, -param[2]);
+      t->Rotate(transforms::Transformation::Z, -param[1]);
+      t->Transform(*dh_inverted_[dh_inverted_.size() - 2]);
     }
   }
   fclose(f);

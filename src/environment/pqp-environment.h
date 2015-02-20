@@ -61,6 +61,7 @@ class PqpEnvironment {
   int part_count_;
   double variance_;
   std::vector<std::unique_ptr<transforms::Transformation> > dh_parameters_;
+  std::vector<std::unique_ptr<transforms::Transformation> > dh_inverted_;
   std::vector<bool> is_joint_start_;
   std::vector<std::unique_ptr<PQP_Model> > parts_;
   std::vector<std::pair<std::vector<double>, double> > cylinders_;
