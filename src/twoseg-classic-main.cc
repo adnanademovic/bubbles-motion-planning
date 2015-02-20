@@ -89,11 +89,16 @@ int main() {
   limits[1].first = -3.14;
   limits[1].second = 3.14;
 
-  Make2DLineFile("sub1.mdl", {0.0, 1.0});
-  Make2DLineFile("sub2.mdl", {1.0, 2.0});
-  Make2DLineFile("sub3.mdl", {2.0, 3.0});
-  Make2DLineFile("sub4.mdl", {3.0, 4.0});
-  Make2DLineFile("sub5.mdl", {4.0, 5.0});
+  Make2DLineFile("sub11.mdl", {0.0, 1.0});
+  Make2DLineFile("sub21.mdl", {1.0, 2.0});
+  Make2DLineFile("sub31.mdl", {2.0, 3.0});
+  Make2DLineFile("sub41.mdl", {3.0, 4.0});
+  Make2DLineFile("sub51.mdl", {4.0, 5.0});
+  Make2DLineFile("sub12.mdl", {5.0, 6.0});
+  Make2DLineFile("sub22.mdl", {6.0, 7.0});
+  Make2DLineFile("sub32.mdl", {7.0, 8.0});
+  Make2DLineFile("sub42.mdl", {8.0, 9.0});
+  Make2DLineFile("sub52.mdl", {9.0, 10.0});
 
   MakeFile("config.conf", "5 0 0 0\n 5 0 0 0\n");
 
@@ -114,14 +119,14 @@ int main() {
   std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
           "config.conf", {
-              "sub1.mdl", "sub2.mdl", "sub3.mdl", "sub4.mdl", "sub5.mdl",
-              "sub1.mdl", "sub2.mdl", "sub3.mdl", "sub4.mdl", "sub5.mdl"},
+              "sub11.mdl", "sub21.mdl", "sub31.mdl", "sub41.mdl", "sub51.mdl",
+              "sub12.mdl", "sub22.mdl", "sub32.mdl", "sub42.mdl", "sub52.mdl"},
           "obs.mdl", 0.1, {5, 5})));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
           "config.conf", {
-              "sub1.mdl", "sub2.mdl", "sub3.mdl", "sub4.mdl", "sub5.mdl",
-              "sub1.mdl", "sub2.mdl", "sub3.mdl", "sub4.mdl", "sub5.mdl"},
+              "sub11.mdl", "sub21.mdl", "sub31.mdl", "sub41.mdl", "sub51.mdl",
+              "sub12.mdl", "sub22.mdl", "sub32.mdl", "sub42.mdl", "sub52.mdl"},
           "obs.mdl", 0.1, {5, 5})));
 
   double max_step = pi()/50.0;
