@@ -122,12 +122,12 @@ int main() {
 
   std::string config("../models/abb.conf");
   std::vector<std::string> segments;
-  segments.emplace_back("../models/SEG_0.mdl");
   segments.emplace_back("../models/SEG_1.mdl");
   segments.emplace_back("../models/SEG_2.mdl");
   segments.emplace_back("../models/SEG_3.mdl");
   segments.emplace_back("../models/SEG_4.mdl");
   segments.emplace_back("../models/SEG_5.mdl");
+  segments.emplace_back("../models/SEG_6.mdl");
   double threshold = 1.0;
   std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
 
