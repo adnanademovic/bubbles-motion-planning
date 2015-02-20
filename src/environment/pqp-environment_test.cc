@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(trivial_collision) {
   MakeFile("conf.testfile", "10 0 0 0\n");
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
   MakeFile("env.testfile", "5 -10 -10\n5 -10 10\n5 10 0\n");
-  
+
   PqpEnvironment environment(
       "conf.testfile", {"seg1.testfile"}, "env.testfile", 0.1, {1});
 
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(two_segment_collision) {
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
   MakeFile("seg2.testfile", "20 0 0\n10 0 1\n10 0 -1\n");
   MakeFile("env.testfile", "8 -10 -10\n8 -10 10\n8 10 0\n");
-  
+
   PqpEnvironment environment(
       "conf.testfile", {"seg1.testfile", "seg2.testfile"}, "env.testfile",
       0.1, {1, 1});
@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
   MakeFile("seg2.testfile", "20 0 0\n10 0 1\n10 0 -1\n");
   MakeFile("seg3.testfile", "25 0 0\n20 0 1\n20 0 -1\n");
   MakeFile("env.testfile", "8 -20 -10\n8 -20 10\n8 20 0\n");
-  
+
   PqpEnvironment environment(
       "conf.testfile", {"seg1.testfile", "seg2.testfile", "seg3.testfile"},
       "env.testfile", 0.1, {1, 1, 1});
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
   MakeFile("seg31.testfile", "22.5 0 0\n20 0 1\n20 0 -1\n");
   MakeFile("seg32.testfile", "25 0 0\n22.5 0 1\n22.5 0 -1\n");
   MakeFile("env.testfile", "8 -20 -10\n8 -20 10\n8 20 0\n");
-  
+
   PqpEnvironment environment(
       "conf.testfile", {
         "seg11.testfile", "seg12.testfile",
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(trivial_distance) {
   MakeFile("conf.testfile", "10 0 0 0\n");
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
   MakeFile("env.testfile", "15 -10 -10\n15 -10 10\n15 10 0\n");
-  
+
   PqpEnvironment environment(
       "conf.testfile", {"seg1.testfile"}, "env.testfile", 0.1, {1});
 
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(trivial_distance_two_part) {
   MakeFile("seg11.testfile", "5 0 0\n0 0 1\n0 0 -1\n");
   MakeFile("seg12.testfile", "10 0 0\n5 0 1\n5 0 -1\n");
   MakeFile("env.testfile", "15 -10 -10\n15 -10 10\n15 10 0\n");
-  
+
   PqpEnvironment environment(
       "conf.testfile", {"seg11.testfile", "seg12.testfile"}, "env.testfile",
       0.1, {2});
@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE(two_segment_distance) {
   MakeFile("seg1.testfile", "10 0 0\n0 0 1\n0 0 -1\n");
   MakeFile("seg2.testfile", "20 0 0\n10 0 1\n10 0 -1\n");
   MakeFile("env.testfile", "25 -20 -10\n25 -20 10\n25 20 0\n");
-  
+
   PqpEnvironment environment(
       "conf.testfile", {"seg1.testfile", "seg2.testfile"}, "env.testfile",
       0.1, {1, 1});

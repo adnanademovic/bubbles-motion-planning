@@ -96,7 +96,7 @@ int main() {
   Make2DLineFile("sub5.mdl", {4.0, 5.0});
 
   MakeFile("config.conf", "5 0 0 0\n 5 0 0 0\n");
-  
+
   std::vector<std::pair<double, double> > obstacles;
   obstacles.push_back({3.0, -6.0});
   obstacles.push_back({6.0, -3.0});

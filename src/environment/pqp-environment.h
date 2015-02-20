@@ -57,7 +57,7 @@ class PqpEnvironment {
  private:
   // Configuration consists of lines of "a alpha d theta" format
   void LoadDh(const std::string& configuration);
- 
+
   int part_count_;
   double variance_;
   std::vector<std::unique_ptr<transforms::Transformation> > dh_parameters_;

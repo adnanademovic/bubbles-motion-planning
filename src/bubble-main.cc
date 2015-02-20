@@ -119,7 +119,7 @@ int main() {
   limits[4].second = 2.09439;
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
-  
+
   std::string config("../models/abb.conf");
   std::vector<std::string> segments;
   segments.emplace_back("../models/SEG_1.mdl");
