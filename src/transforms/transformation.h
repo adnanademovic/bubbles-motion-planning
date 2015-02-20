@@ -48,6 +48,7 @@ class Transformation {
   double coefficient(int i, int j) const;
   void ApplyTo(
       double rotation[3][3], double translation[3]) const;
+  void MovePoint(double p[3]) const;
 
  private:
   double rotation_[3][3];

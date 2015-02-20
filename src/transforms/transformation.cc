@@ -105,6 +105,12 @@ void Transformation::ApplyTo(
       rotation[i][j] = result[i][j];
 }
 
+void Transformation::MovePoint(double p[3]) const {
+  for (int i = 0; i != 3; ++i)
+    for (int j = 0; j != 3; ++j)
+      p[i] += rotation_[i][j] * translation_[j];
+}
+
 }  // namespace transforms
 }  // namespace bubblesmp
 }  // namespace ademovic
