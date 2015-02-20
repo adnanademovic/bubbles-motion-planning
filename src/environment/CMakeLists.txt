@@ -1,5 +1,4 @@
 include_directories(.)
-add_subdirectory(simple)
 
 add_library(pqp-environment pqp-environment.cc)
 target_link_libraries(pqp-environment transformation PQP)
