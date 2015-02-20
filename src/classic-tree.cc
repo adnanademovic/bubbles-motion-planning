@@ -27,6 +27,7 @@
 #include "classic-tree.h"
 
 #include <cmath>
+#include <cstdio>
 
 namespace com {
 namespace ademovic {
@@ -36,7 +37,11 @@ ClassicTree::ClassicTree(
     double max_step, int substeps, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedbackInterface> collision_source)
     : RrtTree(root), eps_(max_step / substeps), substeps_(substeps),
-      collision_source_(collision_source) {}
+      collision_source_(collision_source)
+{
+  fprintf(stderr, "Collision at root point: %s\n",
+          collision_source_->IsCollision(root) ? "YES" : "NO");
+}
 
 TreeNode* ClassicTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {

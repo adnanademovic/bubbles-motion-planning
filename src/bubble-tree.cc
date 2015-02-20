@@ -27,6 +27,7 @@
 #include "bubble-tree.h"
 
 #include <algorithm>
+#include <cstdio>
 
 namespace com {
 namespace ademovic {
@@ -38,7 +39,11 @@ BubbleTree::BubbleTree(
     int max_bubbles_per_branch, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source)
     : RrtTree(root), max_bubbles_per_branch_(max_bubbles_per_branch),
-      bubble_source_(bubble_source), limits_(limits) {}
+      bubble_source_(bubble_source), limits_(limits)
+{
+  fprintf(stderr, "Collision at root point: %s\n",
+          bubble_source_->IsCollision(root) ? "YES" : "NO");
+}
 
 TreeNode* BubbleTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
