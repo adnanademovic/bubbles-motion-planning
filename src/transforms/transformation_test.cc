@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(point_moving) {
 
   double p[] = {2.0, 4.0, 6.0};
   transform2.MovePoint(p);
-  BOOST_CHECK_CLOSE(p[0], 1.0, 0.001);
-  BOOST_CHECK_CLOSE(p[1], 5.0, 0.001);
+  BOOST_CHECK_CLOSE(p[0], -std::sqrt(2.0) - 1.0, 0.001);
+  BOOST_CHECK_CLOSE(p[1], 3.0 * std::sqrt(2.0) + 1.0, 0.001);
   BOOST_CHECK_CLOSE(p[2], 9.0, 0.001);
 }

@@ -106,8 +106,14 @@ void Transformation::ApplyTo(
 }
 
 void Transformation::MovePoint(double p[3]) const {
+  double p2[3];
+  for (int i = 0; i != 3; ++i) {
+    p2[i] = translation_[i];
+    for (int j = 0; j != 3; ++j)
+      p2[i] += rotation_[i][j] * p[j];
+  }
   for (int i = 0; i != 3; ++i)
-    p[i] += translation_[i];
+    p[i] = p2[i];
 }
 
 }  // namespace transforms
