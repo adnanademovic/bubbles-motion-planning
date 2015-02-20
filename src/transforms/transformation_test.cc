@@ -99,7 +99,6 @@ BOOST_AUTO_TEST_CASE(rotation_z) {
   CheckClose(transform, matrix, 0.001);
 }
 
-
 BOOST_AUTO_TEST_CASE(composition) {
   double angle = M_PI/4.0;
   Transformation transform1;
@@ -123,4 +122,35 @@ BOOST_AUTO_TEST_CASE(composition) {
                           {           0.0,             0.0, 0.0, 1.0}};
   CheckClose(transform2, matrix2, 0.001);
   CheckClose(transform1, matrix3, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(point_moving) {
+  double angle = M_PI/4.0;
+  Transformation transform1;
+  transform1.Translate(4.0, 0.0, 0.0);
+  double matrix1[4][4] = {{1.0, 0.0, 0.0, 4.0},
+                          {0.0, 1.0, 0.0, 0.0},
+                          {0.0, 0.0, 1.0, 0.0},
+                          {0.0, 0.0, 0.0, 1.0}};
+  CheckEquality(transform1, matrix1);
+  Transformation transform2;
+  transform2.Rotate(Transformation::Z, angle);
+  transform2.Translate(0.0, std::sqrt(2.0), 3.0);
+  transform1.Transform(transform2);
+  double matrix2[4][4] = {{std::sqrt(0.5), -std::sqrt(0.5), 0.0, -1.0},
+                          {std::sqrt(0.5),  std::sqrt(0.5), 0.0,  1.0},
+                          {           0.0,             0.0, 1.0,  3.0},
+                          {           0.0,             0.0, 0.0,  1.0}};
+  double matrix3[4][4] = {{std::sqrt(0.5), -std::sqrt(0.5), 0.0, 3.0},
+                          {std::sqrt(0.5),  std::sqrt(0.5), 0.0, 1.0},
+                          {           0.0,             0.0, 1.0, 3.0},
+                          {           0.0,             0.0, 0.0, 1.0}};
+  CheckClose(transform2, matrix2, 0.001);
+  CheckClose(transform1, matrix3, 0.001);
+
+  double p[] = {2.0, 4.0, 6.0};
+  transform2.MovePoint(p);
+  BOOST_CHECK_CLOSE(p[0], 1.0, 0.001);
+  BOOST_CHECK_CLOSE(p[1], 5.0, 0.001);
+  BOOST_CHECK_CLOSE(p[2], 9.0, 0.001);
 }
