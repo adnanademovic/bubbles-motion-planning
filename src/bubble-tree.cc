@@ -33,7 +33,6 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-
 BubbleTree::BubbleTree(
     const std::vector<std::pair<double, double> >& limits,
     int max_bubbles_per_branch, const std::vector<double>& root,
