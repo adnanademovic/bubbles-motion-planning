@@ -214,10 +214,8 @@ int main() {
   // Hard test case
   test_cases.push_back({
       "hard",
-      {-pi() / 2.0, pi() / 4.0 + pi() / 50.0, -pi() / 4.0 - pi() / 50.0,
-       pi() / 20.0, pi() / 20.0, pi() / 20.0},
-      {pi() / 2.0, pi() / 4.0 - pi() / 50.0, -pi() / 4.0 + pi() / 50.0,
-       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      {-pi() / 2.0, pi() / 3.6, -pi() / 3.6, 0.0, 0.0, 0.0},
+      {0.0, pi() / 2.0, -pi() / 2.0, -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
       "../models/obs3.stl"});
 
   for (const TestCase& test_case : test_cases) {
