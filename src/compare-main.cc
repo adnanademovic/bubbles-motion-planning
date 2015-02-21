@@ -58,7 +58,7 @@ void DrawLine(
       printf("%lf ", pos * 180.0 / pi());
     printf("\n");
   } else {
-    int steps = (int)(distance / max_step + 1);
+    int steps = static_cast<int>(distance / max_step + 1);
     for (size_t i = 0; i < delta.size(); ++i)
       delta[i] /= steps;
     for (int i = 1; i <= steps; ++i) {
