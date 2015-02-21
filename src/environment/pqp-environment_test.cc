@@ -251,7 +251,6 @@ BOOST_AUTO_TEST_CASE(two_segment_distance) {
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_3d_distance) {
-  printf("XX\n");
   MakeFile("conf.testfile", "10 0 0 0\n10 0 0 1.57\n10 1.57 0 0");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
