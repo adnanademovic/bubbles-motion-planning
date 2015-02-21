@@ -103,15 +103,14 @@ PQP_Model* ParseModel(const std::string& filename, int* counter,
   *r = 0.0;
   while (fscanf(f, "%lf", &input) != EOF) {
     p[subindex / 3][subindex % 3] = input;
-    if (subindex % 3 == 2) {
-      int part = subindex / 3;
-      t->MovePoint(p[part]);
-      *l = std::max(*l, Dot(p[part][0], p[part][1], p[part][2], x, y, z));
-      *r = std::max(*r, PointDistanceToVector(
-            p[part][0], p[part][1], p[part][2], x * (*l), y * (*l), z * (*l)));
-    }
     subindex++;
     if (subindex == 9) {
+      for (int tri = 0; tri < 3; ++tri) {
+        t->MovePoint(p[tri]);
+        *l = std::max(*l, Dot(p[tri][0], p[tri][1], p[tri][2], x, y, z));
+        *r = std::max(*r, PointDistanceToVector(
+              p[tri][0], p[tri][1], p[tri][2], x * (*l), y * (*l), z * (*l)));
+      }
       subindex = 0;
       model->AddTri(p[0], p[1], p[2], (*counter)++);
     }
