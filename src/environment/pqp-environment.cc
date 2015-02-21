@@ -45,6 +45,12 @@ inline double NormSquared(double x, double y, double z) {
   return Dot(x, y, z, x, y, z);
 }
 
+double PointDistanceToAxis(double pos_x, double pos_y, double pos_z,
+                           double x, double y, double z) {
+  double l = Dot(pos_x, pos_y, pos_z, x, y, z);
+  return sqrt(NormSquared(pos_x - l * x, pos_y - l * y, pos_z - l * z));
+}
+
 double PointDistanceToVector(double pos_x, double pos_y, double pos_z,
                              double x, double y, double z) {
   double point_a_distance(NormSquared(pos_x, pos_y, pos_z));
@@ -247,23 +253,14 @@ PqpEnvironment::DistanceProfile PqpEnvironment::GetDistanceProfile(
     std::vector<double>* radiuses = &(distances.back().second);
     setPointPosition(R, T, p, cylinders_[part].first);
     for (int seg = 0; seg <= segment; ++seg) {
-      double d1 = std::min(
-          PointDistanceToVector(
+      double d_now = PointDistanceToAxis(
               p[0] - ax_P[seg][0], p[1] - ax_P[seg][1], p[2] - ax_P[seg][2],
-              ax_O[seg][0], ax_O[seg][1], ax_O[seg][2]),
-          PointDistanceToVector(
-              p[0] - ax_P[seg][0], p[1] - ax_P[seg][1], p[2] - ax_P[seg][2],
-              -ax_O[seg][0], -ax_O[seg][1], -ax_O[seg][2]));
-      double d2 = std::min(
-          PointDistanceToVector(
+              ax_O[seg][0], ax_O[seg][1], ax_O[seg][2]);
+      double d_prev = PointDistanceToAxis(
               p_prev[0] - ax_P[seg][0], p_prev[1] - ax_P[seg][1],
               p_prev[2] - ax_P[seg][2],
-              ax_O[seg][0], ax_O[seg][1], ax_O[seg][2]),
-          PointDistanceToVector(
-              p_prev[0] - ax_P[seg][0], p_prev[1] - ax_P[seg][1],
-              p_prev[2] - ax_P[seg][2],
-              -ax_O[seg][0], -ax_O[seg][1], -ax_O[seg][2]));
-      radiuses->push_back(cylinders_[part].second + std::max(d1, d2));
+              ax_O[seg][0], ax_O[seg][1], ax_O[seg][2]);
+      radiuses->push_back(cylinders_[part].second + std::max(d_now, d_prev));
     }
     for (int i = 0; i < 3; ++i)
       p_prev[i] = p[i];
