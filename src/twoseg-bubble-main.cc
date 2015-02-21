@@ -61,25 +61,54 @@ void MakeFile(const char filename[], const char input[]) {
   fclose(f);
 }
 
-void Make2DPolyFile(const char filename[],
-    const std::vector<std::pair<double, double> >& points) {
-  FILE* f = fopen(filename, "w");
-  for (size_t i = 1; i < points.size(); ++i) {
-    fprintf(f, "%lf %lf 0\n %lf %lf -1\n %lf %lf 1\n",
-            points[i - 1].first, points[i - 1].second,
-            points[i].first, points[i].second,
-            points[i].first, points[i].second);
+void MakeModelFile(const char filename[], const std::vector<float>& coords) {
+  FILE* f = fopen(filename, "wb");
+  uint8_t header[80];
+  float normal[] = {0.0f, 0.0f, 0.0f};
+  uint16_t attribute = 0;
+  uint32_t triangle_count = static_cast<uint32_t>(coords.size() / 9);
+  fwrite(header, sizeof(header[0]), 80, f);
+  fwrite(&triangle_count, sizeof(triangle_count), 1, f);
+  for (size_t i = 0; i < coords.size(); i += 9) {
+    fwrite(normal, sizeof(normal[0]), 3, f);
+    for (size_t j = 0; j < 9; ++j)
+      fwrite(&coords[j], sizeof(coords[0]), 1, f);
+    fwrite(&attribute, sizeof(attribute), 1, f);
   }
   fclose(f);
 }
 
-void Make2DLineFile(const char filename[], const std::vector<double>& points) {
-  FILE* f = fopen(filename, "w");
+void Make2DPolyFile(const char filename[],
+    const std::vector<std::pair<double, double> >& points) {
+  std::vector<float> coords;
   for (size_t i = 1; i < points.size(); ++i) {
-    fprintf(f, "%lf 0 0\n %lf 0 -1\n %lf 0 1\n",
-            points[i - 1], points[i], points[i]);
+    coords.push_back(points[i - 1].first);
+    coords.push_back(points[i - 1].second);
+    coords.push_back(0.0f);
+    coords.push_back(points[i].first);
+    coords.push_back(points[i].second);
+    coords.push_back(-1.0f);
+    coords.push_back(points[i].first);
+    coords.push_back(points[i].second);
+    coords.push_back(1.0f);
   }
-  fclose(f);
+  MakeModelFile(filename, coords);
+}
+
+void Make2DLineFile(const char filename[], const std::vector<double>& points) {
+  std::vector<float> coords;
+  for (size_t i = 1; i < points.size(); ++i) {
+    coords.push_back(points[i - 1]);
+    coords.push_back(0.0f);
+    coords.push_back(0.0f);
+    coords.push_back(points[i]);
+    coords.push_back(0.0f);
+    coords.push_back(-1.0f);
+    coords.push_back(points[i]);
+    coords.push_back(0.0f);
+    coords.push_back(1.0f);
+  }
+  MakeModelFile(filename, coords);
 }
 
 int main() {
@@ -89,16 +118,16 @@ int main() {
   limits[1].first = -3.14;
   limits[1].second = 3.14;
 
-  Make2DLineFile("sub11.mdl", {0.0, 1.0});
-  Make2DLineFile("sub21.mdl", {1.0, 2.0});
-  Make2DLineFile("sub31.mdl", {2.0, 3.0});
-  Make2DLineFile("sub41.mdl", {3.0, 4.0});
-  Make2DLineFile("sub51.mdl", {4.0, 5.0});
-  Make2DLineFile("sub12.mdl", {5.0, 6.0});
-  Make2DLineFile("sub22.mdl", {6.0, 7.0});
-  Make2DLineFile("sub32.mdl", {7.0, 8.0});
-  Make2DLineFile("sub42.mdl", {8.0, 9.0});
-  Make2DLineFile("sub52.mdl", {9.0, 10.0});
+  Make2DLineFile("sub11.stl", {0.0, 1.0});
+  Make2DLineFile("sub21.stl", {1.0, 2.0});
+  Make2DLineFile("sub31.stl", {2.0, 3.0});
+  Make2DLineFile("sub41.stl", {3.0, 4.0});
+  Make2DLineFile("sub51.stl", {4.0, 5.0});
+  Make2DLineFile("sub12.stl", {5.0, 6.0});
+  Make2DLineFile("sub22.stl", {6.0, 7.0});
+  Make2DLineFile("sub32.stl", {7.0, 8.0});
+  Make2DLineFile("sub42.stl", {8.0, 9.0});
+  Make2DLineFile("sub52.stl", {9.0, 10.0});
 
   MakeFile("config.conf", "5 0 0 0\n 5 0 0 0\n");
 
@@ -114,25 +143,28 @@ int main() {
   obstacles.push_back({-2.0, 5.0});
   obstacles.push_back({-2.0, 0.0});
   obstacles.push_back({-5.0, -3.0});
-  Make2DPolyFile("obs.mdl", obstacles);
+  Make2DPolyFile("obs.stl", obstacles);
 
   std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
           "config.conf", {
-              "sub11.mdl", "sub21.mdl", "sub31.mdl", "sub41.mdl", "sub51.mdl",
-              "sub12.mdl", "sub22.mdl", "sub32.mdl", "sub42.mdl", "sub52.mdl"},
-          "obs.mdl", 0.1, {5, 5})));
+              "sub11.stl", "sub21.stl", "sub31.stl", "sub41.stl", "sub51.stl",
+              "sub12.stl", "sub22.stl", "sub32.stl", "sub42.stl", "sub52.stl"},
+          "obs.stl", 0.1, {5, 5})));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
           "config.conf", {
-              "sub11.mdl", "sub21.mdl", "sub31.mdl", "sub41.mdl", "sub51.mdl",
-              "sub12.mdl", "sub22.mdl", "sub32.mdl", "sub42.mdl", "sub52.mdl"},
-          "obs.mdl", 0.1, {5, 5})));
+              "sub11.stl", "sub21.stl", "sub31.stl", "sub41.stl", "sub51.stl",
+              "sub12.stl", "sub22.stl", "sub32.stl", "sub42.stl", "sub52.stl"},
+          "obs.stl", 0.1, {5, 5})));
   int bubbles_per_branch = 50;
+
   RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch, {-3.1415/2.0, 3.1415/4.0}, src_bubble_source);
+      limits, bubbles_per_branch, {-3.1415/2.0, 3.1415/4.0},
+      src_bubble_source);
   RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch, {3.1415/2.0, -3.1415/4.0}, dst_bubble_source);
+      limits, bubbles_per_branch, {3.1415/2.0, -3.1415/4.0},
+      dst_bubble_source);
   Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
   int step = 0;
   while (!bubble_rrt.Step()) {
@@ -142,9 +174,9 @@ int main() {
 
   PqpEnvironment printing_environment(
           "config.conf", {
-              "sub1.mdl", "sub2.mdl", "sub3.mdl", "sub4.mdl", "sub5.mdl",
-              "sub1.mdl", "sub2.mdl", "sub3.mdl", "sub4.mdl", "sub5.mdl"},
-          "obs.mdl", 0.1, {5, 5});
+              "sub11.stl", "sub21.stl", "sub31.stl", "sub41.stl", "sub51.stl",
+              "sub12.stl", "sub22.stl", "sub32.stl", "sub42.stl", "sub52.stl"},
+          "obs.stl", 0.1, {5, 5});
   printf("obs=[];\n");
   for (int i = -100; i < 101; ++i)
     for (int j = -100; j < 101; ++j)

@@ -89,31 +89,40 @@ double PointDistanceToVector(double pos_x, double pos_y, double pos_z,
   }
 }
 
-// TODO: Make parsing more sophisticated and do proper parsing
+// TODO: Make parsing more sophisticated and do other parsing besides bin STL.
+// TODO: Fix parsing for big endian machines.
 PQP_Model* ParseModel(const std::string& filename, int* counter,
                       transforms::Transformation* t,
                       double x, double y, double z, double* l, double* r) {
-  FILE* f = fopen(filename.c_str(), "r");
+  FILE* f = fopen(filename.c_str(), "rb");
+  uint8_t header[80];
+  uint32_t triangle_count;
+  fread(header, sizeof(header[0]), 80, f);
+  fread(&triangle_count, sizeof(triangle_count), 1, f);
   PQP_REAL p[3][3];
+  float normal[3];
+  float input[3][3];
+  uint16_t attribute;
   PQP_Model* model = new PQP_Model;
   model->BeginModel();
-  int subindex = 0;
-  double input;
   *l = 0.0;
   *r = 0.0;
-  while (fscanf(f, "%lf", &input) != EOF) {
-    p[subindex / 3][subindex % 3] = input;
-    subindex++;
-    if (subindex == 9) {
-      for (int tri = 0; tri < 3; ++tri) {
-        t->MovePoint(p[tri]);
-        *l = std::max(*l, Dot(p[tri][0], p[tri][1], p[tri][2], x, y, z));
-        *r = std::max(*r, PointDistanceToVector(
-              p[tri][0], p[tri][1], p[tri][2], x * (*l), y * (*l), z * (*l)));
-      }
-      subindex = 0;
-      model->AddTri(p[0], p[1], p[2], (*counter)++);
+  for (uint32_t triangle = 0; triangle < triangle_count; ++triangle) {
+    fread(normal, sizeof(normal[0]), 3, f);
+    fread(input[0], sizeof(input[0][0]), 3, f);
+    fread(input[1], sizeof(input[1][0]), 3, f);
+    fread(input[2], sizeof(input[2][0]), 3, f);
+    fread(&attribute, sizeof(attribute), 1, f);
+    for (int i = 0; i < 3; ++i)
+      for (int j = 0; j < 3; ++j)
+        p[i][j] = static_cast<PQP_REAL>(input[i][j]);
+    for (int tri = 0; tri < 3; ++tri) {
+      t->MovePoint(p[tri]);
+      *l = std::max(*l, Dot(p[tri][0], p[tri][1], p[tri][2], x, y, z));
+      *r = std::max(*r, PointDistanceToVector(
+            p[tri][0], p[tri][1], p[tri][2], x * (*l), y * (*l), z * (*l)));
     }
+    model->AddTri(p[0], p[1], p[2], (*counter)++);
   }
   model->EndModel();
   fclose(f);
@@ -131,6 +140,7 @@ void setPointPosition(
 
 }  // namespace
 
+// TODO: Use one config file to fetch all the data.
 PqpEnvironment::PqpEnvironment(
       const std::string& configuration, const std::vector<std::string>& parts,
       const std::string& environment, double max_underestimate,

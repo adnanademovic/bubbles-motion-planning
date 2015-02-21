@@ -100,12 +100,12 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
 
   std::string config("../models/abb.conf");
   std::vector<std::string> segments;
-  segments.emplace_back("../models/SEG_1.mdl");
-  segments.emplace_back("../models/SEG_2.mdl");
-  segments.emplace_back("../models/SEG_3.mdl");
-  segments.emplace_back("../models/SEG_4.mdl");
-  segments.emplace_back("../models/SEG_5.mdl");
-  segments.emplace_back("../models/SEG_6.mdl");
+  segments.emplace_back("../models/SEG_1.stl");
+  segments.emplace_back("../models/SEG_2.stl");
+  segments.emplace_back("../models/SEG_3.stl");
+  segments.emplace_back("../models/SEG_4.stl");
+  segments.emplace_back("../models/SEG_5.stl");
+  segments.emplace_back("../models/SEG_6.stl");
   double threshold = 1.0;
   std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
 
@@ -152,12 +152,12 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
 
   std::string config("../models/abb.conf");
   std::vector<std::string> segments;
-  segments.emplace_back("../models/SEG_1.mdl");
-  segments.emplace_back("../models/SEG_2.mdl");
-  segments.emplace_back("../models/SEG_3.mdl");
-  segments.emplace_back("../models/SEG_4.mdl");
-  segments.emplace_back("../models/SEG_5.mdl");
-  segments.emplace_back("../models/SEG_6.mdl");
+  segments.emplace_back("../models/SEG_1.stl");
+  segments.emplace_back("../models/SEG_2.stl");
+  segments.emplace_back("../models/SEG_3.stl");
+  segments.emplace_back("../models/SEG_4.stl");
+  segments.emplace_back("../models/SEG_5.stl");
+  segments.emplace_back("../models/SEG_6.stl");
   double threshold = 1.0;
   std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
 
@@ -196,7 +196,7 @@ int main() {
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs1.mdl"});
+      "../models/obs1.stl"});
   // Easy test case
   test_cases.push_back({
       "easy",
@@ -204,7 +204,7 @@ int main() {
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs2.mdl"});
+      "../models/obs2.stl"});
   // Hard test case
   test_cases.push_back({
       "hard",
@@ -212,7 +212,7 @@ int main() {
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 2.0, pi() / 4.0 - pi() / 50.0, -pi() / 4.0 + pi() / 50.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs3.mdl"});
+      "../models/obs3.stl"});
 
   for (const TestCase& test_case : test_cases) {
     printf("bubble_%s = [];\n", test_case.name.c_str());
