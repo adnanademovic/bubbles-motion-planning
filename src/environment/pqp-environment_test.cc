@@ -249,3 +249,48 @@ BOOST_AUTO_TEST_CASE(two_segment_distance) {
   BOOST_CHECK_CLOSE(d[1].second[0], 11.0, 1.0);
   BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
 }
+
+BOOST_AUTO_TEST_CASE(three_segment_3d_distance) {
+  printf("XX\n");
+  MakeFile("conf.testfile", "10 0 0 0\n10 0 0 1.57\n10 1.57 0 0");
+  MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
+  MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
+  MakeModelFile("seg3.testfile", {20, 0, 10, 20, 1, 0, 20, -1, 0});
+  MakeModelFile("env.testfile", {35, -20, -10, 35, -20, 10, 35, 20, 0});
+
+  PqpEnvironment environment(
+      "conf.testfile", {"seg1.testfile", "seg2.testfile", "seg3.testfile"},
+      "env.testfile", 0.1, {1, 1, 1});
+
+  PqpEnvironment::DistanceProfile d;
+
+  d = environment.GetDistanceProfile({0.0, 0.0, 0.0});
+  BOOST_CHECK_EQUAL(d.size(), 3);
+  BOOST_CHECK_EQUAL(d[0].second.size(), 1);
+  BOOST_CHECK_CLOSE(d[0].first, 25.0, AbsToRelTolerance(25.0, 0.11));
+  BOOST_CHECK_CLOSE(d[0].second[0], 11.0, 1.0);
+  BOOST_CHECK_EQUAL(d[1].second.size(), 2);
+  BOOST_CHECK_CLOSE(d[1].first, 15.0, AbsToRelTolerance(15.0, 0.11));
+  BOOST_CHECK_CLOSE(d[1].second[0], 21.0, 1.0);
+  BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
+  BOOST_CHECK_EQUAL(d[2].second.size(), 3);
+  BOOST_CHECK_CLOSE(d[2].first, 15.0, AbsToRelTolerance(15.0, 0.11));
+  BOOST_CHECK_CLOSE(d[2].second[0], 21.0, 1.0);
+  BOOST_CHECK_CLOSE(d[2].second[1], 11.0, 1.0);
+  BOOST_CHECK_CLOSE(d[2].second[2], 11.0, 1.0);
+
+  d = environment.GetDistanceProfile({0.0, 0.0, -1.57});
+  BOOST_CHECK_EQUAL(d.size(), 3);
+  BOOST_CHECK_EQUAL(d[0].second.size(), 1);
+  BOOST_CHECK_CLOSE(d[0].first, 25.0, AbsToRelTolerance(25.0, 0.11));
+  BOOST_CHECK_CLOSE(d[0].second[0], 11.0, 1.0);
+  BOOST_CHECK_EQUAL(d[1].second.size(), 2);
+  BOOST_CHECK_CLOSE(d[1].first, 15.0, AbsToRelTolerance(15.0, 0.11));
+  BOOST_CHECK_CLOSE(d[1].second[0], 21.0, 1.0);
+  BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
+  BOOST_CHECK_EQUAL(d[2].second.size(), 3);
+  BOOST_CHECK_CLOSE(d[2].first, 5.0, AbsToRelTolerance(5.0, 0.11));
+  BOOST_CHECK_CLOSE(d[2].second[0], 31.0, 1.0);
+  BOOST_CHECK_CLOSE(d[2].second[1], 21.0, 1.0);
+  BOOST_CHECK_CLOSE(d[2].second[2], 11.0, 1.0);
+}
