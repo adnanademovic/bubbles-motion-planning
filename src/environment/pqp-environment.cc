@@ -247,8 +247,8 @@ PqpEnvironment::DistanceProfile PqpEnvironment::GetDistanceProfile(
     PQP_DistanceResult distance_res;
     PQP_Distance(&distance_res, R, T, parts_[part].get(), obs_R,
                  obs_T, environment_.get(), 10000000.0, variance_);
-    distances.emplace_back(
-        distance_res.Distance() - variance_, std::vector<double>(0));
+    distances.emplace_back(std::max(distance_res.Distance() - variance_, 0.0),
+                           std::vector<double>(0));
 
     std::vector<double>* radiuses = &(distances.back().second);
     setPointPosition(R, T, p, cylinders_[part].first);
