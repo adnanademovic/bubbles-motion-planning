@@ -101,13 +101,19 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   std::string config("../models/abb.conf");
   std::vector<std::string> segments;
   segments.emplace_back("../models/SEG_1.stl");
-  segments.emplace_back("../models/SEG_2.stl");
+  segments.emplace_back("../models/SEG_2_0.stl");
+  segments.emplace_back("../models/SEG_2_1.stl");
+  segments.emplace_back("../models/SEG_2_2.stl");
+  segments.emplace_back("../models/SEG_2_3.stl");
+  segments.emplace_back("../models/SEG_2_4.stl");
   segments.emplace_back("../models/SEG_3.stl");
-  segments.emplace_back("../models/SEG_4.stl");
+  segments.emplace_back("../models/SEG_4_0.stl");
+  segments.emplace_back("../models/SEG_4_1.stl");
+  segments.emplace_back("../models/SEG_4_2.stl");
   segments.emplace_back("../models/SEG_5.stl");
   segments.emplace_back("../models/SEG_6.stl");
   double threshold = 1.0;
-  std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
+  std::vector<int> parts_per_segment{1, 5, 1, 3, 1, 1};
 
   std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
