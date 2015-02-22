@@ -71,7 +71,7 @@ void MakeModelFile(const char filename[], const std::vector<float>& coords) {
   for (size_t i = 0; i < coords.size(); i += 9) {
     fwrite(normal, sizeof(normal[0]), 3, f);
     for (size_t j = 0; j < 9; ++j)
-      fwrite(&coords[j], sizeof(coords[0]), 1, f);
+      fwrite(&coords[i + j], sizeof(coords[0]), 1, f);
     fwrite(&attribute, sizeof(attribute), 1, f);
   }
   fclose(f);
