@@ -49,9 +49,9 @@ TreeNode* BubbleTree::AddNode(
   TreeNode* current_node = new TreeNode(bubble_source_->NewBubble(q), parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
   nodes_.emplace_back(current_node);
-  std::vector<double> position = current_bubble->position();
-  std::vector<double> size = current_bubble->size();
-  std::vector<double> point = position;
+  std::vector<double> position(current_bubble->position());
+  std::vector<double> size(current_bubble->size());
+  std::vector<double> point(position);
   unsigned int axis_count = position.size();
   for (size_t i = 0; i < axis_count; ++i) {
     point[i] = std::min(limits_[i].second, position[i] + size[i]);
@@ -68,10 +68,7 @@ bool BubbleTree::ConnectLine(
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
 
-  double previous_bubble_size = 0.0;
-  for (double element : current_bubble->size()) {
-    previous_bubble_size += element;
-  }
+  double previous_move_size = -1.0;
 
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
     current_bubble = static_cast<Bubble*>(current_node->point.get());
@@ -80,16 +77,19 @@ bool BubbleTree::ConnectLine(
       return true;
     }
 
-    double current_bubble_size = 0.0;
-    for (double element : current_bubble->size()) {
-      current_bubble_size += element;
+    std::vector<double> q_next(current_bubble->IntersectsHullAt(q_target));
+    std::vector<double> q_prev(current_bubble->position());
+    double current_move_size = 0.0;
+    for (size_t j = 0; j < q_next.size(); ++j) {
+      double diff = q_next[j] - q_prev[j];
+      current_move_size += diff * diff;
     }
-    if (current_bubble_size < 0.1 * previous_bubble_size) {
+    if (previous_move_size < 0.0)
+      previous_move_size = current_move_size;
+    else if (current_move_size < 0.01 * previous_move_size)
       return false;
-    }
 
-    current_node = AddNode(
-        current_bubble->IntersectsHullAt(q_target), current_node);
+    current_node = AddNode(q_next, current_node);
   }
   return false;
 }
