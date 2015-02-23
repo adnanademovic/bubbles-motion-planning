@@ -41,25 +41,25 @@ std::vector<double> Bubble::size() const {
 }
 
 bool Bubble::Contains(const std::vector<double>& q) const {
-  unsigned int axis_count = position().size();
+  unsigned int axis_count = position_.size();
   double distance = 0.0;
   for (unsigned int i = 0; i < axis_count; ++i) {
-    distance += fabs(q[i] - position()[i]) / size_[i];
+    distance += fabs(q[i] - position_[i]) / size_[i];
   }
   return (distance < 1.0);
 }
 
 std::vector<double> Bubble::IntersectsHullAt(
     const std::vector<double>& q) const {
-  unsigned int axis_count = position().size();
+  unsigned int axis_count = position_.size();
   double distance = 0.0;
   std::vector<double> new_q(axis_count, 0.0);
   for (unsigned int i = 0; i < axis_count; ++i) {
-    new_q[i] = q[i] - position()[i];
+    new_q[i] = q[i] - position_[i];
     distance += fabs(new_q[i]) / size_[i];
   }
   for (unsigned int i = 0; i < axis_count; ++i)
-    new_q[i] = position()[i] + new_q[i] / distance;
+    new_q[i] = position_[i] + new_q[i] / distance;
   return new_q;
 }
 

@@ -38,7 +38,7 @@ class TreePoint {
  public:
   TreePoint(const std::vector<double>& position);
   std::vector<double> position() const;
- private:
+ protected:
   std::vector<double> position_;
 };
 
