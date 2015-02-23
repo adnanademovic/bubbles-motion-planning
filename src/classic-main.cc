@@ -126,7 +126,7 @@ int main() {
   segments.emplace_back("../models/SEG_4.stl");
   segments.emplace_back("../models/SEG_5.stl");
   segments.emplace_back("../models/SEG_6.stl");
-  double threshold = 1.0;
+  double threshold = 20.0;
   std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
 
   std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
