@@ -51,9 +51,10 @@ class Rrt {
 
  private:
   std::unique_ptr<RandomPointGeneratorInterface> random_point_generator_;
-  std::vector<std::unique_ptr<RrtTree> > src_trees_;
-  std::vector<std::unique_ptr<RrtTree> > dst_trees_;
-  std::pair<int, int> connection_;
+  std::unique_ptr<RrtTree> src_tree_;
+  std::unique_ptr<RrtTree> dst_tree_;
+  TreeNode* src_connect_node_;
+  TreeNode* dst_connect_node_;
   bool done_;
 };
 

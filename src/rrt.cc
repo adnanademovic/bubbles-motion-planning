@@ -44,10 +44,7 @@ void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
 Rrt::Rrt(RrtTree* src_tree, RrtTree* dst_tree,
          RandomPointGeneratorInterface* random_point_generator)
     : random_point_generator_(random_point_generator),
-      src_trees_(0), dst_trees_(0), connection_{-1, -1}, done_(false) {
-  src_trees_.emplace_back(src_tree);
-  dst_trees_.emplace_back(dst_tree);
-}
+      src_tree_(src_tree), dst_tree_(dst_tree), done_(false) {}
 
 bool Rrt::Run(int max_steps) {
   for (int i = 0; i < max_steps; ++i)
@@ -63,38 +60,25 @@ bool Rrt::Step() {
 bool Rrt::Step(const std::vector<double>& q) {
   if (done_)
     return true;
-  std::vector<std::unique_ptr<bool> > srcs_connected, dsts_connected;
+  bool src_connected = false;
+  bool dst_connected = false;
   std::vector<std::thread> threads;
-  for (std::unique_ptr<RrtTree>& tree : src_trees_) {
-    srcs_connected.emplace_back(new bool(false));
-    threads.emplace_back(
-        step_thread, tree.get(), q, srcs_connected.back().get());
-  }
-  for (std::unique_ptr<RrtTree>& tree : dst_trees_) {
-    dsts_connected.emplace_back(new bool(false));
-    threads.emplace_back(
-        step_thread, tree.get(), q, dsts_connected.back().get());
-  }
+
+  threads.emplace_back(step_thread, src_tree_.get(), q, &src_connected);
+  threads.emplace_back(step_thread, dst_tree_.get(), q, &dst_connected);
+
   for (std::thread& thread : threads) {
     thread.join();
   }
-  int src_connect = -1;
-  int dst_connect = -1;
-  for (unsigned int i = 0; i < srcs_connected.size(); ++i)
-    if (*(srcs_connected[i])) {
-      src_connect = static_cast<int>(i);
-      break;
-    }
-  for (unsigned int i = 0; i < dsts_connected.size(); ++i)
-    if (*(dsts_connected[i])) {
-      dst_connect = static_cast<int>(i);
-      break;
-    }
-  if (src_connect > -1 && dst_connect > -1) {
-    connection_ = std::pair<int, int>{src_connect, dst_connect};
+
+  src_connect_node_ = src_tree_->GetNewestNode();
+  dst_connect_node_ = dst_tree_->GetNewestNode();
+
+  if (src_connected && dst_connected) {
     done_ = true;
     return true;
   }
+
   return false;
 }
 
@@ -102,8 +86,8 @@ std::vector<std::shared_ptr<TreePoint> > Rrt::GetSolution() const {
   if (!done_)
     return std::vector<std::shared_ptr<TreePoint> >(0);
   std::deque<TreeNode*> nodes;
-  nodes.push_back(src_trees_[connection_.first]->GetNewestNode());
-  nodes.push_back(dst_trees_[connection_.second]->GetNewestNode());
+  nodes.push_back(src_connect_node_);
+  nodes.push_back(dst_connect_node_);
   while (nodes.front()->parent != nullptr)
     nodes.push_front(nodes.front()->parent);
   while (nodes.back()->parent != nullptr)
