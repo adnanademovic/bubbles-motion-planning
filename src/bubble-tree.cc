@@ -68,7 +68,8 @@ bool BubbleTree::ConnectLine(
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
 
-  double previous_move_size = -1.0;
+  // TODO: make this a variable that gets calculated in the constructor.
+  double previous_move_size = 0.05;
 
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
     current_bubble = static_cast<Bubble*>(current_node->point.get());
