@@ -53,6 +53,7 @@ class PointIndex {
   AttachmentPoint GetNearestPoint(const std::vector<double>& q) const;
 
  private:
+  bool using_flann_index_;
   std::vector<AttachmentPoint> attachment_points_;
   std::unique_ptr<TreeNode> root_node_;
   flann::Index<flann::L2<double> > index_;
