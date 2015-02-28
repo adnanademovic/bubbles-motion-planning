@@ -75,8 +75,10 @@ AttachmentPoint PointIndex::GetNearestPoint(
     double dist_now;
     for (size_t i = attachment_points_.size() - 1; i > 0; --i) {
       dist_now = DistanceSquared(attachment_points_[i].position, q);
-      if (dist_now < closest_distance)
+      if (dist_now < closest_distance) {
         closest_point = i;
+        closest_distance = dist_now;
+      }
     }
     return attachment_points_[closest_point];
   }
