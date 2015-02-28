@@ -45,8 +45,8 @@ class Rrt {
       RandomPointGeneratorInterface* random_point_generator);
 
   bool Run(int max_steps);
-  bool Step();
-  bool Step(const std::vector<double>& q);
+  bool Step(bool connect = false);
+  bool Step(const std::vector<double>& q, bool connect);
   std::vector<std::shared_ptr<TreePoint> > GetSolution() const;
 
  private:

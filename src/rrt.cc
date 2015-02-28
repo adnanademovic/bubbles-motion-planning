@@ -53,11 +53,11 @@ bool Rrt::Run(int max_steps) {
   return false;
 }
 
-bool Rrt::Step() {
-  return Step(random_point_generator_->NextPoint());
+bool Rrt::Step(bool connect) {
+  return Step(random_point_generator_->NextPoint(), connect);
 }
 
-bool Rrt::Step(const std::vector<double>& q) {
+bool Rrt::Step(const std::vector<double>& q, bool connect) {
   if (done_)
     return true;
   bool src_connected = false;
@@ -77,6 +77,32 @@ bool Rrt::Step(const std::vector<double>& q) {
   if (src_connected && dst_connected) {
     done_ = true;
     return true;
+  }
+
+  if (connect) {
+    src_connected = dst_connected = false;
+
+    threads.clear();
+    threads.emplace_back(step_thread, src_tree_.get(),
+                         dst_connect_node_->point->position(), &src_connected);
+    threads.emplace_back(step_thread, dst_tree_.get(),
+                         src_connect_node_->point->position(), &dst_connected);
+
+    for (std::thread& thread : threads) {
+      thread.join();
+    }
+
+    if (src_connected) {
+      src_connect_node_ = src_tree_->GetNewestNode();
+      done_ = true;
+      return true;
+    }
+
+    if (dst_connected) {
+      dst_connect_node_ = dst_tree_->GetNewestNode();
+      done_ = true;
+      return true;
+    }
   }
 
   return false;
