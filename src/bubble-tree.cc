@@ -85,7 +85,7 @@ bool BubbleTree::ConnectLine(
       double diff = q_next[j] - q_prev[j];
       current_move_size += diff * diff;
     }
-    if (previous_move_size < 0.0)
+    if (previous_move_size < current_move_size)
       previous_move_size = current_move_size;
     else if (current_move_size < 0.01 * previous_move_size)
       return false;
