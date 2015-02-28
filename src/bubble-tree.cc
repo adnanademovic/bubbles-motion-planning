@@ -36,10 +36,12 @@ namespace bubblesmp {
 BubbleTree::BubbleTree(
     const std::vector<std::pair<double, double> >& limits,
     int max_bubbles_per_branch, const std::vector<double>& root,
-    std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source)
+    std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source,
+    double min_move_size)
     : RrtTree(root), max_bubbles_per_branch_(max_bubbles_per_branch),
-      bubble_source_(bubble_source), limits_(limits)
-{
+      bubble_source_(bubble_source), limits_(limits),
+      min_move_size_(min_move_size / root.size()) {
+  // TODO: make this an assertion
   fprintf(stderr, "Collision at root point: %s\n",
           bubble_source_->IsCollision(root) ? "YES" : "NO");
 }
@@ -68,8 +70,7 @@ bool BubbleTree::ConnectLine(
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
 
-  // TODO: make this a variable that gets calculated in the constructor.
-  double previous_move_size = 0.05;
+  double previous_move_size = min_move_size_;
 
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
     current_bubble = static_cast<Bubble*>(current_node->point.get());

@@ -47,7 +47,7 @@ class BubbleTree : public RrtTree {
   BubbleTree(const std::vector<std::pair<double, double> >& limits,
              int max_bubbles_per_branch, const std::vector<double>& root,
              std::shared_ptr<environment::EnvironmentFeedbackInterface>
-             bubble_source);
+             bubble_source, double min_move_size);
 
  private:
   // Does not take ownership of parent.
@@ -59,6 +59,7 @@ class BubbleTree : public RrtTree {
   int max_bubbles_per_branch_;
   std::shared_ptr<environment::EnvironmentFeedbackInterface> bubble_source_;
   std::vector<std::pair<double, double> > limits_;
+  double min_move_size_;
 };
 
 }  // namespace bubblesmp

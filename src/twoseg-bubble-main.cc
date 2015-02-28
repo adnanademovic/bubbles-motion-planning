@@ -161,10 +161,10 @@ int main() {
 
   RrtTree* src_tree = new BubbleTree(
       limits, bubbles_per_branch, {-3.1415/2.0, 3.1415/4.0},
-      src_bubble_source);
+      src_bubble_source, 0.3);
   RrtTree* dst_tree = new BubbleTree(
       limits, bubbles_per_branch, {3.1415/2.0, -3.1415/4.0},
-      dst_bubble_source);
+      dst_bubble_source, 0.3);
   Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
   int step = 0;
   while (!bubble_rrt.Step()) {

@@ -151,9 +151,9 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_case.start, src_bubble_source);
+      limits, bubbles_per_branch, test_case.start, src_bubble_source, 0.3);
   RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_case.goal, dst_bubble_source);
+      limits, bubbles_per_branch, test_case.goal, dst_bubble_source, 0.3);
 
   Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits, seed));
   int step = 0;
