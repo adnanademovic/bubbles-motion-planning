@@ -46,7 +46,8 @@ struct AttachmentPoint {
 class PointIndex {
  public:
   // PointIndex takes ownership of root_node
-  PointIndex(const std::vector<double>& q_root, TreeNode* root_node);
+  PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
+             bool using_flann_index);
 
   // PointIndex doesn't take ownership of parent
   void AddPoint(const std::vector<double>& q, TreeNode* parent);

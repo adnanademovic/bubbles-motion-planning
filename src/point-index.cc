@@ -43,13 +43,15 @@ double DistanceSquared(
 }
 }  // namespace
 
-PointIndex::PointIndex(const std::vector<double>& q_root, TreeNode* root_node)
-    : using_flann_index_(false),
+PointIndex::PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
+                       bool using_flann_index)
+    : using_flann_index_(using_flann_index),
       attachment_points_(1, AttachmentPoint{q_root, root_node}),
       root_node_(root_node), index_(flann::Matrix<double>(
                  std::vector<double>(q_root).data(), 1, q_root.size()),
              flann::KDTreeIndexParams(8)) {
-  index_.buildIndex();
+  if (using_flann_index_)
+    index_.buildIndex();
 }
 
 void PointIndex::AddPoint(const std::vector<double>& q, TreeNode* parent) {
