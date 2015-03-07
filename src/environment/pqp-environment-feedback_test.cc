@@ -65,10 +65,13 @@ double AbsToRelTolerance(double value, double tolerance) {
 
 BOOST_AUTO_TEST_CASE(trivial_collision) {
   MakeFile("conf.testfile", "{"
-      "\"parts\": [\"seg1.testfile\"],"
+      "\"robot\": \"robot.testfile\","
       "\"environment\": \"env.testfile\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.testfile", "{"
+      "\"parts\": [\"seg1.testfile\"],"
       "\"parts_per_joint\": [1],"
-      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -82,10 +85,13 @@ BOOST_AUTO_TEST_CASE(trivial_collision) {
 
 BOOST_AUTO_TEST_CASE(two_segment_collision) {
   MakeFile("conf.testfile", "{"
-      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\"],"
+      "\"robot\": \"robot.testfile\","
       "\"environment\": \"env.testfile\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.testfile", "{"
+      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\"],"
       "\"parts_per_joint\": [1, 1],"
-      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -101,10 +107,13 @@ BOOST_AUTO_TEST_CASE(two_segment_collision) {
 
 BOOST_AUTO_TEST_CASE(three_segment_collision) {
   MakeFile("conf.testfile", "{"
-      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\", \"seg3.testfile\"],"
+      "\"robot\": \"robot.testfile\","
       "\"environment\": \"env.testfile\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.testfile", "{"
+      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\", \"seg3.testfile\"],"
       "\"parts_per_joint\": [1, 1, 1],"
-      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0], [5, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -122,12 +131,15 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
 
 BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
   MakeFile("conf.testfile", "{"
+      "\"robot\": \"robot.testfile\","
+      "\"environment\": \"env.testfile\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.testfile", "{"
       "\"parts\": [\"seg11.testfile\", \"seg12.testfile\", "
                   "\"seg21.testfile\", \"seg22.testfile\", "
                   "\"seg31.testfile\", \"seg32.testfile\"],"
-      "\"environment\": \"env.testfile\","
       "\"parts_per_joint\": [2, 2, 2],"
-      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0], [5, 0, 0, 0]]"
       "}");
   MakeModelFile("seg11.testfile", {5, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -148,10 +160,13 @@ BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
 
 BOOST_AUTO_TEST_CASE(trivial_bubble) {
   MakeFile("conf.testfile", "{"
-      "\"parts\": [\"seg1.testfile\"],"
+      "\"robot\": \"robot.testfile\","
       "\"environment\": \"env.testfile\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.testfile", "{"
+      "\"parts\": [\"seg1.testfile\"],"
       "\"parts_per_joint\": [1],"
-      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -175,10 +190,13 @@ BOOST_AUTO_TEST_CASE(trivial_bubble) {
 
 BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
   MakeFile("conf.testfile", "{"
-      "\"parts\": [\"seg11.testfile\", \"seg12.testfile\"],"
+      "\"robot\": \"robot.testfile\","
       "\"environment\": \"env.testfile\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.testfile", "{"
+      "\"parts\": [\"seg11.testfile\", \"seg12.testfile\"],"
       "\"parts_per_joint\": [2],"
-      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg11.testfile", {5, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -203,10 +221,13 @@ BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
 
 BOOST_AUTO_TEST_CASE(two_segment_bubble) {
   MakeFile("conf.testfile", "{"
-      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\"],"
+      "\"robot\": \"robot.testfile\","
       "\"environment\": \"env.testfile\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.testfile", "{"
+      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\"],"
       "\"parts_per_joint\": [1, 1],"
-      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});

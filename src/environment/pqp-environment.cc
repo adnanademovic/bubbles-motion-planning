@@ -154,19 +154,22 @@ void setPointPosition(
 PqpEnvironment::PqpEnvironment(const std::string& configuration) {
   boost::property_tree::ptree config_tree;
   boost::property_tree::read_json(configuration, config_tree);
+  std::string robot = config_tree.get<std::string>("robot");
+  boost::property_tree::ptree robot_tree;
+  boost::property_tree::read_json(robot, robot_tree);
 
   std::vector<std::vector<double> > config;
-  for (auto& item : config_tree.get_child("dh")) {
+  for (auto& item : robot_tree.get_child("dh")) {
     config.emplace_back();
     for (auto& param : item.second)
       config.back().push_back(param.second.get_value<double>());
   }
 
   std::vector<int> parts_per_joint;
-  for (auto& item : config_tree.get_child("parts_per_joint"))
+  for (auto& item : robot_tree.get_child("parts_per_joint"))
     parts_per_joint.push_back(item.second.get_value<int>());
   std::vector<std::string> parts;
-  for (auto& item : config_tree.get_child("parts"))
+  for (auto& item : robot_tree.get_child("parts"))
     parts.push_back(item.second.get_value<std::string>());
   std::string environment = config_tree.get<std::string>("environment");
   double max_underestimate = config_tree.get<double>("max_underestimate");

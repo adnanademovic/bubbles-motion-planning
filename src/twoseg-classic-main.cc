@@ -129,13 +129,16 @@ int main() {
   Make2DLineFile("sub52.stl", {9.0, 10.0});
 
   MakeFile("config.conf", "{"
+      "\"robot\": \"robot.conf\","
+      "\"environment\": \"obs.stl\","
+      "\"max_underestimate\": 0.1"
+      "}");
+  MakeFile("robot.conf", "{"
       "\"parts\":[\"sub11.stl\", \"sub21.stl\", \"sub31.stl\","
                  "\"sub41.stl\", \"sub51.stl\","
                  "\"sub12.stl\", \"sub22.stl\", \"sub32.stl\","
                  "\"sub42.stl\", \"sub52.stl\"],"
-      "\"environment\":\"obs.stl\","
       "\"parts_per_joint\":[5, 5],"
-      "\"max_underestimate\":0.1,"
       "\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]"
       "}");
 
