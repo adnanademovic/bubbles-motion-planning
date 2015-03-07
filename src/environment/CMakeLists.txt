@@ -1,7 +1,7 @@
 include_directories(.)
 
 add_library(pqp-environment pqp-environment.cc)
-target_link_libraries(pqp-environment transformation PQP)
+target_link_libraries(pqp-environment transformation PQP boost_serialization)
 add_library(pqp-environment-feedback pqp-environment-feedback.cc)
 target_link_libraries(pqp-environment-feedback pqp-environment bubble)
 

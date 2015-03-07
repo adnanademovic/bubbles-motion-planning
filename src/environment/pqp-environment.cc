@@ -30,6 +30,9 @@
 #include <cmath>
 #include <cstdio>
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -153,19 +156,15 @@ PqpEnvironment::PqpEnvironment(
       const std::vector<int>& parts_per_joint)
     : part_count_(parts.size()), variance_(max_underestimate / 2.0),
       is_joint_start_(parts.size(), false) {
+  boost::property_tree::ptree config_tree;
+  boost::property_tree::read_json(configuration, config_tree);
+
   std::vector<std::vector<double> > config;
-  int subindex = 0;
-  double input;
-  FILE* f_config = fopen(configuration.c_str(), "r");
-  while (fscanf(f_config, "%lf", &input) != EOF) {
-    if (subindex > 3)
-      subindex = 0;
-    if (!subindex)
-      config.emplace_back(0);
-    config.back().push_back(input);
-    ++subindex;
+  for (auto& item : config_tree.get_child("dh")) {
+    config.emplace_back();
+    for (auto& param : item.second)
+      config.back().push_back(param.second.get_value<double>());
   }
-  fclose(f_config);
 
   LoadDh(config);
 
@@ -173,8 +172,8 @@ PqpEnvironment::PqpEnvironment(
   int segment_index = -1;
   int counter = 0;
   is_joint_start_[0] = true;
-  for (int parts : parts_per_joint) {
-    part_index += parts;
+  for (int parts_c : parts_per_joint) {
+    part_index += parts_c;
     if (part_index < part_count_)
       is_joint_start_[part_index] = true;
   }

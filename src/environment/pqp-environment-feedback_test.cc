@@ -64,7 +64,7 @@ double AbsToRelTolerance(double value, double tolerance) {
 }
 
 BOOST_AUTO_TEST_CASE(trivial_collision) {
-  MakeFile("conf.testfile", "10 0 0 0\n");
+  MakeFile("conf.testfile", "{\"dh\": [[10, 0, 0, 0]]}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("env.testfile", {5, -10, -10, 5, -10, 10, 5, 10, 0});
 
@@ -76,7 +76,9 @@ BOOST_AUTO_TEST_CASE(trivial_collision) {
 }
 
 BOOST_AUTO_TEST_CASE(two_segment_collision) {
-  MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n");
+  MakeFile("conf.testfile", "{"
+      "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0]]"
+      "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
   MakeModelFile("env.testfile", {8, -10, -10, 8, -10, 10, 8, 10, 0});
@@ -91,7 +93,9 @@ BOOST_AUTO_TEST_CASE(two_segment_collision) {
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_collision) {
-  MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n5 0 0 0\n");
+  MakeFile("conf.testfile", "{"
+      "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0], [5, 0, 0, 0]]"
+      "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
   MakeModelFile("seg3.testfile", {25, 0, 0, 20, 0, 1, 20, 0, -1});
@@ -108,7 +112,9 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
-  MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n5 0 0 0\n");
+  MakeFile("conf.testfile", "{"
+      "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0], [5, 0, 0, 0]]"
+      "}");
   MakeModelFile("seg11.testfile", {5, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg12.testfile", {10, 0, 0, 5, 0, 1, 5, 0, -1});
   MakeModelFile("seg21.testfile", {15, 0, 0, 10, 0, 1, 10, 0, -1});
@@ -131,7 +137,9 @@ BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
 }
 
 BOOST_AUTO_TEST_CASE(trivial_bubble) {
-  MakeFile("conf.testfile", "10 0 0 0\n");
+  MakeFile("conf.testfile", "{"
+      "\"dh\": [[10, 0, 0, 0]]"
+      "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("env.testfile", {15, -10, -10, 15, -10, 10, 15, 10, 0});
 
@@ -153,7 +161,9 @@ BOOST_AUTO_TEST_CASE(trivial_bubble) {
 }
 
 BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
-  MakeFile("conf.testfile", "10 0 0 0\n");
+  MakeFile("conf.testfile", "{"
+      "\"dh\": [[10, 0, 0, 0]]"
+      "}");
   MakeModelFile("seg11.testfile", {5, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg12.testfile", {10, 0, 0, 5, 0, 1, 5, 0, -1});
   MakeModelFile("env.testfile", {15, -10, -10, 15, -10, 10, 15, 10, 0});
@@ -177,7 +187,9 @@ BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
 }
 
 BOOST_AUTO_TEST_CASE(two_segment_bubble) {
-  MakeFile("conf.testfile", "10 0 0 0\n10 0 0 0\n");
+  MakeFile("conf.testfile", "{"
+      "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0]]"
+      "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
   MakeModelFile("env.testfile", {25, -20, -10, 25, -20, 10, 25, 20, 0});

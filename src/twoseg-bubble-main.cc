@@ -129,7 +129,7 @@ int main() {
   Make2DLineFile("sub42.stl", {8.0, 9.0});
   Make2DLineFile("sub52.stl", {9.0, 10.0});
 
-  MakeFile("config.conf", "5 0 0 0\n 5 0 0 0\n");
+  MakeFile("config.conf", "{\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]}");
 
   std::vector<std::pair<double, double> > obstacles;
   obstacles.push_back({3.0, -6.0});
