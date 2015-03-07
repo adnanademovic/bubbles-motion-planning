@@ -56,7 +56,7 @@ class PqpEnvironment {
 
  private:
   // Configuration consists of lines of "a alpha d theta" format
-  void LoadDh(const std::string& configuration);
+  void LoadDh(const std::vector<std::vector<double> >& configuration);
 
   int part_count_;
   double variance_;

@@ -153,7 +153,22 @@ PqpEnvironment::PqpEnvironment(
       const std::vector<int>& parts_per_joint)
     : part_count_(parts.size()), variance_(max_underestimate / 2.0),
       is_joint_start_(parts.size(), false) {
-  LoadDh(configuration);
+  std::vector<std::vector<double> > config;
+  int subindex = 0;
+  double input;
+  FILE* f_config = fopen(configuration.c_str(), "r");
+  while (fscanf(f_config, "%lf", &input) != EOF) {
+    if (subindex > 3)
+      subindex = 0;
+    if (!subindex)
+      config.emplace_back(0);
+    config.back().push_back(input);
+    ++subindex;
+  }
+  fclose(f_config);
+
+  LoadDh(config);
+
   int part_index = 0;
   int segment_index = -1;
   int counter = 0;
@@ -273,32 +288,23 @@ int PqpEnvironment::part_count() const {
   return part_count_;
 }
 
-void PqpEnvironment::LoadDh(const std::string& filename) {
-  FILE* f = fopen(filename.c_str(), "r");
-  double param[4];
-  int subindex = 0;
-  double input;
+void PqpEnvironment::LoadDh(
+    const std::vector<std::vector<double> >& configuration) {
   // each part gets transformed ignoring the last coordinate transform
   dh_inverted_.emplace_back(new transforms::Transformation);
-  while (fscanf(f, "%lf", &input) != EOF) {
-    param[subindex] = input;
-    subindex++;
-    if (subindex == 4) {
-      subindex = 0;
-      dh_parameters_.emplace_back(new transforms::Transformation);
-      transforms::Transformation* t = dh_parameters_.back().get();
-      t->Rotate(transforms::Transformation::Z, param[1]);
-      t->Translate(param[0], 0.0, param[2]);
-      t->Rotate(transforms::Transformation::X, param[3]);
-      dh_inverted_.emplace_back(new transforms::Transformation);
-      t = dh_inverted_.back().get();
-      t->Rotate(transforms::Transformation::X, -param[3]);
-      t->Translate(-param[0], 0.0, -param[2]);
-      t->Rotate(transforms::Transformation::Z, -param[1]);
-      t->Transform(*dh_inverted_[dh_inverted_.size() - 2]);
-    }
+  for (const std::vector<double>& param : configuration) {
+    dh_parameters_.emplace_back(new transforms::Transformation);
+    transforms::Transformation* t = dh_parameters_.back().get();
+    t->Rotate(transforms::Transformation::Z, param[1]);
+    t->Translate(param[0], 0.0, param[2]);
+    t->Rotate(transforms::Transformation::X, param[3]);
+    dh_inverted_.emplace_back(new transforms::Transformation);
+    t = dh_inverted_.back().get();
+    t->Rotate(transforms::Transformation::X, -param[3]);
+    t->Translate(-param[0], 0.0, -param[2]);
+    t->Rotate(transforms::Transformation::Z, -param[1]);
+    t->Transform(*dh_inverted_[dh_inverted_.size() - 2]);
   }
-  fclose(f);
 }
 
 }  // namespace environment
