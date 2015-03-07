@@ -80,7 +80,7 @@ struct TestCase {
   std::string name;
   std::vector<double> start;
   std::vector<double> goal;
-  std::string obstacle;
+  std::string configuration;
 };
 
 void RunBubbleTree(unsigned seed, const TestCase& test_case) {
@@ -98,31 +98,10 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
 
-  std::string config("../models/abb.conf");
-  std::vector<std::string> segments;
-  segments.emplace_back("../models/SEG_1.stl");
-  segments.emplace_back("../models/SEG_2_0.stl");
-  segments.emplace_back("../models/SEG_2_1.stl");
-  segments.emplace_back("../models/SEG_2_2.stl");
-  segments.emplace_back("../models/SEG_2_3.stl");
-  segments.emplace_back("../models/SEG_2_4.stl");
-  segments.emplace_back("../models/SEG_3.stl");
-  segments.emplace_back("../models/SEG_4_0.stl");
-  segments.emplace_back("../models/SEG_4_1.stl");
-  segments.emplace_back("../models/SEG_4_2.stl");
-  segments.emplace_back("../models/SEG_5.stl");
-  segments.emplace_back("../models/SEG_6.stl");
-  double threshold = 20.0;
-  std::vector<int> parts_per_segment{1, 5, 1, 3, 1, 1};
-
   std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
@@ -156,25 +135,10 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
 
-  std::string config("../models/abb.conf");
-  std::vector<std::string> segments;
-  segments.emplace_back("../models/SEG_1.stl");
-  segments.emplace_back("../models/SEG_2.stl");
-  segments.emplace_back("../models/SEG_3.stl");
-  segments.emplace_back("../models/SEG_4.stl");
-  segments.emplace_back("../models/SEG_5.stl");
-  segments.emplace_back("../models/SEG_6.stl");
-  double threshold = 20.0;
-  std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
-
   std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
 
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
@@ -202,7 +166,7 @@ int main() {
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs1.stl"});
+      "../models/abb1.conf"});
   // Easy test case
   test_cases.push_back({
       "easy",
@@ -210,13 +174,13 @@ int main() {
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs2.stl"});
+      "../models/abb2.conf"});
   // Hard test case
   test_cases.push_back({
       "hard",
       {-pi() / 2.0, pi() / 3.6, -pi() / 3.6, 0.0, 0.0, 0.0},
       {0.0, pi() / 2.0, -pi() / 2.0, -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs3.stl"});
+      "../models/abb3.conf"});
 
   for (const TestCase& test_case : test_cases) {
     printf("bubble_%s = [];\n", test_case.name.c_str());

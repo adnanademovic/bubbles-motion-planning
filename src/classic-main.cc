@@ -78,7 +78,7 @@ void OutputPath(std::vector<std::shared_ptr<TreePoint> > points) {
 struct TestCase {
   std::vector<double> start;
   std::vector<double> goal;
-  std::string obstacle;
+  std::string configuration;
 };
 
 int main() {
@@ -89,19 +89,19 @@ int main() {
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs1.stl"});
+      "../models/abb1.conf"});
   // Easy test case
   test_cases.push_back({
       {-pi() / 3.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs2.stl"});
+      "../models/abb2.conf"});
   // Hard test case
   test_cases.push_back({
       {-pi() / 2.0, pi() / 3.6, -pi() / 3.6, 0.0, 0.0, 0.0},
       {0.0, pi() / 2.0, -pi() / 2.0, -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/obs3.stl"});
+      "../models/abb3.conf"});
   int test = 2;
 
   std::vector<std::pair<double, double> > limits(6);
@@ -118,25 +118,12 @@ int main() {
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
 
-  std::string config("../models/abb.conf");
-  std::vector<std::string> segments;
-  segments.emplace_back("../models/SEG_1.stl");
-  segments.emplace_back("../models/SEG_2.stl");
-  segments.emplace_back("../models/SEG_3.stl");
-  segments.emplace_back("../models/SEG_4.stl");
-  segments.emplace_back("../models/SEG_5.stl");
-  segments.emplace_back("../models/SEG_6.stl");
-  double threshold = 20.0;
-  std::vector<int> parts_per_segment{1, 1, 1, 1, 1, 1};
-
   std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_cases[test].obstacle, threshold,
-          parts_per_segment)));
+          test_cases[test].configuration)));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
       new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_cases[test].obstacle, threshold,
-          parts_per_segment)));
+          test_cases[test].configuration)));
 
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;

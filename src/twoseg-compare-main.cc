@@ -115,7 +115,7 @@ struct TestCase {
   std::string name;
   std::vector<double> start;
   std::vector<double> goal;
-  std::string obstacle;
+  std::string configuration;
 };
 
 void RunBubbleTree(unsigned seed, const TestCase& test_case) {
@@ -125,29 +125,10 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   limits[1].first = -3.14;
   limits[1].second = 3.14;
 
-  std::string config("config.conf");
-  std::vector<std::string> segments;
-  segments.emplace_back("sub11.stl");
-  segments.emplace_back("sub21.stl");
-  segments.emplace_back("sub31.stl");
-  segments.emplace_back("sub41.stl");
-  segments.emplace_back("sub51.stl");
-  segments.emplace_back("sub12.stl");
-  segments.emplace_back("sub22.stl");
-  segments.emplace_back("sub32.stl");
-  segments.emplace_back("sub42.stl");
-  segments.emplace_back("sub52.stl");
-  double threshold = 0.1;
-  std::vector<int> parts_per_segment{5, 5};
-
   std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
@@ -173,29 +154,10 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
   limits[1].first = -3.14;
   limits[1].second = 3.14;
 
-  std::string config("config.conf");
-  std::vector<std::string> segments;
-  segments.emplace_back("sub11.stl");
-  segments.emplace_back("sub21.stl");
-  segments.emplace_back("sub31.stl");
-  segments.emplace_back("sub41.stl");
-  segments.emplace_back("sub51.stl");
-  segments.emplace_back("sub12.stl");
-  segments.emplace_back("sub22.stl");
-  segments.emplace_back("sub32.stl");
-  segments.emplace_back("sub42.stl");
-  segments.emplace_back("sub52.stl");
-  double threshold = 0.1;
-  std::vector<int> parts_per_segment{5, 5};
-
   std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          config, segments, test_case.obstacle, threshold,
-          parts_per_segment)));
+      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
 
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
@@ -226,7 +188,38 @@ void GenerateFiles() {
   Make2DLineFile("sub42.stl", {8.0, 9.0});
   Make2DLineFile("sub52.stl", {9.0, 10.0});
 
-  MakeFile("config.conf", "{\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]}");
+  MakeFile("config1.conf", "{"
+      "\"parts\":[\"sub11.stl\", \"sub21.stl\", \"sub31.stl\","
+                 "\"sub41.stl\", \"sub51.stl\","
+                 "\"sub12.stl\", \"sub22.stl\", \"sub32.stl\","
+                 "\"sub42.stl\", \"sub52.stl\"],"
+      "\"environment\":\"obsi1.stl\","
+      "\"parts_per_joint\":[5, 5],"
+      "\"max_underestimate\":0.1,"
+      "\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]"
+      "}");
+
+  MakeFile("config2.conf", "{"
+      "\"parts\":[\"sub11.stl\", \"sub21.stl\", \"sub31.stl\","
+                 "\"sub41.stl\", \"sub51.stl\","
+                 "\"sub12.stl\", \"sub22.stl\", \"sub32.stl\","
+                 "\"sub42.stl\", \"sub52.stl\"],"
+      "\"environment\":\"obs2.stl\","
+      "\"parts_per_joint\":[5, 5],"
+      "\"max_underestimate\":0.1,"
+      "\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]"
+      "}");
+
+  MakeFile("config3.conf", "{"
+      "\"parts\":[\"sub11.stl\", \"sub21.stl\", \"sub31.stl\","
+                 "\"sub41.stl\", \"sub51.stl\","
+                 "\"sub12.stl\", \"sub22.stl\", \"sub32.stl\","
+                 "\"sub42.stl\", \"sub52.stl\"],"
+      "\"environment\":\"obs3.stl\","
+      "\"parts_per_joint\":[5, 5],"
+      "\"max_underestimate\":0.1,"
+      "\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]"
+      "}");
 
   std::vector<std::pair<double, double> > obstacles;
   obstacles.push_back({3.0, -6.0});
@@ -252,7 +245,7 @@ int main() {
       "hard",
       {-pi() / 2.0, pi() / 4.0},
       {pi() / 2.0, -pi() / 4.0},
-      "obs3.stl"});
+      "config3.conf"});
 
   for (const TestCase& test_case : test_cases) {
     printf("bubble_%s = [];\n", test_case.name.c_str());

@@ -128,7 +128,16 @@ int main() {
   Make2DLineFile("sub42.stl", {8.0, 9.0});
   Make2DLineFile("sub52.stl", {9.0, 10.0});
 
-  MakeFile("config.conf", "{\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]}");
+  MakeFile("config.conf", "{"
+      "\"parts\":[\"sub11.stl\", \"sub21.stl\", \"sub31.stl\","
+                 "\"sub41.stl\", \"sub51.stl\","
+                 "\"sub12.stl\", \"sub22.stl\", \"sub32.stl\","
+                 "\"sub42.stl\", \"sub52.stl\"],"
+      "\"environment\":\"obs.stl\","
+      "\"parts_per_joint\":[5, 5],"
+      "\"max_underestimate\":0.1,"
+      "\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]"
+      "}");
 
   std::vector<std::pair<double, double> > obstacles;
   obstacles.push_back({3.0, -6.0});
@@ -145,17 +154,9 @@ int main() {
   Make2DPolyFile("obs.stl", obstacles);
 
   std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          "config.conf", {
-              "sub11.stl", "sub21.stl", "sub31.stl", "sub41.stl", "sub51.stl",
-              "sub12.stl", "sub22.stl", "sub32.stl", "sub42.stl", "sub52.stl"},
-          "obs.stl", 0.1, {5, 5})));
+      new PqpEnvironmentFeedback(new PqpEnvironment("config.conf")));
   std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
-          "config.conf", {
-              "sub11.stl", "sub21.stl", "sub31.stl", "sub41.stl", "sub51.stl",
-              "sub12.stl", "sub22.stl", "sub32.stl", "sub42.stl", "sub52.stl"},
-          "obs.stl", 0.1, {5, 5})));
+      new PqpEnvironmentFeedback(new PqpEnvironment("config.conf")));
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
@@ -171,11 +172,7 @@ int main() {
   }
   fprintf(stderr, "Final step: %6d\n", step);
 
-  PqpEnvironment printing_environment(
-          "config.conf", {
-              "sub11.stl", "sub21.stl", "sub31.stl", "sub41.stl", "sub51.stl",
-              "sub12.stl", "sub22.stl", "sub32.stl", "sub42.stl", "sub52.stl"},
-          "obs.stl", 0.1, {5, 5});
+  PqpEnvironment printing_environment("config.conf");
   printf("obs=[];\n");
   for (int i = -100; i < 101; ++i)
     for (int j = -100; j < 101; ++j)

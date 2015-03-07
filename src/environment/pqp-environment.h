@@ -44,10 +44,7 @@ class PqpEnvironment {
  public:
   typedef std::vector<std::pair<double, std::vector<double> > > DistanceProfile;
 
-  PqpEnvironment(const std::string& configuration,
-                 const std::vector<std::string>& parts,
-                 const std::string& environment, double max_underestimate,
-                 const std::vector<int>& parts_per_joint);
+  PqpEnvironment(const std::string& configuration);
 
   bool IsCollision(const std::vector<double>& q) const;
   DistanceProfile GetDistanceProfile(const std::vector<double>& q) const;

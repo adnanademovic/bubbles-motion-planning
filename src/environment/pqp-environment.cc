@@ -151,12 +151,7 @@ void setPointPosition(
 }  // namespace
 
 // TODO: Use one config file to fetch all the data.
-PqpEnvironment::PqpEnvironment(
-      const std::string& configuration, const std::vector<std::string>& parts,
-      const std::string& environment, double max_underestimate,
-      const std::vector<int>& parts_per_joint)
-    : part_count_(parts.size()), variance_(max_underestimate / 2.0),
-      is_joint_start_(parts.size(), false) {
+PqpEnvironment::PqpEnvironment(const std::string& configuration) {
   boost::property_tree::ptree config_tree;
   boost::property_tree::read_json(configuration, config_tree);
 
@@ -166,6 +161,19 @@ PqpEnvironment::PqpEnvironment(
     for (auto& param : item.second)
       config.back().push_back(param.second.get_value<double>());
   }
+
+  std::vector<int> parts_per_joint;
+  for (auto& item : config_tree.get_child("parts_per_joint"))
+    parts_per_joint.push_back(item.second.get_value<int>());
+  std::vector<std::string> parts;
+  for (auto& item : config_tree.get_child("parts"))
+    parts.push_back(item.second.get_value<std::string>());
+  std::string environment = config_tree.get<std::string>("environment");
+  double max_underestimate = config_tree.get<double>("max_underestimate");
+
+  part_count_ = parts.size();
+  variance_ = max_underestimate / 2.0;
+  is_joint_start_.resize(parts.size(), false);
 
   LoadDh(config);
 

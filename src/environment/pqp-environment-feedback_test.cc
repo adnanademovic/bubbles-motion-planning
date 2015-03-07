@@ -64,12 +64,17 @@ double AbsToRelTolerance(double value, double tolerance) {
 }
 
 BOOST_AUTO_TEST_CASE(trivial_collision) {
-  MakeFile("conf.testfile", "{\"dh\": [[10, 0, 0, 0]]}");
+  MakeFile("conf.testfile", "{"
+      "\"parts\": [\"seg1.testfile\"],"
+      "\"environment\": \"env.testfile\","
+      "\"parts_per_joint\": [1],"
+      "\"max_underestimate\": 0.1,"
+      "\"dh\": [[10, 0, 0, 0]]"
+      "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("env.testfile", {5, -10, -10, 5, -10, 10, 5, 10, 0});
 
-  PqpEnvironmentFeedback environment(new PqpEnvironment(
-      "conf.testfile", {"seg1.testfile"}, "env.testfile", 0.1, {1}));
+  PqpEnvironmentFeedback environment(new PqpEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0}), true);
   BOOST_CHECK_EQUAL(environment.IsCollision({1.57}), false);
@@ -77,15 +82,17 @@ BOOST_AUTO_TEST_CASE(trivial_collision) {
 
 BOOST_AUTO_TEST_CASE(two_segment_collision) {
   MakeFile("conf.testfile", "{"
+      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\"],"
+      "\"environment\": \"env.testfile\","
+      "\"parts_per_joint\": [1, 1],"
+      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
   MakeModelFile("env.testfile", {8, -10, -10, 8, -10, 10, 8, 10, 0});
 
-  PqpEnvironmentFeedback environment(new PqpEnvironment(
-      "conf.testfile", {"seg1.testfile", "seg2.testfile"}, "env.testfile",
-      0.1, {1, 1}));
+  PqpEnvironmentFeedback environment(new PqpEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0}), true);
   BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0}), true);
@@ -94,6 +101,10 @@ BOOST_AUTO_TEST_CASE(two_segment_collision) {
 
 BOOST_AUTO_TEST_CASE(three_segment_collision) {
   MakeFile("conf.testfile", "{"
+      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\", \"seg3.testfile\"],"
+      "\"environment\": \"env.testfile\","
+      "\"parts_per_joint\": [1, 1, 1],"
+      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0], [5, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -101,9 +112,7 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
   MakeModelFile("seg3.testfile", {25, 0, 0, 20, 0, 1, 20, 0, -1});
   MakeModelFile("env.testfile", {8, -20, -10, 8, -20, 10, 8, 20, 0});
 
-  PqpEnvironmentFeedback environment(new PqpEnvironment(
-      "conf.testfile", {"seg1.testfile", "seg2.testfile", "seg3.testfile"},
-      "env.testfile", 0.1, {1, 1, 1}));
+  PqpEnvironmentFeedback environment(new PqpEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0, 0.0}), true);
   BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0, 0.0}), true);
@@ -113,6 +122,12 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
 
 BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
   MakeFile("conf.testfile", "{"
+      "\"parts\": [\"seg11.testfile\", \"seg12.testfile\", "
+                  "\"seg21.testfile\", \"seg22.testfile\", "
+                  "\"seg31.testfile\", \"seg32.testfile\"],"
+      "\"environment\": \"env.testfile\","
+      "\"parts_per_joint\": [2, 2, 2],"
+      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0], [5, 0, 0, 0]]"
       "}");
   MakeModelFile("seg11.testfile", {5, 0, 0, 0, 0, 1, 0, 0, -1});
@@ -123,12 +138,7 @@ BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
   MakeModelFile("seg32.testfile", {25, 0, 0, 22.5, 0, 1, 22.5, 0, -1});
   MakeModelFile("env.testfile", {8, -20, -10, 8, -20, 10, 8, 20, 0});
 
-  PqpEnvironmentFeedback environment(new PqpEnvironment(
-      "conf.testfile", {
-        "seg11.testfile", "seg12.testfile",
-        "seg21.testfile", "seg22.testfile",
-        "seg31.testfile", "seg32.testfile"
-      }, "env.testfile", 0.1, {2, 2, 2}));
+  PqpEnvironmentFeedback environment(new PqpEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0, 0.0}), true);
   BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0, 0.0}), true);
@@ -138,13 +148,16 @@ BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
 
 BOOST_AUTO_TEST_CASE(trivial_bubble) {
   MakeFile("conf.testfile", "{"
+      "\"parts\": [\"seg1.testfile\"],"
+      "\"environment\": \"env.testfile\","
+      "\"parts_per_joint\": [1],"
+      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("env.testfile", {15, -10, -10, 15, -10, 10, 15, 10, 0});
 
-  PqpEnvironmentFeedback environment(new PqpEnvironment(
-      "conf.testfile", {"seg1.testfile"}, "env.testfile", 0.1, {1}));
+  PqpEnvironmentFeedback environment(new PqpEnvironment("conf.testfile"));
 
   std::unique_ptr<Bubble> bub;
   std::vector<double> dims;
@@ -162,15 +175,17 @@ BOOST_AUTO_TEST_CASE(trivial_bubble) {
 
 BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
   MakeFile("conf.testfile", "{"
+      "\"parts\": [\"seg11.testfile\", \"seg12.testfile\"],"
+      "\"environment\": \"env.testfile\","
+      "\"parts_per_joint\": [2],"
+      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg11.testfile", {5, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg12.testfile", {10, 0, 0, 5, 0, 1, 5, 0, -1});
   MakeModelFile("env.testfile", {15, -10, -10, 15, -10, 10, 15, 10, 0});
 
-  PqpEnvironmentFeedback environment(new PqpEnvironment(
-      "conf.testfile", {"seg11.testfile", "seg12.testfile"}, "env.testfile",
-      0.1, {2}));
+  PqpEnvironmentFeedback environment(new PqpEnvironment("conf.testfile"));
 
   std::unique_ptr<Bubble> bub;
   std::vector<double> dims;
@@ -188,15 +203,17 @@ BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
 
 BOOST_AUTO_TEST_CASE(two_segment_bubble) {
   MakeFile("conf.testfile", "{"
+      "\"parts\": [\"seg1.testfile\", \"seg2.testfile\"],"
+      "\"environment\": \"env.testfile\","
+      "\"parts_per_joint\": [1, 1],"
+      "\"max_underestimate\": 0.1,"
       "\"dh\": [[10, 0, 0, 0], [10, 0, 0, 0]]"
       "}");
   MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
   MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
   MakeModelFile("env.testfile", {25, -20, -10, 25, -20, 10, 25, 20, 0});
 
-  PqpEnvironmentFeedback environment(new PqpEnvironment(
-      "conf.testfile", {"seg1.testfile", "seg2.testfile"}, "env.testfile",
-      0.1, {1, 1}));
+  PqpEnvironmentFeedback environment(new PqpEnvironment("conf.testfile"));
 
   std::unique_ptr<Bubble> bub;
   std::vector<double> dims;
