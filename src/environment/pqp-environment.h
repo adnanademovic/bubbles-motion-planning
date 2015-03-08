@@ -31,6 +31,12 @@
 #include <mutex>
 #include <string>
 #include <vector>
+
+#define BOOST_SPIRIT_THREADSAFE
+#include <boost/filesystem.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
 #include <PQP/PQP.h>
 
 #include "../transforms/transformation.h"
@@ -45,6 +51,8 @@ class PqpEnvironment {
   typedef std::vector<std::pair<double, std::vector<double> > > DistanceProfile;
 
   PqpEnvironment(const std::string& configuration);
+  PqpEnvironment(const boost::property_tree::ptree& config_tree,
+                 const boost::filesystem::path& config_file_path);
 
   bool IsCollision(const std::vector<double>& q) const;
   DistanceProfile GetDistanceProfile(const std::vector<double>& q) const;
@@ -54,6 +62,8 @@ class PqpEnvironment {
  private:
   // Configuration consists of lines of "a alpha d theta" format
   void LoadDh(const std::vector<std::vector<double> >& configuration);
+  void ConfigureFromPtree(const boost::property_tree::ptree& config_tree,
+                          const boost::filesystem::path& config_file_path);
 
   int part_count_;
   double variance_;

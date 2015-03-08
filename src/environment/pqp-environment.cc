@@ -30,11 +30,6 @@
 #include <cmath>
 #include <cstdio>
 
-#define BOOST_SPIRIT_THREADSAFE
-#include <boost/filesystem.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -156,67 +151,13 @@ PqpEnvironment::PqpEnvironment(const std::string& configuration) {
   config_file_path.remove_filename();
   boost::property_tree::ptree config_tree;
   boost::property_tree::read_json(configuration, config_tree);
+  ConfigureFromPtree(config_tree, config_file_path);
+}
 
-  std::string robot = config_tree.get<std::string>("robot");
-  boost::filesystem::path robot_file_path(config_file_path / robot);
-  boost::property_tree::ptree robot_tree;
-  boost::property_tree::read_json(robot_file_path.native(), robot_tree);
-  robot_file_path.remove_filename();
-
-  std::vector<std::vector<double> > config;
-  for (auto& item : robot_tree.get_child("dh")) {
-    config.emplace_back();
-    for (auto& param : item.second)
-      config.back().push_back(param.second.get_value<double>());
-  }
-
-  std::vector<int> parts_per_joint;
-  for (auto& item : robot_tree.get_child("parts_per_joint"))
-    parts_per_joint.push_back(item.second.get_value<int>());
-  std::vector<std::string> parts;
-  for (auto& item : robot_tree.get_child("parts"))
-    parts.push_back(
-        (robot_file_path / item.second.get_value<std::string>()).native());
-  std::string environment = config_tree.get<std::string>("environment");
-  double max_underestimate = config_tree.get<double>("max_underestimate");
-
-  part_count_ = parts.size();
-  variance_ = max_underestimate / 2.0;
-  is_joint_start_.resize(parts.size(), false);
-
-  LoadDh(config);
-
-  int part_index = 0;
-  int segment_index = -1;
-  int counter = 0;
-  is_joint_start_[0] = true;
-  for (int parts_c : parts_per_joint) {
-    part_index += parts_c;
-    if (part_index < part_count_)
-      is_joint_start_[part_index] = true;
-  }
-  part_index = 0;
-  for (const std::string& part : parts) {
-    if (is_joint_start_[part_index])
-      ++segment_index;
-    double l, r;
-    double x = dh_parameters_[segment_index]->coefficient(0, 3);
-    double y = dh_parameters_[segment_index]->coefficient(1, 3);
-    double z = dh_parameters_[segment_index]->coefficient(2, 3);
-    double vector_length = sqrt(NormSquared(x, y, z));
-    if (vector_length > 0.0) {
-      x /= vector_length;
-      y /= vector_length;
-      z /= vector_length;
-    }
-    parts_.emplace_back(ParseModel(
-          part, &counter, dh_inverted_[segment_index].get(), x, y, z, &l, &r));
-    cylinders_.emplace_back(std::vector<double>{x * l, y * l, z * l}, r);
-    part_index++;
-  }
-  double l, r;
-  environment_.reset(ParseModel(
-        environment, &counter, dh_inverted_[0].get(), 0.0, 0.0, 0.0, &l, &r));
+PqpEnvironment::PqpEnvironment(
+    const boost::property_tree::ptree& config_tree,
+    const boost::filesystem::path& config_file_path) {
+  ConfigureFromPtree(config_tree, config_file_path);
 }
 
 bool PqpEnvironment::IsCollision(const std::vector<double>& q) const {
@@ -323,6 +264,74 @@ void PqpEnvironment::LoadDh(
     t->Transform(*dh_inverted_[dh_inverted_.size() - 2]);
   }
 }
+
+void PqpEnvironment::ConfigureFromPtree(
+    const boost::property_tree::ptree& config_tree,
+    const boost::filesystem::path& config_file_path) {
+  std::string robot = config_tree.get<std::string>("robot");
+  boost::filesystem::path robot_file_path(config_file_path / robot);
+  boost::property_tree::ptree robot_tree;
+  boost::property_tree::read_json(robot_file_path.native(), robot_tree);
+  robot_file_path.remove_filename();
+
+  std::vector<std::vector<double> > config;
+  for (auto& item : robot_tree.get_child("dh")) {
+    config.emplace_back();
+    for (auto& param : item.second)
+      config.back().push_back(param.second.get_value<double>());
+  }
+
+  std::vector<int> parts_per_joint;
+  for (auto& item : robot_tree.get_child("parts_per_joint"))
+    parts_per_joint.push_back(item.second.get_value<int>());
+  std::vector<std::string> parts;
+  for (auto& item : robot_tree.get_child("parts"))
+    parts.push_back(
+        (robot_file_path / item.second.get_value<std::string>()).native());
+  std::string environment = config_tree.get<std::string>("environment");
+  double max_underestimate = config_tree.get<double>("max_underestimate");
+
+  part_count_ = parts.size();
+  variance_ = max_underestimate / 2.0;
+  is_joint_start_.resize(parts.size(), false);
+
+  LoadDh(config);
+
+  int part_index = 0;
+  int segment_index = -1;
+  int counter = 0;
+  is_joint_start_[0] = true;
+  for (int parts_c : parts_per_joint) {
+    part_index += parts_c;
+    if (part_index < part_count_)
+      is_joint_start_[part_index] = true;
+  }
+  part_index = 0;
+  for (const std::string& part : parts) {
+    if (is_joint_start_[part_index])
+      ++segment_index;
+    double l, r;
+    double x = dh_parameters_[segment_index]->coefficient(0, 3);
+    double y = dh_parameters_[segment_index]->coefficient(1, 3);
+    double z = dh_parameters_[segment_index]->coefficient(2, 3);
+    double vector_length = sqrt(NormSquared(x, y, z));
+    if (vector_length > 0.0) {
+      x /= vector_length;
+      y /= vector_length;
+      z /= vector_length;
+    }
+    parts_.emplace_back(ParseModel(
+          part, &counter, dh_inverted_[segment_index].get(), x, y, z, &l, &r));
+    cylinders_.emplace_back(std::vector<double>{x * l, y * l, z * l}, r);
+    part_index++;
+  }
+  double l, r;
+  environment_.reset(ParseModel(
+      (config_file_path / environment).native(), &counter,
+      dh_inverted_[0].get(), 0.0, 0.0, 0.0, &l, &r));
+}
+
+
 
 }  // namespace environment
 }  // namespace bubblesmp
