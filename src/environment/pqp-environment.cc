@@ -31,6 +31,7 @@
 #include <cstdio>
 
 #define BOOST_SPIRIT_THREADSAFE
+#include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -150,13 +151,17 @@ void setPointPosition(
 
 }  // namespace
 
-// TODO: Use one config file to fetch all the data.
 PqpEnvironment::PqpEnvironment(const std::string& configuration) {
+  boost::filesystem::path config_file_path(configuration);
+  config_file_path.remove_filename();
   boost::property_tree::ptree config_tree;
   boost::property_tree::read_json(configuration, config_tree);
+
   std::string robot = config_tree.get<std::string>("robot");
+  boost::filesystem::path robot_file_path(config_file_path / robot);
   boost::property_tree::ptree robot_tree;
-  boost::property_tree::read_json(robot, robot_tree);
+  boost::property_tree::read_json(robot_file_path.native(), robot_tree);
+  robot_file_path.remove_filename();
 
   std::vector<std::vector<double> > config;
   for (auto& item : robot_tree.get_child("dh")) {
@@ -170,7 +175,8 @@ PqpEnvironment::PqpEnvironment(const std::string& configuration) {
     parts_per_joint.push_back(item.second.get_value<int>());
   std::vector<std::string> parts;
   for (auto& item : robot_tree.get_child("parts"))
-    parts.push_back(item.second.get_value<std::string>());
+    parts.push_back(
+        (robot_file_path / item.second.get_value<std::string>()).native());
   std::string environment = config_tree.get<std::string>("environment");
   double max_underestimate = config_tree.get<double>("max_underestimate");
 

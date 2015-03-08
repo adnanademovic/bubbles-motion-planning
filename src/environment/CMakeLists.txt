@@ -2,6 +2,7 @@ include_directories(.)
 
 add_library(pqp-environment pqp-environment.cc)
 target_link_libraries(pqp-environment
+                      boost_filesystem
                       boost_serialization
                       boost_system
                       boost_thread
