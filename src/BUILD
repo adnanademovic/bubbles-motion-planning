@@ -14,7 +14,7 @@ cc_library(
     deps = [
         ":bubble",
         ":rrt-tree",
-        "//bubbles-motion-planning/src/environment:environment-feedback-interface",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
     ],
 )
 
@@ -24,7 +24,7 @@ cc_library(
     hdrs = ["classic-tree.h"],
     deps = [
         ":rrt-tree",
-        "//bubbles-motion-planning/src/environment:environment-feedback-interface",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
     ],
 )
 
@@ -68,7 +68,7 @@ cc_binary(
         ":bubble-tree",
         ":rrt",
         "//bubbles-motion-planning/src/environment:pqp-environment",
-        "//bubbles-motion-planning/src/environment:pqp-environment-feedback",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
@@ -81,7 +81,7 @@ cc_binary(
         ":classic-tree",
         ":rrt",
         "//bubbles-motion-planning/src/environment:pqp-environment",
-        "//bubbles-motion-planning/src/environment:pqp-environment-feedback",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
@@ -95,7 +95,7 @@ cc_binary(
         ":classic-tree",
         ":rrt",
         "//bubbles-motion-planning/src/environment:pqp-environment",
-        "//bubbles-motion-planning/src/environment:pqp-environment-feedback",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
@@ -108,7 +108,7 @@ cc_binary(
         ":bubble-tree",
         ":rrt",
         "//bubbles-motion-planning/src/environment:pqp-environment",
-        "//bubbles-motion-planning/src/environment:pqp-environment-feedback",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
@@ -121,7 +121,7 @@ cc_binary(
         ":classic-tree",
         ":rrt",
         "//bubbles-motion-planning/src/environment:pqp-environment",
-        "//bubbles-motion-planning/src/environment:pqp-environment-feedback",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
@@ -135,7 +135,7 @@ cc_binary(
         ":classic-tree",
         ":rrt",
         "//bubbles-motion-planning/src/environment:pqp-environment",
-        "//bubbles-motion-planning/src/environment:pqp-environment-feedback",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],

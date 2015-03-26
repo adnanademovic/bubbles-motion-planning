@@ -31,7 +31,7 @@
 #include <vector>
 
 #include "rrt-tree.h"
-#include "environment/environment-feedback-interface.h"
+#include "environment/environment-feedback.h"
 
 namespace com {
 namespace ademovic {
@@ -45,7 +45,7 @@ class ClassicTree : public RrtTree {
   ClassicTree(
       double max_step, int substeps, const std::vector<double>& root,
       std::shared_ptr<
-          environment::EnvironmentFeedbackInterface> collision_source);
+          environment::EnvironmentFeedback> collision_source);
 
  private:
   // Does not take ownership of parent.
@@ -56,7 +56,7 @@ class ClassicTree : public RrtTree {
 
   double eps_;
   int substeps_;
-  std::shared_ptr<environment::EnvironmentFeedbackInterface> collision_source_;
+  std::shared_ptr<environment::EnvironmentFeedback> collision_source_;
 };
 
 }  // namespace bubblesmp

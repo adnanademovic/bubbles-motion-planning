@@ -31,9 +31,8 @@
 
 #include "rrt.h"
 #include "classic-tree.h"
-#include "environment/environment-feedback-interface.h"
+#include "environment/environment-feedback.h"
 #include "environment/pqp-environment.h"
-#include "environment/pqp-environment-feedback.h"
 #include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
@@ -156,10 +155,10 @@ int main() {
   obstacles.push_back({-5.0, -3.0});
   Make2DPolyFile("obs.stl", obstacles);
 
-  std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment("config.conf")));
-  std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment("config.conf")));
+  std::shared_ptr<EnvironmentFeedback> src_collision_source(
+      new EnvironmentFeedback(new PqpEnvironment("config.conf")));
+  std::shared_ptr<EnvironmentFeedback> dst_collision_source(
+      new EnvironmentFeedback(new PqpEnvironment("config.conf")));
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(

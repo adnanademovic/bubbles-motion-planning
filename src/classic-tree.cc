@@ -35,7 +35,7 @@ namespace bubblesmp {
 
 ClassicTree::ClassicTree(
     double max_step, int substeps, const std::vector<double>& root,
-    std::shared_ptr<environment::EnvironmentFeedbackInterface> collision_source)
+    std::shared_ptr<environment::EnvironmentFeedback> collision_source)
     : RrtTree(root), eps_(max_step / substeps), substeps_(substeps),
       collision_source_(collision_source)
 {

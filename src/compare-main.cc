@@ -30,9 +30,8 @@
 #include "rrt.h"
 #include "bubble-tree.h"
 #include "classic-tree.h"
-#include "environment/environment-feedback-interface.h"
+#include "environment/environment-feedback.h"
 #include "environment/pqp-environment.h"
-#include "environment/pqp-environment-feedback.h"
 #include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
@@ -98,10 +97,10 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
 
-  std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
-  std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
+  std::shared_ptr<EnvironmentFeedback> src_bubble_source(
+      new EnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
+  std::shared_ptr<EnvironmentFeedback> dst_bubble_source(
+      new EnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
@@ -135,10 +134,10 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
 
-  std::shared_ptr<EnvironmentFeedbackInterface> src_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
-  std::shared_ptr<EnvironmentFeedbackInterface> dst_collision_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
+  std::shared_ptr<EnvironmentFeedback> src_collision_source(
+      new EnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
+  std::shared_ptr<EnvironmentFeedback> dst_collision_source(
+      new EnvironmentFeedback(new PqpEnvironment(test_case.configuration)));
 
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;

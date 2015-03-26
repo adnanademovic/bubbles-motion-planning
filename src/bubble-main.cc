@@ -29,9 +29,8 @@
 
 #include "rrt.h"
 #include "bubble-tree.h"
-#include "environment/environment-feedback-interface.h"
+#include "environment/environment-feedback.h"
 #include "environment/pqp-environment.h"
-#include "environment/pqp-environment-feedback.h"
 #include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
@@ -118,11 +117,11 @@ int main() {
   limits[5].first = -6.98131;
   limits[5].second = 6.98131;
 
-  std::shared_ptr<EnvironmentFeedbackInterface> src_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
+  std::shared_ptr<EnvironmentFeedback> src_bubble_source(
+      new EnvironmentFeedback(new PqpEnvironment(
           test_cases[test].configuration)));
-  std::shared_ptr<EnvironmentFeedbackInterface> dst_bubble_source(
-      new PqpEnvironmentFeedback(new PqpEnvironment(
+  std::shared_ptr<EnvironmentFeedback> dst_bubble_source(
+      new EnvironmentFeedback(new PqpEnvironment(
           test_cases[test].configuration)));
 
   int bubbles_per_branch = 50;
