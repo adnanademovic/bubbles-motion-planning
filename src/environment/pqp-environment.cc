@@ -28,7 +28,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstdio>
 
 namespace com {
 namespace ademovic {
