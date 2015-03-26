@@ -189,7 +189,7 @@ bool PqpEnvironment::IsCollision(const std::vector<double>& q) const {
   return false;
 }
 
-PqpEnvironment::DistanceProfile PqpEnvironment::GetDistanceProfile(
+EnvironmentInterface::DistanceProfile PqpEnvironment::GetDistanceProfile(
     const std::vector<double>& q) const {
   std::lock_guard<std::mutex> guard(guard_mutex_);
   PQP_REAL R[3][3], T[3]; // used to identify joint positions
@@ -201,7 +201,7 @@ PqpEnvironment::DistanceProfile PqpEnvironment::GetDistanceProfile(
     for (int j = 0; j < 3; ++j)
       obs_R[i][j] = R[i][j] = ((i==j) ? 1.0 : 0.0);
   }
-  DistanceProfile distances;
+  EnvironmentInterface::DistanceProfile distances;
   int segment = -1;
 
   double p[3], p_prev[3];

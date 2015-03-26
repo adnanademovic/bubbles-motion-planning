@@ -39,6 +39,7 @@
 
 #include <PQP/PQP.h>
 
+#include "environment-interface.h"
 #include "../transforms/transformation.h"
 
 namespace com {
@@ -46,16 +47,15 @@ namespace ademovic {
 namespace bubblesmp {
 namespace environment {
 
-class PqpEnvironment {
+class PqpEnvironment : public EnvironmentInterface {
  public:
-  typedef std::vector<std::pair<double, std::vector<double> > > DistanceProfile;
-
   PqpEnvironment(const std::string& configuration);
   PqpEnvironment(const boost::property_tree::ptree& config_tree,
                  const boost::filesystem::path& config_file_path);
 
   bool IsCollision(const std::vector<double>& q) const;
-  DistanceProfile GetDistanceProfile(const std::vector<double>& q) const;
+  EnvironmentInterface::DistanceProfile GetDistanceProfile(
+      const std::vector<double>& q) const;
 
  private:
   // Configuration consists of lines of "a alpha d theta" format

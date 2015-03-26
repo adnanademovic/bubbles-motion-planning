@@ -1,15 +1,39 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "environment-interface",
+    hdrs = ["environment-interface.h"],
+)
+
+cc_library(
     name = "environment-feedback-interface",
     hdrs = ["environment-feedback-interface.h"],
+)
+
+cc_library(
+    name = "environment-feedback",
+    srcs = ["environment-feedback.cc"],
+    hdrs = ["environment-feedback.h"],
+    deps = [
+        ":environment-interface",
+        "//bubbles-motion-planning/src:bubble",
+    ],
+    linkopts = [
+        "-lboost_filesystem",
+        "-lboost_serialization",
+        "-lboost_system",
+        "-lboost_thread",
+    ],
 )
 
 cc_library(
     name = "pqp-environment",
     srcs = ["pqp-environment.cc"],
     hdrs = ["pqp-environment.h"],
-    deps = ["//bubbles-motion-planning/src/transforms:transformation"],
+    deps = [
+        ":environment-interface",
+        "//bubbles-motion-planning/src/transforms:transformation",
+    ],
     linkopts = [
         "-lboost_filesystem",
         "-lboost_serialization",
@@ -35,6 +59,16 @@ cc_library(
         "-lboost_thread",
         "-lPQP",
     ],
+)
+
+cc_test(
+    name = "environment-feedback_test",
+    srcs = ["environment-feedback_test.cc"],
+    deps = [
+        ":environment-feedback",
+        ":pqp-environment",
+    ],
+    linkopts = ["-lboost_unit_test_framework"],
 )
 
 cc_test(
