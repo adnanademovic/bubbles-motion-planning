@@ -57,8 +57,6 @@ class PqpEnvironment {
   bool IsCollision(const std::vector<double>& q) const;
   DistanceProfile GetDistanceProfile(const std::vector<double>& q) const;
 
-  int part_count() const;
-
  private:
   // Configuration consists of lines of "a alpha d theta" format
   void LoadDh(const std::vector<std::vector<double> >& configuration);

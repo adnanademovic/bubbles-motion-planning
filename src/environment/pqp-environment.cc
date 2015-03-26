@@ -242,10 +242,6 @@ PqpEnvironment::DistanceProfile PqpEnvironment::GetDistanceProfile(
   return distances;
 }
 
-int PqpEnvironment::part_count() const {
-  return part_count_;
-}
-
 void PqpEnvironment::LoadDh(
     const std::vector<std::vector<double> >& configuration) {
   // each part gets transformed ignoring the last coordinate transform
