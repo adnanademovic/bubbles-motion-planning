@@ -22,6 +22,23 @@ cc_library(
 )
 
 cc_library(
+    name = "fcl-environment",
+    srcs = ["fcl-environment.cc"],
+    hdrs = ["fcl-environment.h"],
+    deps = [
+        ":environment-interface",
+        "//bubbles-motion-planning/src/transforms:transformation",
+    ],
+    linkopts = [
+        "-lboost_filesystem",
+        "-lboost_serialization",
+        "-lboost_system",
+        "-lboost_thread",
+        "-lfcl",
+    ],
+)
+
+cc_library(
     name = "pqp-environment",
     srcs = ["pqp-environment.cc"],
     hdrs = ["pqp-environment.h"],
@@ -45,6 +62,13 @@ cc_test(
         ":environment-feedback",
         ":pqp-environment",
     ],
+    linkopts = ["-lboost_unit_test_framework"],
+)
+
+cc_test(
+    name = "fcl-environment_test",
+    srcs = ["fcl-environment_test.cc"],
+    deps = [":fcl-environment"],
     linkopts = ["-lboost_unit_test_framework"],
 )
 
