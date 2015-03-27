@@ -72,6 +72,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
+    data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
 cc_binary(
@@ -85,6 +86,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
+    data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
 cc_binary(
@@ -99,6 +101,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
     linkopts = ["-lm"],
+    data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
 cc_binary(

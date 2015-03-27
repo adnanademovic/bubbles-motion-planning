@@ -88,19 +88,19 @@ int main() {
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/abb1.conf"});
+      "motion-planning-data/abb-irb-120/case_trivial.conf"});
   // Easy test case
   test_cases.push_back({
       {-pi() / 3.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
        pi() / 20.0, pi() / 20.0, pi() / 20.0},
       {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
        -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/abb2.conf"});
+      "motion-planning-data/abb-irb-120/case_easy.conf"});
   // Hard test case
   test_cases.push_back({
       {-pi() / 2.0, pi() / 3.6, -pi() / 3.6, 0.0, 0.0, 0.0},
       {0.0, pi() / 2.0, -pi() / 2.0, -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
-      "../models/abb3.conf"});
+      "motion-planning-data/abb-irb-120/case_hard.conf"});
   int test = 2;
 
   std::vector<std::pair<double, double> > limits(6);
