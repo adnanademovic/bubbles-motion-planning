@@ -9,5 +9,3 @@ License
 -------
 
 All copyright of code in this repository is covered by the license disclosed in the LICENSE file.
-
-Usage of any classes that require PQP installed to compile require compliance with the PQPLICENSE as well.
