@@ -41,7 +41,6 @@
 #include <fcl/collision.h>
 
 #include "environment-interface.h"
-#include "../transforms/transformation.h"
 
 namespace com {
 namespace ademovic {

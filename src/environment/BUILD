@@ -27,7 +27,6 @@ cc_library(
     hdrs = ["fcl-environment.h"],
     deps = [
         ":environment-interface",
-        "//bubbles-motion-planning/src/transforms:transformation",
     ],
     linkopts = [
         "-lboost_filesystem",
