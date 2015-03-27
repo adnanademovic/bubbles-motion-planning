@@ -60,7 +60,7 @@ cc_test(
     srcs = ["environment-feedback_test.cc"],
     deps = [
         ":environment-feedback",
-        ":pqp-environment",
+        ":fcl-environment",
     ],
     linkopts = ["-lboost_unit_test_framework"],
 )

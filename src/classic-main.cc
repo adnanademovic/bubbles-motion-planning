@@ -30,7 +30,7 @@
 #include "rrt.h"
 #include "classic-tree.h"
 #include "environment/environment-feedback.h"
-#include "environment/pqp-environment.h"
+#include "environment/fcl-environment.h"
 #include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
@@ -118,10 +118,10 @@ int main() {
   limits[5].second = 6.98131;
 
   std::shared_ptr<EnvironmentFeedback> src_collision_source(
-      new EnvironmentFeedback(new PqpEnvironment(
+      new EnvironmentFeedback(new FclEnvironment(
           test_cases[test].configuration)));
   std::shared_ptr<EnvironmentFeedback> dst_collision_source(
-      new EnvironmentFeedback(new PqpEnvironment(
+      new EnvironmentFeedback(new FclEnvironment(
           test_cases[test].configuration)));
 
   double max_step = pi()/50.0;

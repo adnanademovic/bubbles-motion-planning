@@ -32,7 +32,7 @@
 #include "rrt.h"
 #include "bubble-tree.h"
 #include "environment/environment-feedback.h"
-#include "environment/pqp-environment.h"
+#include "environment/fcl-environment.h"
 #include "generators/simple-generator.h"
 
 using namespace com::ademovic::bubblesmp;
@@ -157,9 +157,9 @@ int main() {
   Make2DPolyFile("obs.stl", obstacles);
 
   std::shared_ptr<EnvironmentFeedback> src_bubble_source(
-      new EnvironmentFeedback(new PqpEnvironment("config.conf")));
+      new EnvironmentFeedback(new FclEnvironment("config.conf")));
   std::shared_ptr<EnvironmentFeedback> dst_bubble_source(
-      new EnvironmentFeedback(new PqpEnvironment("config.conf")));
+      new EnvironmentFeedback(new FclEnvironment("config.conf")));
   int bubbles_per_branch = 50;
 
   RrtTree* src_tree = new BubbleTree(
@@ -175,7 +175,7 @@ int main() {
   }
   fprintf(stderr, "Final step: %6d\n", step);
 
-  PqpEnvironment printing_environment("config.conf");
+  FclEnvironment printing_environment("config.conf");
   printf("obs=[];\n");
   for (int i = -100; i < 101; ++i)
     for (int j = -100; j < 101; ++j)

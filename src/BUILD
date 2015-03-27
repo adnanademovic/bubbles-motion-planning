@@ -67,7 +67,7 @@ cc_binary(
     deps = [
         ":bubble-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:pqp-environment",
+        "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
@@ -80,7 +80,7 @@ cc_binary(
     deps = [
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:pqp-environment",
+        "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
@@ -94,7 +94,7 @@ cc_binary(
         ":bubble-tree",
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:pqp-environment",
+        "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
@@ -107,7 +107,7 @@ cc_binary(
     deps = [
         ":bubble-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:pqp-environment",
+        "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
@@ -120,7 +120,7 @@ cc_binary(
     deps = [
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:pqp-environment",
+        "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
@@ -134,7 +134,7 @@ cc_binary(
         ":bubble-tree",
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:pqp-environment",
+        "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
