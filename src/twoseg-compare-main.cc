@@ -29,6 +29,8 @@
 #include <utility>
 #include <vector>
 
+#include <gflags/gflags.h>
+
 #include "rrt.h"
 #include "bubble-tree.h"
 #include "classic-tree.h"
@@ -226,7 +228,9 @@ void GenerateFiles() {
   Make2DPolyFile("obs3.stl", obstacles);
 }
 
-int main() {
+int main(int argc, char** argv) {
+  google::ParseCommandLineFlags(&argc, &argv, true);
+
   GenerateFiles();
 
   std::vector<TestCase> test_cases;

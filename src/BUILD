@@ -74,7 +74,10 @@ cc_binary(
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
-    linkopts = ["-lm"],
+    linkopts = [
+        "-lgflags",
+        "-lm",
+    ],
     data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
@@ -88,7 +91,10 @@ cc_binary(
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
-    linkopts = ["-lm"],
+    linkopts = [
+        "-lgflags",
+        "-lm",
+    ],
     data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
@@ -103,7 +109,10 @@ cc_binary(
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
-    linkopts = ["-lm"],
+    linkopts = [
+        "-lgflags",
+        "-lm",
+    ],
     data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
@@ -117,7 +126,10 @@ cc_binary(
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
-    linkopts = ["-lm"],
+    linkopts = [
+        "-lgflags",
+        "-lm",
+    ],
 )
 
 cc_binary(
@@ -130,7 +142,10 @@ cc_binary(
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
-    linkopts = ["-lm"],
+    linkopts = [
+        "-lgflags",
+        "-lm",
+    ],
 )
 
 cc_binary(
@@ -144,7 +159,10 @@ cc_binary(
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:simple-generator",
     ],
-    linkopts = ["-lm"],
+    linkopts = [
+        "-lgflags",
+        "-lm",
+    ],
 )
 
 cc_test(

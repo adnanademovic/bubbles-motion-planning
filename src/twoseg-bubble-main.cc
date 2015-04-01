@@ -29,6 +29,8 @@
 #include <utility>
 #include <vector>
 
+#include <gflags/gflags.h>
+
 #include "rrt.h"
 #include "bubble-tree.h"
 #include "environment/environment-feedback.h"
@@ -110,7 +112,9 @@ void Make2DLineFile(const char filename[], const std::vector<double>& points) {
   MakeModelFile(filename, coords);
 }
 
-int main() {
+int main(int argc, char** argv) {
+  google::ParseCommandLineFlags(&argc, &argv, true);
+
   std::vector<std::pair<double, double> > limits(2);
   limits[0].first = -3.14;
   limits[0].second = 3.14;

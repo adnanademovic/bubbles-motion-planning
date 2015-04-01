@@ -27,6 +27,8 @@
 #include <cmath>
 #include <cstdio>
 
+#include <gflags/gflags.h>
+
 #include "rrt.h"
 #include "classic-tree.h"
 #include "environment/environment-feedback.h"
@@ -80,7 +82,9 @@ struct TestCase {
   std::string configuration;
 };
 
-int main() {
+int main(int argc, char** argv) {
+  google::ParseCommandLineFlags(&argc, &argv, true);
+
   std::vector<TestCase> test_cases;
   // Trivial test case
   test_cases.push_back({

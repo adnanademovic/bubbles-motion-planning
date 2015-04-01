@@ -27,6 +27,8 @@
 #include <cmath>
 #include <cstdio>
 
+#include <gflags/gflags.h>
+
 #include "rrt.h"
 #include "bubble-tree.h"
 #include "classic-tree.h"
@@ -156,7 +158,9 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
          test_case.name.c_str(), test_case.name.c_str(), step);
 }
 
-int main() {
+int main(int argc, char** argv) {
+  google::ParseCommandLineFlags(&argc, &argv, true);
+
   std::vector<TestCase> test_cases;
   // Trivial test case
   test_cases.push_back({
