@@ -42,7 +42,7 @@ void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
 }  // namespace
 
 Rrt::Rrt(RrtTree* src_tree, RrtTree* dst_tree,
-         RandomPointGeneratorInterface* random_point_generator)
+         generators::RandomPointGeneratorInterface* random_point_generator)
     : random_point_generator_(random_point_generator),
       src_tree_(src_tree), dst_tree_(dst_tree), done_(false) {}
 

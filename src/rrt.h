@@ -31,8 +31,8 @@
 #include <utility>
 #include <vector>
 
+#include "generators/random-point-generator-interface.h"
 #include "rrt-tree.h"
-#include "random-point-generator-interface.h"
 
 namespace com {
 namespace ademovic {
@@ -42,7 +42,7 @@ class Rrt {
  public:
   // Takes ownership of everything passed to it.
   Rrt(RrtTree* src_tree, RrtTree* dst_tree,
-      RandomPointGeneratorInterface* random_point_generator);
+      generators::RandomPointGeneratorInterface* random_point_generator);
 
   bool Run(int max_steps);
   bool Step(bool connect = false);
@@ -50,7 +50,8 @@ class Rrt {
   std::vector<std::shared_ptr<TreePoint> > GetSolution() const;
 
  private:
-  std::unique_ptr<RandomPointGeneratorInterface> random_point_generator_;
+  std::unique_ptr<generators::RandomPointGeneratorInterface>
+      random_point_generator_;
   std::unique_ptr<RrtTree> src_tree_;
   std::unique_ptr<RrtTree> dst_tree_;
   TreeNode* src_connect_node_;

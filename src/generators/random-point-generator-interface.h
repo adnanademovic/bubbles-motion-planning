@@ -24,14 +24,15 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_RANDOM_POINT_GENERATOR_INTERFACE_H_
-#define COM_ADEMOVIC_BUBBLESMP_RANDOM_POINT_GENERATOR_INTERFACE_H_
+#ifndef COM_ADEMOVIC_BUBBLESMP_GENERATORS_RANDOM_POINT_GENERATOR_INTERFACE_H_
+#define COM_ADEMOVIC_BUBBLESMP_GENERATORS_RANDOM_POINT_GENERATOR_INTERFACE_H_
 
 #include <vector>
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+namespace generators {
 
 class RandomPointGeneratorInterface {
  public:
@@ -42,8 +43,9 @@ class RandomPointGeneratorInterface {
   RandomPointGeneratorInterface() {};
 };
 
+}  // namespace generators
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com
 
-#endif  // COM_ADEMOVIC_BUBBLESMP_RANDOM_POINT_GENERATOR_INTERFACE_H_
+#endif  // COM_ADEMOVIC_BUBBLESMP_GENERATORS_RANDOM_POINT_GENERATOR_INTERFACE_H_

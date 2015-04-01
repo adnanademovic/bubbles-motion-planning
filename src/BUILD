@@ -40,15 +40,14 @@ cc_library(
 )
 
 cc_library(
-    name = "random-point-generator-interface",
-    hdrs = ["random-point-generator-interface.h"],
-)
-
-cc_library(
     name = "rrt",
     srcs = ["rrt.cc"],
     hdrs = ["rrt.h"],
-    deps = [":rrt-tree"],
+    deps = [
+        ":rrt-tree",
+        "//bubbles-motion-planning/src/generators" +
+            ":random-point-generator-interface",
+    ],
 )
 
 cc_library(
