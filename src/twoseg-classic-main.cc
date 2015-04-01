@@ -164,14 +164,19 @@ int main(int argc, char** argv) {
       new EnvironmentFeedback(new FclEnvironment("config.conf")));
   std::shared_ptr<EnvironmentFeedback> dst_collision_source(
       new EnvironmentFeedback(new FclEnvironment("config.conf")));
+
+  IndexSettings index_settings;
+  index_settings.mutable_index_params()->set_trees(8);
+  index_settings.mutable_search_params()->set_checks(128);
+
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
       max_step, ministeps_per_step, {-3.1415/2.0, 3.1415/4.0},
-      src_collision_source);
+      src_collision_source, index_settings);
   RrtTree* dst_tree = new ClassicTree(
       max_step, ministeps_per_step, {3.1415/2.0, -3.1415/4.0},
-      dst_collision_source);
+      dst_collision_source, index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);

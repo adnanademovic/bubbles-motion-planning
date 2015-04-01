@@ -145,13 +145,17 @@ int main(int argc, char** argv) {
       new EnvironmentFeedback(new FclEnvironment(
           test_cases[test].configuration)));
 
+  IndexSettings index_settings;
+  index_settings.mutable_index_params()->set_trees(8);
+  index_settings.mutable_search_params()->set_checks(128);
+
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
       limits, bubbles_per_branch, test_cases[test].start, src_bubble_source,
-      0.3);
+      0.3, index_settings);
   RrtTree* dst_tree = new BubbleTree(
       limits, bubbles_per_branch, test_cases[test].goal, dst_bubble_source,
-      0.3);
+      0.3, index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);

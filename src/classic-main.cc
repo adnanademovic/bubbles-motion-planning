@@ -145,14 +145,18 @@ int main(int argc, char** argv) {
       new EnvironmentFeedback(new FclEnvironment(
           test_cases[test].configuration)));
 
+  IndexSettings index_settings;
+  index_settings.mutable_index_params()->set_trees(8);
+  index_settings.mutable_search_params()->set_checks(128);
+
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
       max_step, ministeps_per_step, test_cases[test].start,
-      src_collision_source);
+      src_collision_source, index_settings);
   RrtTree* dst_tree = new ClassicTree(
       max_step, ministeps_per_step, test_cases[test].goal,
-      dst_collision_source);
+      dst_collision_source, index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);

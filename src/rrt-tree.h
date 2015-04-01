@@ -41,7 +41,7 @@ namespace bubblesmp {
 // multiple threads.
 class RrtTree {
  public:
-  RrtTree(const std::vector<double>& root, bool optimize_index = true);
+  RrtTree(const std::vector<double>& root, const IndexSettings& index_settings);
 
   bool Connect(const std::vector<double>& q_target);
   TreeNode* GetNewestNode() const;

@@ -105,11 +105,17 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   std::shared_ptr<EnvironmentFeedback> dst_bubble_source(
       new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
 
+  IndexSettings index_settings;
+  index_settings.mutable_index_params()->set_trees(8);
+  index_settings.mutable_search_params()->set_checks(128);
+
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_case.start, src_bubble_source, 0.3);
+      limits, bubbles_per_branch, test_case.start, src_bubble_source, 0.3,
+      index_settings);
   RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_case.goal, dst_bubble_source, 0.3);
+      limits, bubbles_per_branch, test_case.goal, dst_bubble_source, 0.3,
+      index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
@@ -145,12 +151,18 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
   std::shared_ptr<EnvironmentFeedback> dst_collision_source(
       new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
 
+  IndexSettings index_settings;
+  index_settings.mutable_index_params()->set_trees(8);
+  index_settings.mutable_search_params()->set_checks(128);
+
   double max_step = pi()/50.0;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
-      max_step, ministeps_per_step, test_case.start, src_collision_source);
+      max_step, ministeps_per_step, test_case.start, src_collision_source,
+      index_settings);
   RrtTree* dst_tree = new ClassicTree(
-      max_step, ministeps_per_step, test_case.goal, dst_collision_source);
+      max_step, ministeps_per_step, test_case.goal, dst_collision_source,
+      index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);

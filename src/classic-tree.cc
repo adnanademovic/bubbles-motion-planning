@@ -35,10 +35,10 @@ namespace bubblesmp {
 
 ClassicTree::ClassicTree(
     double max_step, int substeps, const std::vector<double>& root,
-    std::shared_ptr<environment::EnvironmentFeedback> collision_source)
-    : RrtTree(root), eps_(max_step / substeps), substeps_(substeps),
-      collision_source_(collision_source)
-{
+    std::shared_ptr<environment::EnvironmentFeedback> collision_source,
+    const IndexSettings& index_settings)
+    : RrtTree(root, index_settings), eps_(max_step / substeps),
+      substeps_(substeps), collision_source_(collision_source) {
   fprintf(stderr, "Collision at root point: %s\n",
           collision_source_->IsCollision(root) ? "YES" : "NO");
 }

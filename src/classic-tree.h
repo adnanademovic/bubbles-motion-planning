@@ -44,8 +44,8 @@ class ClassicTree : public RrtTree {
  public:
   ClassicTree(
       double max_step, int substeps, const std::vector<double>& root,
-      std::shared_ptr<
-          environment::EnvironmentFeedback> collision_source);
+      std::shared_ptr<environment::EnvironmentFeedback> collision_source,
+      const IndexSettings& index_settings);
 
  private:
   // Does not take ownership of parent.

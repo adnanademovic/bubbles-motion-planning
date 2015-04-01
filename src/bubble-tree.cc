@@ -37,8 +37,9 @@ BubbleTree::BubbleTree(
     const std::vector<std::pair<double, double> >& limits,
     int max_bubbles_per_branch, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
-    double min_move_size)
-    : RrtTree(root), max_bubbles_per_branch_(max_bubbles_per_branch),
+    double min_move_size, const IndexSettings& index_settings)
+    : RrtTree(root, index_settings),
+      max_bubbles_per_branch_(max_bubbles_per_branch),
       bubble_source_(bubble_source), limits_(limits),
       min_move_size_(min_move_size / root.size()) {
   // TODO: make this an assertion

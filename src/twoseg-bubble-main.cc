@@ -165,14 +165,18 @@ int main(int argc, char** argv) {
       new EnvironmentFeedback(new FclEnvironment("config.conf")));
   std::shared_ptr<EnvironmentFeedback> dst_bubble_source(
       new EnvironmentFeedback(new FclEnvironment("config.conf")));
-  int bubbles_per_branch = 50;
 
+  IndexSettings index_settings;
+  index_settings.mutable_index_params()->set_trees(8);
+  index_settings.mutable_search_params()->set_checks(128);
+
+  int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
       limits, bubbles_per_branch, {-3.1415/2.0, 3.1415/4.0},
-      src_bubble_source, 0.3);
+      src_bubble_source, 0.3, index_settings);
   RrtTree* dst_tree = new BubbleTree(
       limits, bubbles_per_branch, {3.1415/2.0, -3.1415/4.0},
-      dst_bubble_source, 0.3);
+      dst_bubble_source, 0.3, index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
