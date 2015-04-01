@@ -1,0 +1,3 @@
+# Protobuffer generated files
+*.pb.h
+*.pb.cc
