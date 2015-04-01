@@ -71,7 +71,8 @@ cc_binary(
         ":rrt",
         "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
-        "//bubbles-motion-planning/src/generators:simple-generator",
+        "//bubbles-motion-planning/src/generators:generator-proto",
+        "//bubbles-motion-planning/src/generators:make-generator",
     ],
     linkopts = [
         "-lgflags",
@@ -88,7 +89,8 @@ cc_binary(
         ":rrt",
         "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
-        "//bubbles-motion-planning/src/generators:simple-generator",
+        "//bubbles-motion-planning/src/generators:generator-proto",
+        "//bubbles-motion-planning/src/generators:make-generator",
     ],
     linkopts = [
         "-lgflags",
@@ -106,7 +108,8 @@ cc_binary(
         ":rrt",
         "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
-        "//bubbles-motion-planning/src/generators:simple-generator",
+        "//bubbles-motion-planning/src/generators:generator-proto",
+        "//bubbles-motion-planning/src/generators:make-generator",
     ],
     linkopts = [
         "-lgflags",
@@ -123,7 +126,8 @@ cc_binary(
         ":rrt",
         "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
-        "//bubbles-motion-planning/src/generators:simple-generator",
+        "//bubbles-motion-planning/src/generators:generator-proto",
+        "//bubbles-motion-planning/src/generators:make-generator",
     ],
     linkopts = [
         "-lgflags",
@@ -139,7 +143,8 @@ cc_binary(
         ":rrt",
         "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
-        "//bubbles-motion-planning/src/generators:simple-generator",
+        "//bubbles-motion-planning/src/generators:generator-proto",
+        "//bubbles-motion-planning/src/generators:make-generator",
     ],
     linkopts = [
         "-lgflags",
@@ -156,7 +161,8 @@ cc_binary(
         ":rrt",
         "//bubbles-motion-planning/src/environment:fcl-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
-        "//bubbles-motion-planning/src/generators:simple-generator",
+        "//bubbles-motion-planning/src/generators:generator-proto",
+        "//bubbles-motion-planning/src/generators:make-generator",
     ],
     linkopts = [
         "-lgflags",

@@ -35,7 +35,8 @@
 #include "bubble-tree.h"
 #include "environment/environment-feedback.h"
 #include "environment/fcl-environment.h"
-#include "generators/simple-generator.h"
+#include "generators/generator.pb.h"
+#include "generators/make-generator.h"
 
 using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
@@ -172,7 +173,11 @@ int main(int argc, char** argv) {
   RrtTree* dst_tree = new BubbleTree(
       limits, bubbles_per_branch, {3.1415/2.0, -3.1415/4.0},
       dst_bubble_source, 0.3);
-  Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
+
+  generators::GeneratorSettings generator_settings;
+  generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
+  Rrt bubble_rrt(src_tree, dst_tree, NewGeneratorFromProtoBuffer(
+      limits, generator_settings));
   int step = 0;
   while (!bubble_rrt.Step()) {
     fprintf(stderr, "Current step: %6d\n", ++step);

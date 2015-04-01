@@ -35,7 +35,8 @@
 #include "classic-tree.h"
 #include "environment/environment-feedback.h"
 #include "environment/fcl-environment.h"
-#include "generators/simple-generator.h"
+#include "generators/generator.pb.h"
+#include "generators/make-generator.h"
 
 using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
@@ -171,7 +172,11 @@ int main(int argc, char** argv) {
   RrtTree* dst_tree = new ClassicTree(
       max_step, ministeps_per_step, {3.1415/2.0, -3.1415/4.0},
       dst_collision_source);
-  Rrt classic_rrt(src_tree, dst_tree, new SimpleGenerator(limits));
+
+  generators::GeneratorSettings generator_settings;
+  generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
+  Rrt classic_rrt(src_tree, dst_tree, NewGeneratorFromProtoBuffer(
+      limits, generator_settings));
   int step = 0;
   while (!classic_rrt.Step()) {
     fprintf(stderr, "Current step: %6d\n", ++step);

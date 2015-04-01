@@ -36,7 +36,8 @@
 #include "classic-tree.h"
 #include "environment/environment-feedback.h"
 #include "environment/fcl-environment.h"
-#include "generators/simple-generator.h"
+#include "generators/generator.pb.h"
+#include "generators/make-generator.h"
 
 using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
@@ -137,7 +138,10 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   RrtTree* dst_tree = new BubbleTree(
       limits, bubbles_per_branch, test_case.goal, dst_bubble_source, 0.3);
 
-  Rrt bubble_rrt(src_tree, dst_tree, new SimpleGenerator(limits, seed));
+  generators::GeneratorSettings generator_settings;
+  generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
+  Rrt bubble_rrt(src_tree, dst_tree, NewGeneratorFromProtoBuffer(
+      limits, generator_settings));
   int step = 0;
   while (!bubble_rrt.Step())
     if (++step > 5000)
@@ -166,7 +170,11 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
       max_step, ministeps_per_step, test_case.start, src_collision_source);
   RrtTree* dst_tree = new ClassicTree(
       max_step, ministeps_per_step, test_case.goal, dst_collision_source);
-  Rrt classic_rrt(src_tree, dst_tree, new SimpleGenerator(limits, seed));
+
+  generators::GeneratorSettings generator_settings;
+  generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
+  Rrt classic_rrt(src_tree, dst_tree, NewGeneratorFromProtoBuffer(
+      limits, generator_settings));
   int step = 0;
   while (!classic_rrt.Step())
     if (++step > 5000)
