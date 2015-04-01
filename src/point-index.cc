@@ -26,6 +26,33 @@
 
 #include "point-index.h"
 
+#include <gflags/gflags.h>
+
+DEFINE_bool(point_index_force_flann, false,
+    "Sets if point indices should have to use flann");
+DEFINE_bool(point_index_force_simple, false,
+    "Sets if point indices should have to use a simple index "
+    "(faster for small amounts of points)");
+DEFINE_int32(point_index_tree_count, 8,
+    "Number of trees used for the point indices");
+DEFINE_int32(point_index_checks, 128,
+    "Number of trees used for the point indices");
+
+namespace {
+static bool ValidatePointIndexParams(const char* flagname, int32_t value) {
+  if (value < 1) {
+    printf("Invalid value for --%s: %d\n", flagname, value);
+    return false;
+  }
+  return true;
+}
+
+static const bool tree_count_dummy = google::RegisterFlagValidator(
+    &FLAGS_point_index_tree_count, &ValidatePointIndexParams);
+static const bool checks_dummy = google::RegisterFlagValidator(
+    &FLAGS_point_index_checks, &ValidatePointIndexParams);
+}  // namespace
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -45,13 +72,17 @@ double DistanceSquared(
 
 PointIndex::PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
                        bool using_flann_index)
-    : using_flann_index_(using_flann_index),
+    : using_flann_index_(FLAGS_point_index_force_flann ||
+          (using_flann_index && !FLAGS_point_index_force_simple)),
       attachment_points_(1, AttachmentPoint{q_root, root_node}),
       root_node_(root_node), index_(flann::Matrix<double>(
                  std::vector<double>(q_root).data(), 1, q_root.size()),
-             flann::KDTreeIndexParams(8)) {
-  if (using_flann_index_)
+             flann::KDTreeIndexParams(FLAGS_point_index_tree_count)) {
+  if ((using_flann_index_ && !FLAGS_point_index_force_simple) ||
+      FLAGS_point_index_force_flann)
     index_.buildIndex();
+  search_parameters_.checks = FLAGS_point_index_checks;
+  search_parameters_.use_heap = flann::FLANN_False;
 }
 
 void PointIndex::AddPoint(const std::vector<double>& q, TreeNode* parent) {
@@ -68,7 +99,7 @@ AttachmentPoint PointIndex::GetNearestPoint(
     std::vector<std::vector<double> > distances(1, std::vector<double>(1, 0.0));
     index_.knnSearch(
         flann::Matrix<double>(std::vector<double>(q).data(), 1, q.size()),
-        indices, distances, 1, flann::SearchParams(128));
+        indices, distances, 1, search_parameters_);
     return attachment_points_[indices[0][0]];
   } else {
     double closest_distance = DistanceSquared(

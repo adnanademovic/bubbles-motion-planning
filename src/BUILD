@@ -33,7 +33,10 @@ cc_library(
     srcs = ["point-index.cc"],
     hdrs = ["point-index.h"],
     deps = [":tree-node"],
-    linkopts = ["-lflann_cpp"],
+    linkopts = [
+        "-lflann_cpp",
+        "-lgflags",
+    ],
 )
 
 cc_library(

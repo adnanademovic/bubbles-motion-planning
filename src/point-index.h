@@ -58,6 +58,7 @@ class PointIndex {
   std::vector<AttachmentPoint> attachment_points_;
   std::unique_ptr<TreeNode> root_node_;
   flann::Index<flann::L2<double> > index_;
+  flann::SearchParams search_parameters_;
 };
 
 }  // namespace bubblesmp
