@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package com.ademovic.bubblesmp.generators;
+
+message GeneratorSettings {
+  enum Type {
+    SIMPLE = 0;
+  }
+  optional Type type = 1;
+  optional uint32 seed = 2;
+}
