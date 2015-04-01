@@ -31,6 +31,7 @@
 
 #include <flann/flann.hpp>
 
+#include "index.pb.h"
 #include "tree-node.h"
 
 namespace com {
@@ -46,18 +47,22 @@ struct AttachmentPoint {
 class PointIndex {
  public:
   // PointIndex takes ownership of root_node
+  PointIndex(const std::vector<double>& q_root, TreeNode* root_node);
   PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
-             bool using_flann_index);
+             const IndexSettings& flann_settings);
 
   // PointIndex doesn't take ownership of parent
   void AddPoint(const std::vector<double>& q, TreeNode* parent);
   AttachmentPoint GetNearestPoint(const std::vector<double>& q) const;
 
  private:
+  PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
+             bool using_flann_index, const IndexSettings& flann_settings);
+
   bool using_flann_index_;
   std::vector<AttachmentPoint> attachment_points_;
   std::unique_ptr<TreeNode> root_node_;
-  flann::Index<flann::L2<double> > index_;
+  std::unique_ptr<flann::Index<flann::L2<double> > > index_;
   flann::SearchParams search_parameters_;
 };
 

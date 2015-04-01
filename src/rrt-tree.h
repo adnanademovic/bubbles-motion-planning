@@ -51,7 +51,7 @@ class RrtTree {
   virtual bool ConnectLine(
       const AttachmentPoint& point, const std::vector<double>& q_target) = 0;
 
-  PointIndex point_index_;
+  std::unique_ptr<PointIndex> point_index_;
   std::vector<std::unique_ptr<TreeNode> > nodes_;
 };
 

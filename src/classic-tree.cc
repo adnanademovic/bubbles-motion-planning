@@ -47,7 +47,7 @@ TreeNode* ClassicTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
   TreeNode* current_node = new TreeNode(new TreePoint(q), parent);
   nodes_.emplace_back(current_node);
-  point_index_.AddPoint(q, current_node);
+  point_index_->AddPoint(q, current_node);
   return current_node;
 }
 

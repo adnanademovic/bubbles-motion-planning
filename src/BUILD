@@ -32,7 +32,10 @@ cc_library(
     name = "point-index",
     srcs = ["point-index.cc"],
     hdrs = ["point-index.h"],
-    deps = [":tree-node"],
+    deps = [
+        ":index-proto",
+        ":tree-node",
+    ],
     linkopts = [
         "-lflann_cpp",
         "-lgflags",
@@ -62,6 +65,18 @@ cc_library(
     srcs = ["tree-node.cc"],
     hdrs = ["tree-node.h"],
 )
+
+# TODO: Replace with proper protobuffer rules when implemented in Bazel.
+cc_library(
+    name = "index-proto",
+    srcs = ["index.pb.cc"],
+    hdrs = ["index.pb.h"],
+    linkopts = [
+        "-lprotobuf",
+    ],
+)
+
+
 
 cc_binary(
     name = "bubble-main",

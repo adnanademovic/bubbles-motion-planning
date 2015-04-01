@@ -57,9 +57,9 @@ TreeNode* BubbleTree::AddNode(
   unsigned int axis_count = position.size();
   for (size_t i = 0; i < axis_count; ++i) {
     point[i] = std::min(limits_[i].second, position[i] + size[i]);
-    point_index_.AddPoint(point, current_node);
+    point_index_->AddPoint(point, current_node);
     point[i] = std::max(limits_[i].first, position[i] - size[i]);
-    point_index_.AddPoint(point, current_node);
+    point_index_->AddPoint(point, current_node);
     point[i] = position[i];
   }
   return current_node;

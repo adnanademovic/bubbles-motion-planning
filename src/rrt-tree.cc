@@ -30,12 +30,17 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-RrtTree::RrtTree(const std::vector<double>& root, bool optimize_index)
-    : point_index_(
-        root, new TreeNode(new TreePoint(root), nullptr), optimize_index) {}
+RrtTree::RrtTree(const std::vector<double>& root, bool optimize_index) {
+  if (optimize_index)
+    point_index_.reset(new PointIndex(
+        root, new TreeNode(new TreePoint(root), nullptr), IndexSettings()));
+  else
+    point_index_.reset(new PointIndex(
+        root, new TreeNode(new TreePoint(root), nullptr)));
+}
 
 bool RrtTree::Connect(const std::vector<double>& q_target) {
-  AttachmentPoint connection_point = point_index_.GetNearestPoint(q_target);
+  AttachmentPoint connection_point = point_index_->GetNearestPoint(q_target);
   return ConnectLine(connection_point, q_target);
 }
 
