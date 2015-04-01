@@ -71,12 +71,8 @@ cc_library(
     name = "index-proto",
     srcs = ["index.pb.cc"],
     hdrs = ["index.pb.h"],
-    linkopts = [
-        "-lprotobuf",
-    ],
+    linkopts = ["-lprotobuf"],
 )
-
-
 
 cc_binary(
     name = "bubble-main",
