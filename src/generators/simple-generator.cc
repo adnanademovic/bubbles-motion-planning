@@ -33,7 +33,6 @@ namespace ademovic {
 namespace bubblesmp {
 namespace generators {
 
-
 SimpleGenerator::SimpleGenerator(
     const std::vector<std::pair<double, double> >& limits, unsigned seed)
     : generator_(seed) {
