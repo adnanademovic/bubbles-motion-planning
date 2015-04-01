@@ -36,6 +36,8 @@ namespace generators {
 RandomPointGeneratorInterface* NewGeneratorFromProtoBuffer(
     const std::vector<std::pair<double, double> >& limits,
     const GeneratorSettings& settings) {
+  if (!settings.has_type())
+    return nullptr;
   switch (settings.type()) {
     case GeneratorSettings::SIMPLE:
       return settings.has_seed()

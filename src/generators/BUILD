@@ -28,4 +28,5 @@ cc_library(
     name = "generator-proto",
     srcs = ["generator.pb.cc"],
     hdrs = ["generator.pb.h"],
+    linkopts = ["-lprotobuf"],
 )
