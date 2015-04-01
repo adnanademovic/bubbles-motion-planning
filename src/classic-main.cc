@@ -36,6 +36,22 @@
 #include "generators/generator.pb.h"
 #include "generators/make-generator.h"
 
+DEFINE_int32(simulation_case, 2,
+    "Chooses the case for the simulation (0 - trivial, 1 - easy, 2 - hard)");
+
+namespace {
+static bool ValidateSimulationCase(const char* flagname, int32_t value) {
+  if (value < 0 || value > 2) {
+    printf("Invalid value for --%s: %d\n", flagname, value);
+    return false;
+  }
+  return true;
+}
+
+static const bool simulation_case_dummy = google::RegisterFlagValidator(
+    &FLAGS_simulation_case, &ValidateSimulationCase);
+}  // namespace
+
 using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::generators;
@@ -106,7 +122,7 @@ int main(int argc, char** argv) {
       {-pi() / 2.0, pi() / 3.6, -pi() / 3.6, 0.0, 0.0, 0.0},
       {0.0, pi() / 2.0, -pi() / 2.0, -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
       "motion-planning-data/abb-irb-120/case_hard.conf"});
-  int test = 2;
+  int test = FLAGS_simulation_case;
 
   std::vector<std::pair<double, double> > limits(6);
   limits[0].first = -2.87979;
