@@ -27,6 +27,7 @@
 #ifndef COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_ENVIRONMENT_INTERFACE_H_
 #define COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_ENVIRONMENT_INTERFACE_H_
 
+#include <utility>
 #include <vector>
 
 namespace com {
@@ -41,6 +42,7 @@ class EnvironmentInterface {
   virtual bool IsCollision(const std::vector<double>& q) const = 0;
   virtual DistanceProfile GetDistanceProfile(
       const std::vector<double>& q) const = 0;
+  virtual std::vector<std::pair<double, double> > GetAngleRanges() const = 0;
 };
 
 }  // namespace environment

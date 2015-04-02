@@ -112,12 +112,6 @@ void Make2DLineFile(const char filename[], const std::vector<double>& points) {
 int main(int argc, char** argv) {
   google::ParseCommandLineFlags(&argc, &argv, true);
 
-  std::vector<std::pair<double, double> > limits(2);
-  limits[0].first = -180.0;
-  limits[0].second = 180.0;
-  limits[1].first = -180.0;
-  limits[1].second = 180.0;
-
   Make2DLineFile("sub11.stl", {0.0, 1.0});
   Make2DLineFile("sub21.stl", {1.0, 2.0});
   Make2DLineFile("sub31.stl", {2.0, 3.0});
@@ -186,16 +180,16 @@ int main(int argc, char** argv) {
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch, {-90.0, 45.0},
-      src_bubble_source, 18.0, index_settings);
+      bubbles_per_branch, {-90.0, 45.0}, src_bubble_source, 1.8,
+      index_settings);
   RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch, {90.0, -45.0},
-      dst_bubble_source, 18.0, index_settings);
+      bubbles_per_branch, {90.0, -45.0}, dst_bubble_source, 1.8,
+      index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
   Rrt bubble_rrt(src_tree, dst_tree, NewGeneratorFromProtoBuffer(
-      limits, generator_settings));
+      src_bubble_source->GetAngleRanges(), generator_settings));
   int step = 0;
   while (!bubble_rrt.Step()) {
     fprintf(stderr, "Current step: %6d\n", ++step);

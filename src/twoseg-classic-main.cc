@@ -111,12 +111,6 @@ void Make2DLineFile(const char filename[], const std::vector<double>& points) {
 int main(int argc, char** argv) {
   google::ParseCommandLineFlags(&argc, &argv, true);
 
-  std::vector<std::pair<double, double> > limits(2);
-  limits[0].first = -180.0;
-  limits[0].second = 180.0;
-  limits[1].first = -180.0;
-  limits[1].second = 180.0;
-
   Make2DLineFile("sub11.stl", {0.0, 1.0});
   Make2DLineFile("sub21.stl", {1.0, 2.0});
   Make2DLineFile("sub31.stl", {2.0, 3.0});
@@ -195,7 +189,7 @@ int main(int argc, char** argv) {
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
   Rrt classic_rrt(src_tree, dst_tree, NewGeneratorFromProtoBuffer(
-      limits, generator_settings));
+      src_collision_source->GetAngleRanges(), generator_settings));
   int step = 0;
   while (!classic_rrt.Step()) {
     fprintf(stderr, "Current step: %6d\n", ++step);

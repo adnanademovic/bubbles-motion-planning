@@ -44,8 +44,7 @@ namespace bubblesmp {
 // multiple threads.
 class BubbleTree : public RrtTree {
  public:
-  BubbleTree(const std::vector<std::pair<double, double> >& limits,
-             int max_bubbles_per_branch, const std::vector<double>& root,
+  BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
              std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
              double min_move_size, const IndexSettings& index_settings);
 

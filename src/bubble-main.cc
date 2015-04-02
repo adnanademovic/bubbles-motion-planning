@@ -116,20 +116,6 @@ int main(int argc, char** argv) {
       "motion-planning-data/abb-irb-120/case_hard.conf"});
   int test = FLAGS_simulation_case;
 
-  std::vector<std::pair<double, double> > limits(6);
-  limits[0].first = -165.0;
-  limits[0].second = 165.0;
-  limits[1].first = -110.0;
-  limits[1].second = 110.0;
-  limits[2].first = -110.0;
-  limits[2].second = 70.0;
-  limits[3].first = -160.0;
-  limits[3].second = 160.0;
-  limits[4].first = -120.0;
-  limits[4].second = 120.0;
-  limits[5].first = -400.0;
-  limits[5].second = 400.0;
-
   std::shared_ptr<EnvironmentFeedback> src_bubble_source(
       new EnvironmentFeedback(new FclEnvironment(
           test_cases[test].configuration)));
@@ -143,16 +129,16 @@ int main(int argc, char** argv) {
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_cases[test].start, src_bubble_source,
-      18.0, index_settings);
+      bubbles_per_branch, test_cases[test].start, src_bubble_source, 1.8,
+      index_settings);
   RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_cases[test].goal, dst_bubble_source,
-      18.0, index_settings);
+      bubbles_per_branch, test_cases[test].goal, dst_bubble_source, 1.8,
+      index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
   Rrt bubble_rrt(src_tree, dst_tree, NewGeneratorFromProtoBuffer(
-      limits, generator_settings));
+      src_bubble_source->GetAngleRanges(), generator_settings));
   int step = 0;
   while (!bubble_rrt.Step()) {
     fprintf(stderr, "Current step: %6d\n", ++step);

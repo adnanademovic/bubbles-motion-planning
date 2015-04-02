@@ -30,7 +30,6 @@
 #include <memory>
 #include <mutex>
 #include <string>
-#include <vector>
 
 #define BOOST_SPIRIT_THREADSAFE
 #include <boost/filesystem.hpp>
@@ -55,10 +54,10 @@ class FclEnvironment : public EnvironmentInterface {
   bool IsCollision(const std::vector<double>& q) const;
   EnvironmentInterface::DistanceProfile GetDistanceProfile(
       const std::vector<double>& q) const;
+  std::vector<std::pair<double, double> > GetAngleRanges() const;
 
  private:
-  // Configuration consists of lines of "a alpha d theta" format
-  void LoadDh(const Robot& robot);
+  void LoadDhAndRanges(const Robot& robot);
   void ConfigureFromPB(const EnvironmentConfig& configuration,
                        const boost::filesystem::path& config_file_path);
 
@@ -72,6 +71,7 @@ class FclEnvironment : public EnvironmentInterface {
   std::vector<std::pair<fcl::Vec3f, double> > cylinders_;
   boost::shared_ptr<fcl::CollisionGeometry> environment_mesh_;
   std::unique_ptr<fcl::CollisionObject> environment_;
+  std::vector<std::pair<double, double> > limits_;
 
   mutable std::mutex guard_mutex_;
 };

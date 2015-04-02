@@ -205,8 +205,11 @@ EnvironmentInterface::DistanceProfile FclEnvironment::GetDistanceProfile(
   return distances;
 }
 
-void FclEnvironment::LoadDh(const Robot& robot) {
-  // each part gets transformed ignoring the last coordinate transform
+std::vector<std::pair<double, double> > FclEnvironment::GetAngleRanges() const {
+  return limits_;
+}
+
+void FclEnvironment::LoadDhAndRanges(const Robot& robot) {
   dh_inverted_.emplace_back(new fcl::Transform3f);
   for (const Segment& param : robot.segments()) {
     dh_parameters_.emplace_back(new fcl::Transform3f);
@@ -223,6 +226,13 @@ void FclEnvironment::LoadDh(const Robot& robot) {
     fcl::Transform3f* t_inv = dh_inverted_.back().get();
     t_inv->inverse();
     *t_inv *= *dh_inverted_[dh_inverted_.size() - 2];
+    if (!param.has_range() || !param.range().has_min() ||
+        !param.range().has_max()) {
+      std::cerr << "Range missing from Protocol Buffer at:" << std::endl
+                << param.DebugString() << std::endl;
+      throw;
+    }
+    limits_.emplace_back(param.range().min(), param.range().max());
   }
 }
 
@@ -273,7 +283,7 @@ void FclEnvironment::ConfigureFromPB(
   variance_ = max_underestimate;
   is_joint_start_.resize(parts.size(), false);
 
-  LoadDh(robot);
+  LoadDhAndRanges(robot);
 
   int part_index = 0;
   int segment_index = -1;
