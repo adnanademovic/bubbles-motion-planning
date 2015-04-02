@@ -80,7 +80,7 @@ cc_binary(
     deps = [
         ":bubble-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:fcl-environment",
+        "//bubbles-motion-planning/src/environment:make-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
@@ -98,7 +98,7 @@ cc_binary(
     deps = [
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:fcl-environment",
+        "//bubbles-motion-planning/src/environment:make-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
@@ -117,7 +117,7 @@ cc_binary(
         ":bubble-tree",
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:fcl-environment",
+        "//bubbles-motion-planning/src/environment:make-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
@@ -135,7 +135,7 @@ cc_binary(
     deps = [
         ":bubble-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:fcl-environment",
+        "//bubbles-motion-planning/src/environment:make-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
@@ -152,7 +152,7 @@ cc_binary(
     deps = [
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:fcl-environment",
+        "//bubbles-motion-planning/src/environment:make-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
@@ -170,7 +170,7 @@ cc_binary(
         ":bubble-tree",
         ":classic-tree",
         ":rrt",
-        "//bubbles-motion-planning/src/environment:fcl-environment",
+        "//bubbles-motion-planning/src/environment:make-environment",
         "//bubbles-motion-planning/src/environment:environment-feedback",
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",

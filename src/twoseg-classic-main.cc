@@ -34,7 +34,7 @@
 #include "rrt.h"
 #include "classic-tree.h"
 #include "environment/environment-feedback.h"
-#include "environment/fcl-environment.h"
+#include "environment/make-environment.h"
 #include "generators/generator.pb.h"
 #include "generators/make-generator.h"
 
@@ -169,9 +169,9 @@ int main(int argc, char** argv) {
   Make2DPolyFile("obs.stl", obstacles);
 
   std::shared_ptr<EnvironmentFeedback> src_collision_source(
-      new EnvironmentFeedback(new FclEnvironment("config.conf")));
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer("config.conf")));
   std::shared_ptr<EnvironmentFeedback> dst_collision_source(
-      new EnvironmentFeedback(new FclEnvironment("config.conf")));
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer("config.conf")));
 
   IndexSettings index_settings;
   index_settings.mutable_index_params()->set_trees(8);
@@ -196,11 +196,12 @@ int main(int argc, char** argv) {
   }
   fprintf(stderr, "Final step: %6d\n", step);
 
-  FclEnvironment printing_environment("config.conf");
+  std::unique_ptr<EnvironmentInterface> printing_environment(
+      NewEnvironmentFromProtoBuffer("config.conf"));
   printf("obs=[];\n");
   for (int i = -100; i < 101; ++i)
     for (int j = -100; j < 101; ++j)
-      if (printing_environment.IsCollision({i * 1.8, j * 1.8})) {
+      if (printing_environment->IsCollision({i * 1.8, j * 1.8})) {
         printf("obs=[obs; %lf %lf];\n", i * 1.8, j * 1.8);
       }
   OutputPath(classic_rrt.GetSolution());

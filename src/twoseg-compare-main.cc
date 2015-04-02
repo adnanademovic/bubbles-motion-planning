@@ -35,7 +35,7 @@
 #include "bubble-tree.h"
 #include "classic-tree.h"
 #include "environment/environment-feedback.h"
-#include "environment/fcl-environment.h"
+#include "environment/make-environment.h"
 #include "generators/generator.pb.h"
 #include "generators/make-generator.h"
 
@@ -118,9 +118,11 @@ struct TestCase {
 
 void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   std::shared_ptr<EnvironmentFeedback> src_bubble_source(
-      new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer(
+          test_case.configuration)));
   std::shared_ptr<EnvironmentFeedback> dst_bubble_source(
-      new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer(
+          test_case.configuration)));
 
   IndexSettings index_settings;
   index_settings.mutable_index_params()->set_trees(8);
@@ -150,9 +152,11 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
 
 void RunClassicTree(unsigned seed, const TestCase& test_case) {
   std::shared_ptr<EnvironmentFeedback> src_collision_source(
-      new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer(
+          test_case.configuration)));
   std::shared_ptr<EnvironmentFeedback> dst_collision_source(
-      new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer(
+          test_case.configuration)));
 
   IndexSettings index_settings;
   index_settings.mutable_index_params()->set_trees(8);

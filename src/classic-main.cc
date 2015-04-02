@@ -32,7 +32,7 @@
 #include "rrt.h"
 #include "classic-tree.h"
 #include "environment/environment-feedback.h"
-#include "environment/fcl-environment.h"
+#include "environment/make-environment.h"
 #include "generators/generator.pb.h"
 #include "generators/make-generator.h"
 
@@ -117,10 +117,10 @@ int main(int argc, char** argv) {
   int test = FLAGS_simulation_case;
 
   std::shared_ptr<EnvironmentFeedback> src_collision_source(
-      new EnvironmentFeedback(new FclEnvironment(
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer(
           test_cases[test].configuration)));
   std::shared_ptr<EnvironmentFeedback> dst_collision_source(
-      new EnvironmentFeedback(new FclEnvironment(
+      new EnvironmentFeedback(NewEnvironmentFromProtoBuffer(
           test_cases[test].configuration)));
 
   IndexSettings index_settings;
