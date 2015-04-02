@@ -32,6 +32,6 @@ message GeneratorSettings {
   enum Type {
     SIMPLE = 0;
   }
-  optional Type type = 1;
+  optional Type type = 1 [default = SIMPLE];
   optional uint32 seed = 2;
 }
