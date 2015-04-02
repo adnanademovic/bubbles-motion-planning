@@ -128,19 +128,37 @@ int main(int argc, char** argv) {
   Make2DLineFile("sub42.stl", {8.0, 9.0});
   Make2DLineFile("sub52.stl", {9.0, 10.0});
 
-  MakeFile("config.conf", "{"
-      "\"robot\": \"robot.conf\","
-      "\"environment\": \"obs.stl\","
-      "\"max_underestimate\": 0.1"
-      "}");
-  MakeFile("robot.conf", "{"
-      "\"parts\":[\"sub11.stl\", \"sub21.stl\", \"sub31.stl\","
-                 "\"sub41.stl\", \"sub51.stl\","
-                 "\"sub12.stl\", \"sub22.stl\", \"sub32.stl\","
-                 "\"sub42.stl\", \"sub52.stl\"],"
-      "\"parts_per_joint\":[5, 5],"
-      "\"dh\": [[5, 0, 0, 0], [5, 0, 0, 0]]"
-      "}");
+  MakeFile("config.conf",
+      "robot_filename: \"robot.conf\","
+      "environment_filename: \"obs.stl\","
+      "max_underestimate: 0.1"
+      );
+  MakeFile("robot.conf",
+      "segments {"
+      "  a: 5"
+      "  parts: \"sub11.stl\""
+      "  parts: \"sub21.stl\""
+      "  parts: \"sub31.stl\""
+      "  parts: \"sub41.stl\""
+      "  parts: \"sub51.stl\""
+      "  range {"
+      "    min: -180"
+      "    max: 180"
+      "  }"
+      "}"
+      "segments {"
+      "  a: 5"
+      "  parts: \"sub12.stl\""
+      "  parts: \"sub22.stl\""
+      "  parts: \"sub32.stl\""
+      "  parts: \"sub42.stl\""
+      "  parts: \"sub52.stl\""
+      "  range {"
+      "    min: -180"
+      "    max: 180"
+      "  }"
+      "}"
+      );
 
   std::vector<std::pair<double, double> > obstacles;
   obstacles.push_back({3.0, -6.0});
