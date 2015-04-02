@@ -109,10 +109,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
     ],
-    linkopts = [
-        "-lgflags",
-        "-lm",
-    ],
+    linkopts = ["-lgflags"],
     data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
@@ -127,10 +124,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
     ],
-    linkopts = [
-        "-lgflags",
-        "-lm",
-    ],
+    linkopts = ["-lgflags"],
     data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
@@ -146,10 +140,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
     ],
-    linkopts = [
-        "-lgflags",
-        "-lm",
-    ],
+    linkopts = ["-lgflags"],
     data = ["//motion-planning-data/abb-irb-120:cases"],
 )
 
@@ -164,10 +155,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
     ],
-    linkopts = [
-        "-lgflags",
-        "-lm",
-    ],
+    linkopts = ["-lgflags"],
 )
 
 cc_binary(
@@ -181,10 +169,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
     ],
-    linkopts = [
-        "-lgflags",
-        "-lm",
-    ],
+    linkopts = ["-lgflags"],
 )
 
 cc_binary(
@@ -199,10 +184,7 @@ cc_binary(
         "//bubbles-motion-planning/src/generators:generator-proto",
         "//bubbles-motion-planning/src/generators:make-generator",
     ],
-    linkopts = [
-        "-lgflags",
-        "-lm",
-    ],
+    linkopts = ["-lgflags"],
 )
 
 cc_test(

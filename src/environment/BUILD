@@ -34,6 +34,7 @@ cc_library(
         "-lboost_system",
         "-lboost_thread",
         "-lfcl",
+        "-lm",
         "-lprotobuf",
     ],
 )
