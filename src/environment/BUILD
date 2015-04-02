@@ -67,7 +67,7 @@ cc_test(
     srcs = ["environment-feedback_test.cc"],
     deps = [
         ":environment-feedback",
-        ":fcl-environment",
+        ":make-environment",
     ],
     linkopts = ["-lboost_unit_test_framework"],
 )
