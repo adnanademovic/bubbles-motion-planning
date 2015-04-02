@@ -26,8 +26,18 @@
 
 #include "rrt.h"
 
+#include <iostream>
+#include <fstream>
 #include <thread>
 #include <queue>
+
+#include <google/protobuf/text_format.h>
+
+#include "environment/environment-feedback.h"
+#include "environment/make-environment.h"
+#include "generators/make-generator.h"
+#include "bubble-tree.h"
+#include "classic-tree.h"
 
 namespace com {
 namespace ademovic {
@@ -40,6 +50,68 @@ void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
 }
 
 }  // namespace
+
+
+Rrt::Rrt(const std::string& configuration) {
+  boost::filesystem::path config_file_path(configuration);
+  config_file_path.remove_filename();
+  std::ifstream fin(configuration);
+  TaskConfig config_pb;
+  std::string input_string((std::istreambuf_iterator<char>(fin)),
+                           std::istreambuf_iterator<char>());
+  bool success = google::protobuf::TextFormat::ParseFromString(
+      input_string, &config_pb);
+  fin.close();
+  if (!success) {
+    std::cerr << "Failed parsing file: " << configuration << std::endl;
+    throw;
+  }
+  Configure(config_pb, config_file_path);
+}
+
+void Rrt::Configure(const TaskConfig& config,
+                    const boost::filesystem::path& config_file_path) {
+  done_ = false;
+  std::vector<double> src, dst;
+  for (double q : config.source().q())
+    src.push_back(q);
+  for (double q : config.destination().q())
+    dst.push_back(q);
+  std::shared_ptr<environment::EnvironmentFeedback> src_bubble_source(
+      new environment::EnvironmentFeedback(
+          environment::NewEnvironmentFromProtoBuffer(
+              config.environment(), config_file_path)));
+  std::shared_ptr<environment::EnvironmentFeedback> dst_bubble_source(
+      new environment::EnvironmentFeedback(
+          environment::NewEnvironmentFromProtoBuffer(
+              config.environment(), config_file_path)));
+  switch (config.tree().type()) {
+    case (TreeConfig::BUBBLE):
+      src_tree_.reset(new BubbleTree(
+          static_cast<int>(config.tree().max_bubbles_per_branch()), src,
+          src_bubble_source, config.tree().min_move_length(), config.index()));
+      dst_tree_.reset(new BubbleTree(
+          static_cast<int>(config.tree().max_bubbles_per_branch()), dst,
+          dst_bubble_source, config.tree().min_move_length(), config.index()));
+      break;
+    case (TreeConfig::CLASSIC):
+      src_tree_.reset(new ClassicTree(
+          config.tree().step_length(),
+          static_cast<int>(config.tree().checks_per_step()), src,
+          src_bubble_source, config.index()));
+      dst_tree_.reset(new ClassicTree(
+          config.tree().step_length(),
+          static_cast<int>(config.tree().checks_per_step()), dst,
+          dst_bubble_source, config.index()));
+      break;
+    default:
+      std::cerr << stderr, "Invalid TreeConfig type given\n";
+      throw;
+      break;
+  }
+  random_point_generator_.reset(NewGeneratorFromProtoBuffer(
+      src_bubble_source->GetAngleRanges(), config.generator()));
+}
 
 Rrt::Rrt(RrtTree* src_tree, RrtTree* dst_tree,
          generators::RandomPointGeneratorInterface* random_point_generator)

@@ -47,9 +47,20 @@ cc_library(
     srcs = ["rrt.cc"],
     hdrs = ["rrt.h"],
     deps = [
+        ":bubble-tree",
+        ":classic-tree",
         ":rrt-tree",
+        ":task-proto",
+        "//bubbles-motion-planning/src/environment:environment-feedback",
+        "//bubbles-motion-planning/src/environment:make-environment",
+        "//bubbles-motion-planning/src/generators:make-generator",
         "//bubbles-motion-planning/src/generators" +
             ":random-point-generator-interface",
+    ],
+    linkopts = [
+        "-lboost_filesystem",
+        "-lboost_thread",
+        "-lprotobuf",
     ],
 )
 
@@ -71,6 +82,19 @@ cc_library(
     name = "index-proto",
     srcs = ["index.pb.cc"],
     hdrs = ["index.pb.h"],
+    linkopts = ["-lprotobuf"],
+)
+
+# TODO: Replace with proper protobuffer rules when implemented in Bazel.
+cc_library(
+    name = "task-proto",
+    srcs = ["task.pb.cc"],
+    hdrs = ["task.pb.h"],
+    deps = [
+        ":index-proto",
+        "//bubbles-motion-planning/src/environment:environment-proto",
+        "//bubbles-motion-planning/src/generators:generator-proto",
+    ],
     linkopts = ["-lprotobuf"],
 )
 

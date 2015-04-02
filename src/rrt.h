@@ -28,11 +28,16 @@
 #define COM_ADEMOVIC_BUBBLESMP_BUBBLE_RRT_H_
 
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
+#define BOOST_SPIRIT_THREADSAFE
+#include <boost/filesystem.hpp>
+
 #include "generators/random-point-generator-interface.h"
 #include "rrt-tree.h"
+#include "task.pb.h"
 
 namespace com {
 namespace ademovic {
@@ -40,6 +45,7 @@ namespace bubblesmp {
 
 class Rrt {
  public:
+  Rrt(const std::string& configuration);
   // Takes ownership of everything passed to it.
   Rrt(RrtTree* src_tree, RrtTree* dst_tree,
       generators::RandomPointGeneratorInterface* random_point_generator);
@@ -50,6 +56,9 @@ class Rrt {
   std::vector<std::shared_ptr<TreePoint> > GetSolution() const;
 
  private:
+  void Configure(const TaskConfig& config,
+                 const boost::filesystem::path& config_file_path);
+
   std::unique_ptr<generators::RandomPointGeneratorInterface>
       random_point_generator_;
   std::unique_ptr<RrtTree> src_tree_;
