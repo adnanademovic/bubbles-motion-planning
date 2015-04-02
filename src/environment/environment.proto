@@ -30,8 +30,8 @@ package com.ademovic.bubblesmp.environment;
 
 message Segment {
   message Range {
-    optional double phi_min = 1 [default = 0.0];
-    optional double phi_max = 2 [default = 0.0];
+    optional double min = 1;
+    optional double max = 2;
   }
   optional double a = 1 [default = 0.0];
   optional double theta = 2 [default = 0.0];
