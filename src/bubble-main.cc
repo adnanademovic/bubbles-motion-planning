@@ -59,7 +59,7 @@ using namespace com::ademovic::bubblesmp::generators;
 // Does not draw start point
 void DrawLine(
     const std::vector<double>& start, const std::vector<double>& goal) {
-  double max_step = 0.05;
+  double max_step = 3.6;
   std::vector<double> delta;
   for (size_t i = 0; i < start.size(); ++i)
     delta.push_back(goal[i] - start[i]);
