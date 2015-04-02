@@ -30,8 +30,13 @@
 #include "fcl-environment.h"
 #include <boost/test/unit_test.hpp>
 
+#include <cmath>
 #include <memory>
 #include <vector>
+
+constexpr double rad_to_deg() {
+  return 45.0 / atan(1);
+}
 
 using ::com::ademovic::bubblesmp::Bubble;
 using ::com::ademovic::bubblesmp::environment::FclEnvironment;
@@ -203,13 +208,14 @@ BOOST_AUTO_TEST_CASE(trivial_bubble) {
   bub.reset(environment.NewBubble({0.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 1);
-  BOOST_CHECK_CLOSE(dims[0], 5.0 / 11.0, AbsToRelTolerance(5.0 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 5.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 5.0 / 11.0, 0.11));
 
   bub.reset(environment.NewBubble({45.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 1);
-  BOOST_CHECK_CLOSE(
-      dims[0], 7.929 / 11.0, AbsToRelTolerance(7.929 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 7.929 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 7.929 / 11.0, 0.11));
 }
 
 BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
@@ -237,13 +243,14 @@ BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
   bub.reset(environment.NewBubble({0.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 1);
-  BOOST_CHECK_CLOSE(dims[0], 5.0 / 11.0, AbsToRelTolerance(5.0 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 5.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 5.0 / 11.0, 0.11));
 
   bub.reset(environment.NewBubble({45.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 1);
-  BOOST_CHECK_CLOSE(
-      dims[0], 7.929 / 11.0, AbsToRelTolerance(7.929 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 7.929 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 7.929 / 11.0, 0.11));
 }
 
 BOOST_AUTO_TEST_CASE(two_segment_bubble) {
@@ -274,30 +281,32 @@ BOOST_AUTO_TEST_CASE(two_segment_bubble) {
   bub.reset(environment.NewBubble({0.0, 0.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 2);
-  BOOST_CHECK_CLOSE(dims[0], 5.0 / 21.0, AbsToRelTolerance(5.0 / 21.0, 0.11));
-  BOOST_CHECK_CLOSE(dims[1], 5.0 / 11.0, AbsToRelTolerance(5.0 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 5.0 / 21.0,
+                    AbsToRelTolerance(rad_to_deg() * 5.0 / 21.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 5.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 5.0 / 11.0, 0.11));
 
   bub.reset(environment.NewBubble({45.0, 0.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 2);
-  BOOST_CHECK_CLOSE(
-      dims[0], 10.858 / 21.0, AbsToRelTolerance(10.858 / 21.0, 0.11));
-  BOOST_CHECK_CLOSE(
-      dims[1], 10.858 / 11.0, AbsToRelTolerance(10.858 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 10.858 / 21.0,
+                    AbsToRelTolerance(rad_to_deg() * 10.858 / 21.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 10.858 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 10.858 / 11.0, 0.11));
 
   bub.reset(environment.NewBubble({45.0, 45.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 2);
-  BOOST_CHECK_CLOSE(
-      dims[0], 17.929 / 19.4776, AbsToRelTolerance(17.929 / 19.4776, 0.11));
-  BOOST_CHECK_CLOSE(
-      dims[1], 17.929 / 11.0, AbsToRelTolerance(17.929 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 17.929 / 19.4776,
+                    AbsToRelTolerance(rad_to_deg() * 17.929 / 19.4776, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 17.929 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 17.929 / 11.0, 0.11));
 
   bub.reset(environment.NewBubble({0.0, 135.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 2);
-  BOOST_CHECK_CLOSE(
-      dims[0], 15.0 / 11.0, AbsToRelTolerance(15.0 / 15.0, 0.11));
-  BOOST_CHECK_CLOSE(
-      dims[1], 15.0 / 11.0, AbsToRelTolerance(15.0 / 15.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 15.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 15.0 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 15.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 15.0 / 11.0, 0.11));
 }

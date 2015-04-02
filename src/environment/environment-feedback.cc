@@ -26,12 +26,20 @@
 
 #include "environment-feedback.h"
 
+#include <cmath>
 #include <limits>
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace environment {
+namespace {
+
+constexpr double rad_to_deg() {
+  return 45.0 / atan(1);
+}
+
+}  // namespace
 
 EnvironmentFeedback::EnvironmentFeedback(EnvironmentInterface* environment)
     : environment_(environment) {}
@@ -50,7 +58,8 @@ Bubble* EnvironmentFeedback::NewBubble(
     int segment = 0;
     for (double subdistance : profile_part.second) {
       if (subdistance != 0.0)
-        output[segment] = std::min(output[segment], distance / subdistance);
+        output[segment] = std::min(
+            output[segment], rad_to_deg() * distance / subdistance);
       ++segment;
     }
   }

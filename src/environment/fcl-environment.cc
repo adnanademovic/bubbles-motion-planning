@@ -43,7 +43,7 @@ namespace environment {
 namespace {
 
 constexpr double deg_to_rad() {
-  return std::atan(1) / 45.0;
+  return atan(1) / 45.0;
 }
 
 double PointDistanceToAxis(const fcl::Vec3f& point, const fcl::Vec3f& axis) {

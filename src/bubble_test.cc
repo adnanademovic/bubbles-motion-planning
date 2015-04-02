@@ -91,8 +91,8 @@ BOOST_AUTO_TEST_CASE(hull_intersection_2d) {
   CheckCloseCollections(bubble.IntersectsHullAt({25.0, 15.0}), {20.0, 17.5});
   CheckCloseCollections(bubble.IntersectsHullAt({5.0, 25.0}), {10.0, 22.5});
 
-  double angle_1 = std::atan2(10.0, 15.0);
-  double angle_2 = std::atan2(5.0, 10.0);
+  double angle_1 = atan2(10.0, 15.0);
+  double angle_2 = atan2(5.0, 10.0);
   double sol = std::sin(angle_2)/std::sin(angle_1);
   double sol_x = 10 * sol / (1 + sol);
   double sol_y = sol_x / 1.5;
