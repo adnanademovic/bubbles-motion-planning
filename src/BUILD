@@ -187,6 +187,14 @@ cc_binary(
     linkopts = ["-lgflags"],
 )
 
+cc_binary(
+    name = "rrtplan",
+    srcs = ["rrtplan.cc"],
+    deps = [":rrt"],
+    linkopts = ["-lgflags"],
+    data = ["//motion-planning-data/abb-irb-120:tasks"],
+)
+
 cc_test(
     name = "bubble_test",
     srcs = ["bubble_test.cc"],
