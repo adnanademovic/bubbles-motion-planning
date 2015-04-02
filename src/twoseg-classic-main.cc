@@ -42,10 +42,6 @@ using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::generators;
 
-constexpr double pi() {
-  return std::atan(1)*4;
-}
-
 void OutputPath(std::vector<std::shared_ptr<TreePoint> > bubbles) {
   printf("configs=[];\n");
   for (const auto& bubble : bubbles) {
@@ -116,10 +112,10 @@ int main(int argc, char** argv) {
   google::ParseCommandLineFlags(&argc, &argv, true);
 
   std::vector<std::pair<double, double> > limits(2);
-  limits[0].first = -3.14;
-  limits[0].second = 3.14;
-  limits[1].first = -3.14;
-  limits[1].second = 3.14;
+  limits[0].first = -180.0;
+  limits[0].second = 180.0;
+  limits[1].first = -180.0;
+  limits[1].second = 180.0;
 
   Make2DLineFile("sub11.stl", {0.0, 1.0});
   Make2DLineFile("sub21.stl", {1.0, 2.0});
@@ -169,13 +165,13 @@ int main(int argc, char** argv) {
   index_settings.mutable_index_params()->set_trees(8);
   index_settings.mutable_search_params()->set_checks(128);
 
-  double max_step = pi()/50.0;
+  double max_step = 3.6;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
-      max_step, ministeps_per_step, {-3.1415/2.0, 3.1415/4.0},
+      max_step, ministeps_per_step, {-90.0, 45.0},
       src_collision_source, index_settings);
   RrtTree* dst_tree = new ClassicTree(
-      max_step, ministeps_per_step, {3.1415/2.0, -3.1415/4.0},
+      max_step, ministeps_per_step, {90.0, -45.0},
       dst_collision_source, index_settings);
 
   generators::GeneratorSettings generator_settings;
@@ -192,15 +188,15 @@ int main(int argc, char** argv) {
   printf("obs=[];\n");
   for (int i = -100; i < 101; ++i)
     for (int j = -100; j < 101; ++j)
-      if (printing_environment.IsCollision({i * 0.031415, j * 0.031415})) {
-        printf("obs=[obs; %lf %lf];\n", i * 0.031415, j * 0.031415);
+      if (printing_environment.IsCollision({i * 1.8, j * 1.8})) {
+        printf("obs=[obs; %lf %lf];\n", i * 1.8, j * 1.8);
       }
   OutputPath(classic_rrt.GetSolution());
   printf("figure;\n"
          "plot(obs(:,1), obs(:,2), 'r.');\n"
          "hold on;\n"
          "plot(configs(:,1), configs(:,2), 'b');\n"
-         "axis([-pi pi -pi pi]);"
+         "axis([-180.0 180.0 -180.0 180.0]);"
          "hold off;\n"
          "pause;\n");
   return 0;

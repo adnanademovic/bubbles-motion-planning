@@ -41,43 +41,6 @@ using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::generators;
 
-constexpr double pi() {
-  return std::atan(1)*4;
-}
-
-// Does not draw start point
-void DrawLine(
-    const std::vector<double>& start, const std::vector<double>& goal) {
-  double max_step = 0.05;
-  std::vector<double> delta;
-  for (size_t i = 0; i < start.size(); ++i)
-    delta.push_back(goal[i] - start[i]);
-  double distance = 0.0;
-  for (double diff : delta)
-    distance += fabs(diff);
-  if (distance < max_step) {
-    for (const auto& pos : goal)
-      printf("%lf ", pos * 180.0 / pi());
-    printf("\n");
-  } else {
-    int steps = static_cast<int>(distance / max_step + 1);
-    for (size_t i = 0; i < delta.size(); ++i)
-      delta[i] /= steps;
-    for (int i = 1; i <= steps; ++i) {
-      for (size_t j = 0; j < start.size(); ++j)
-        printf("%lf ", (start[j] + i * delta[j]) * 180.0 / pi());
-      printf("\n");
-    }
-  }
-}
-
-void OutputPath(std::vector<std::shared_ptr<TreePoint> > points) {
-  if (!points.empty())
-    DrawLine(points[0]->position(), points[0]->position());
-  for (size_t i = 1; i < points.size(); ++i)
-    DrawLine(points[i - 1]->position(), points[i]->position());
-}
-
 struct TestCase {
   std::string name;
   std::vector<double> start;
@@ -87,18 +50,18 @@ struct TestCase {
 
 void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   std::vector<std::pair<double, double> > limits(6);
-  limits[0].first = -2.87979;
-  limits[0].second = 2.87979;
-  limits[1].first = -1.91986;
-  limits[1].second = 1.91986;
-  limits[2].first = -1.57079;
-  limits[2].second = 1.22173;
-  limits[3].first = -2.79252;
-  limits[3].second = 2.79252;
-  limits[4].first = -2.09439;
-  limits[4].second = 2.09439;
-  limits[5].first = -6.98131;
-  limits[5].second = 6.98131;
+  limits[0].first = -165.0;
+  limits[0].second = 165.0;
+  limits[1].first = -110.0;
+  limits[1].second = 110.0;
+  limits[2].first = -110.0;
+  limits[2].second = 70.0;
+  limits[3].first = -160.0;
+  limits[3].second = 160.0;
+  limits[4].first = -120.0;
+  limits[4].second = 120.0;
+  limits[5].first = -400.0;
+  limits[5].second = 400.0;
 
   std::shared_ptr<EnvironmentFeedback> src_bubble_source(
       new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
@@ -111,10 +74,10 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
 
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_case.start, src_bubble_source, 0.3,
+      limits, bubbles_per_branch, test_case.start, src_bubble_source, 18.0,
       index_settings);
   RrtTree* dst_tree = new BubbleTree(
-      limits, bubbles_per_branch, test_case.goal, dst_bubble_source, 0.3,
+      limits, bubbles_per_branch, test_case.goal, dst_bubble_source, 18.0,
       index_settings);
 
   generators::GeneratorSettings generator_settings;
@@ -133,18 +96,18 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
 
 void RunClassicTree(unsigned seed, const TestCase& test_case) {
   std::vector<std::pair<double, double> > limits(6);
-  limits[0].first = -2.87979;
-  limits[0].second = 2.87979;
-  limits[1].first = -1.91986;
-  limits[1].second = 1.91986;
-  limits[2].first = -1.57079;
-  limits[2].second = 1.22173;
-  limits[3].first = -2.79252;
-  limits[3].second = 2.79252;
-  limits[4].first = -2.09439;
-  limits[4].second = 2.09439;
-  limits[5].first = -6.98131;
-  limits[5].second = 6.98131;
+  limits[0].first = -165.0;
+  limits[0].second = 165.0;
+  limits[1].first = -110.0;
+  limits[1].second = 110.0;
+  limits[2].first = -110.0;
+  limits[2].second = 70.0;
+  limits[3].first = -160.0;
+  limits[3].second = 160.0;
+  limits[4].first = -120.0;
+  limits[4].second = 120.0;
+  limits[5].first = -400.0;
+  limits[5].second = 400.0;
 
   std::shared_ptr<EnvironmentFeedback> src_collision_source(
       new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
@@ -155,7 +118,7 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
   index_settings.mutable_index_params()->set_trees(8);
   index_settings.mutable_search_params()->set_checks(128);
 
-  double max_step = pi()/50.0;
+  double max_step = 3.6;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
       max_step, ministeps_per_step, test_case.start, src_collision_source,
@@ -185,24 +148,20 @@ int main(int argc, char** argv) {
   // Trivial test case
   test_cases.push_back({
       "trivial",
-      {-pi() / 4.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
-       pi() / 20.0, pi() / 20.0, pi() / 20.0},
-      {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
-       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      {-45.0, 39.0, 6.0, 9.0, 9.0, 9.0},
+      {45.0, 21.0, 21.0, -9.0, -9.0, -9.0},
       "motion-planning-data/abb-irb-120/case_trivial.conf"});
   // Easy test case
   test_cases.push_back({
       "easy",
-      {-pi() / 3.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
-       pi() / 20.0, pi() / 20.0, pi() / 20.0},
-      {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
-       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      {-60.0, 39.0, 6.0, 9.0, 9.0, 9.0},
+      {60.0, 21.0, 21.0, -9.0, -9.0, -9.0},
       "motion-planning-data/abb-irb-120/case_easy.conf"});
   // Hard test case
   test_cases.push_back({
       "hard",
-      {-pi() / 2.0, pi() / 3.6, -pi() / 3.6, 0.0, 0.0, 0.0},
-      {0.0, pi() / 2.0, -pi() / 2.0, -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      {-90.0, 50.0, -50.0, 0.0, 0.0, 0.0},
+      {0.0, 90.0, -90.0, -9.0, -9.0, -9.0},
       "motion-planning-data/abb-irb-120/case_hard.conf"});
 
   for (const TestCase& test_case : test_cases) {

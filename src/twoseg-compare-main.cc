@@ -43,10 +43,6 @@ using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::generators;
 
-constexpr double pi() {
-  return std::atan(1)*4;
-}
-
 void OutputPath(std::vector<std::shared_ptr<TreePoint> > bubbles) {
   printf("configs=[];\n");
   for (const auto& bubble : bubbles) {
@@ -122,10 +118,10 @@ struct TestCase {
 
 void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   std::vector<std::pair<double, double> > limits(2);
-  limits[0].first = -3.14;
-  limits[0].second = 3.14;
-  limits[1].first = -3.14;
-  limits[1].second = 3.14;
+  limits[0].first = -180.0;
+  limits[0].second = 180.0;
+  limits[1].first = -180.0;
+  limits[1].second = 180.0;
 
   std::shared_ptr<EnvironmentFeedback> src_bubble_source(
       new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
@@ -160,10 +156,10 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
 
 void RunClassicTree(unsigned seed, const TestCase& test_case) {
   std::vector<std::pair<double, double> > limits(2);
-  limits[0].first = -3.14;
-  limits[0].second = 3.14;
-  limits[1].first = -3.14;
-  limits[1].second = 3.14;
+  limits[0].first = -180.0;
+  limits[0].second = 180.0;
+  limits[1].first = -180.0;
+  limits[1].second = 180.0;
 
   std::shared_ptr<EnvironmentFeedback> src_collision_source(
       new EnvironmentFeedback(new FclEnvironment(test_case.configuration)));
@@ -174,7 +170,7 @@ void RunClassicTree(unsigned seed, const TestCase& test_case) {
   index_settings.mutable_index_params()->set_trees(8);
   index_settings.mutable_search_params()->set_checks(128);
 
-  double max_step = pi()/50.0;
+  double max_step = 3.6;
   int ministeps_per_step = 10;
   RrtTree* src_tree = new ClassicTree(
       max_step, ministeps_per_step, test_case.start, src_collision_source,
@@ -257,8 +253,8 @@ int main(int argc, char** argv) {
   // Hard test case
   test_cases.push_back({
       "hard",
-      {-pi() / 2.0, pi() / 4.0},
-      {pi() / 2.0, -pi() / 4.0},
+      {-90.0, 45.0},
+      {90.0, -45.0},
       "config3.conf"});
 
   for (const TestCase& test_case : test_cases) {

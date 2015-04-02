@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(trivial_collision) {
   EnvironmentFeedback environment(new FclEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({1.57}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({90.0}), false);
 }
 
 BOOST_AUTO_TEST_CASE(two_segment_collision) {
@@ -106,8 +106,8 @@ BOOST_AUTO_TEST_CASE(two_segment_collision) {
   EnvironmentFeedback environment(new FclEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0}), false);
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_collision) {
@@ -137,9 +137,9 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
   EnvironmentFeedback environment(new FclEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, 0.0}), false);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, -1.57}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, 0.0}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, -90.0}), true);
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
@@ -175,9 +175,9 @@ BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
   EnvironmentFeedback environment(new FclEnvironment("conf.testfile"));
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, 0.0}), false);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, -1.57}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, 0.0}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, -90.0}), true);
 }
 
 BOOST_AUTO_TEST_CASE(trivial_bubble) {
@@ -205,10 +205,11 @@ BOOST_AUTO_TEST_CASE(trivial_bubble) {
   BOOST_CHECK_EQUAL(dims.size(), 1);
   BOOST_CHECK_CLOSE(dims[0], 5.0 / 11.0, AbsToRelTolerance(5.0 / 11.0, 0.11));
 
-  bub.reset(environment.NewBubble({0.78}));
+  bub.reset(environment.NewBubble({45.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 1);
-  BOOST_CHECK_CLOSE(dims[0], 7.89 / 11.0, AbsToRelTolerance(7.89 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(
+      dims[0], 7.929 / 11.0, AbsToRelTolerance(7.929 / 11.0, 0.11));
 }
 
 BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
@@ -238,10 +239,11 @@ BOOST_AUTO_TEST_CASE(trivial_bubble_two_part) {
   BOOST_CHECK_EQUAL(dims.size(), 1);
   BOOST_CHECK_CLOSE(dims[0], 5.0 / 11.0, AbsToRelTolerance(5.0 / 11.0, 0.11));
 
-  bub.reset(environment.NewBubble({0.78}));
+  bub.reset(environment.NewBubble({45.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 1);
-  BOOST_CHECK_CLOSE(dims[0], 7.89 / 11.0, AbsToRelTolerance(7.89 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(
+      dims[0], 7.929 / 11.0, AbsToRelTolerance(7.929 / 11.0, 0.11));
 }
 
 BOOST_AUTO_TEST_CASE(two_segment_bubble) {
@@ -275,23 +277,23 @@ BOOST_AUTO_TEST_CASE(two_segment_bubble) {
   BOOST_CHECK_CLOSE(dims[0], 5.0 / 21.0, AbsToRelTolerance(5.0 / 21.0, 0.11));
   BOOST_CHECK_CLOSE(dims[1], 5.0 / 11.0, AbsToRelTolerance(5.0 / 11.0, 0.11));
 
-  bub.reset(environment.NewBubble({0.78, 0.0}));
+  bub.reset(environment.NewBubble({45.0, 0.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 2);
   BOOST_CHECK_CLOSE(
-      dims[0], 10.78 / 21.0, AbsToRelTolerance(10.78 / 21.0, 0.11));
+      dims[0], 10.858 / 21.0, AbsToRelTolerance(10.858 / 21.0, 0.11));
   BOOST_CHECK_CLOSE(
-      dims[1], 10.78 / 11.0, AbsToRelTolerance(10.78 / 11.0, 0.11));
+      dims[1], 10.858 / 11.0, AbsToRelTolerance(10.858 / 11.0, 0.11));
 
-  bub.reset(environment.NewBubble({0.78, 0.78}));
+  bub.reset(environment.NewBubble({45.0, 45.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 2);
   BOOST_CHECK_CLOSE(
-      dims[0], 17.78 / 19.498, AbsToRelTolerance(17.78 / 19.498, 0.11));
+      dims[0], 17.929 / 19.4776, AbsToRelTolerance(17.929 / 19.4776, 0.11));
   BOOST_CHECK_CLOSE(
-      dims[1], 17.78 / 11.0, AbsToRelTolerance(17.78 / 11.0, 0.11));
+      dims[1], 17.929 / 11.0, AbsToRelTolerance(17.929 / 11.0, 0.11));
 
-  bub.reset(environment.NewBubble({0.0, 2.5}));
+  bub.reset(environment.NewBubble({0.0, 135.0}));
   dims = bub->size();
   BOOST_CHECK_EQUAL(dims.size(), 2);
   BOOST_CHECK_CLOSE(

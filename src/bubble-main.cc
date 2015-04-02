@@ -56,10 +56,6 @@ using namespace com::ademovic::bubblesmp;
 using namespace com::ademovic::bubblesmp::environment;
 using namespace com::ademovic::bubblesmp::generators;
 
-constexpr double pi() {
-  return std::atan(1)*4;
-}
-
 // Does not draw start point
 void DrawLine(
     const std::vector<double>& start, const std::vector<double>& goal) {
@@ -72,7 +68,7 @@ void DrawLine(
     distance += fabs(diff);
   if (distance < max_step) {
     for (const auto& pos : goal)
-      printf("%lf ", pos * 180.0 / pi());
+      printf("%lf ", pos);
     printf("\n");
   } else {
     int steps = static_cast<int>(distance / max_step + 1);
@@ -80,7 +76,7 @@ void DrawLine(
       delta[i] /= steps;
     for (int i = 1; i <= steps; ++i) {
       for (size_t j = 0; j < start.size(); ++j)
-        printf("%lf ", (start[j] + i * delta[j]) * 180.0 / pi());
+        printf("%lf ", start[j] + i * delta[j]);
       printf("\n");
     }
   }
@@ -105,38 +101,34 @@ int main(int argc, char** argv) {
   std::vector<TestCase> test_cases;
   // Trivial test case
   test_cases.push_back({
-      {-pi() / 4.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
-       pi() / 20.0, pi() / 20.0, pi() / 20.0},
-      {pi() / 4.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
-       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      {-45.0, 39.0, 6.0, 9.0, 9.0, 9.0},
+      {45.0, 21.0, 21.0, -9.0, -9.0, -9.0},
       "motion-planning-data/abb-irb-120/case_trivial.conf"});
   // Easy test case
   test_cases.push_back({
-      {-pi() / 3.0, pi() / 6.0 + pi() / 20.0, pi() / 12.0 - pi() / 20.0,
-       pi() / 20.0, pi() / 20.0, pi() / 20.0},
-      {pi() / 3.0, pi() / 6.0 - pi() / 20.0, pi() / 12.0 + pi() / 20.0,
-       -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      {-60.0, 39.0, 6.0, 9.0, 9.0, 9.0},
+      {60.0, 21.0, 21.0, -9.0, -9.0, -9.0},
       "motion-planning-data/abb-irb-120/case_easy.conf"});
   // Hard test case
   test_cases.push_back({
-      {-pi() / 2.0, pi() / 3.6, -pi() / 3.6, 0.0, 0.0, 0.0},
-      {0.0, pi() / 2.0, -pi() / 2.0, -pi() / 20.0, -pi() / 20.0, -pi() / 20.0},
+      {-90.0, 50.0, -50.0, 0.0, 0.0, 0.0},
+      {0.0, 90.0, -90.0, -9.0, -9.0, -9.0},
       "motion-planning-data/abb-irb-120/case_hard.conf"});
   int test = FLAGS_simulation_case;
 
   std::vector<std::pair<double, double> > limits(6);
-  limits[0].first = -2.87979;
-  limits[0].second = 2.87979;
-  limits[1].first = -1.91986;
-  limits[1].second = 1.91986;
-  limits[2].first = -1.57079;
-  limits[2].second = 1.22173;
-  limits[3].first = -2.79252;
-  limits[3].second = 2.79252;
-  limits[4].first = -2.09439;
-  limits[4].second = 2.09439;
-  limits[5].first = -6.98131;
-  limits[5].second = 6.98131;
+  limits[0].first = -165.0;
+  limits[0].second = 165.0;
+  limits[1].first = -110.0;
+  limits[1].second = 110.0;
+  limits[2].first = -110.0;
+  limits[2].second = 70.0;
+  limits[3].first = -160.0;
+  limits[3].second = 160.0;
+  limits[4].first = -120.0;
+  limits[4].second = 120.0;
+  limits[5].first = -400.0;
+  limits[5].second = 400.0;
 
   std::shared_ptr<EnvironmentFeedback> src_bubble_source(
       new EnvironmentFeedback(new FclEnvironment(
@@ -152,10 +144,10 @@ int main(int argc, char** argv) {
   int bubbles_per_branch = 50;
   RrtTree* src_tree = new BubbleTree(
       limits, bubbles_per_branch, test_cases[test].start, src_bubble_source,
-      0.3, index_settings);
+      18.0, index_settings);
   RrtTree* dst_tree = new BubbleTree(
       limits, bubbles_per_branch, test_cases[test].goal, dst_bubble_source,
-      0.3, index_settings);
+      18.0, index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);

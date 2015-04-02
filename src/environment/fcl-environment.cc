@@ -42,6 +42,10 @@ namespace bubblesmp {
 namespace environment {
 namespace {
 
+constexpr double deg_to_rad() {
+  return std::atan(1) / 45.0;
+}
+
 double PointDistanceToAxis(const fcl::Vec3f& point, const fcl::Vec3f& axis) {
   double l = point.dot(axis);
   return (point - axis * l).length();
@@ -142,7 +146,7 @@ bool FclEnvironment::IsCollision(const std::vector<double>& q) const {
       if (segment > -1)
         pose *= *dh_parameters_[segment];
       ++segment;
-      joint_angle_rotation.setEulerZYX(0.0, 0.0, q[segment]);
+      joint_angle_rotation.setEulerZYX(0.0, 0.0, q[segment] * deg_to_rad());
       pose *= fcl::Transform3f(joint_angle_rotation);
     }
     parts_[part]->setTransform(pose);
@@ -176,7 +180,7 @@ EnvironmentInterface::DistanceProfile FclEnvironment::GetDistanceProfile(
       ax_P.push_back(pose.getTranslation());
       R = pose.getRotation();
       ax_O.push_back({R(0, 2), R(1, 2), R(2, 2)});
-      joint_angle_rotation.setEulerZYX(0.0, 0.0, q[segment]);
+      joint_angle_rotation.setEulerZYX(0.0, 0.0, q[segment] * deg_to_rad());
       pose *= fcl::Transform3f(joint_angle_rotation);
     }
     parts_[part]->setTransform(pose);
@@ -209,10 +213,10 @@ void FclEnvironment::LoadDh(const Robot& robot) {
     fcl::Transform3f* t = dh_parameters_.back().get();
 
     fcl::Matrix3f rotations;
-    rotations.setEulerZYX(0.0, 0.0, param.theta());
+    rotations.setEulerZYX(0.0, 0.0, param.theta() * deg_to_rad());
     *t *= fcl::Transform3f(rotations);
     *t *= fcl::Transform3f(fcl::Vec3f(param.a(), 0.0, param.d()));
-    rotations.setEulerZYX(param.alpha(), 0.0, 0.0);
+    rotations.setEulerZYX(param.alpha() * deg_to_rad(), 0.0, 0.0);
     *t *= fcl::Transform3f(rotations);
 
     dh_inverted_.emplace_back(new fcl::Transform3f(*t));

@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(trivial_collision) {
   FclEnvironment environment("conf.testfile");
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({1.57}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({90.0}), false);
 }
 
 BOOST_AUTO_TEST_CASE(two_segment_collision) {
@@ -102,8 +102,8 @@ BOOST_AUTO_TEST_CASE(two_segment_collision) {
   FclEnvironment environment("conf.testfile");
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0}), false);
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_collision) {
@@ -133,9 +133,9 @@ BOOST_AUTO_TEST_CASE(three_segment_collision) {
   FclEnvironment environment("conf.testfile");
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, 0.0}), false);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, -1.57}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, 0.0}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, -90.0}), true);
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_transformation_stacking) {
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(three_segment_transformation_stacking) {
   MakeFile("robot.testfile",
       "segments {"
       "  a: 10"
-      "  theta: 1.57"
+      "  theta: 90.0"
       "  parts: \"seg1.testfile\""
       "}"
       "segments {"
@@ -165,10 +165,10 @@ BOOST_AUTO_TEST_CASE(three_segment_transformation_stacking) {
 
   FclEnvironment environment("conf.testfile");
 
-  BOOST_CHECK_EQUAL(environment.IsCollision({-1.57, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({-0.78, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({-0.78, 0.78, 0.0}), false);
-  BOOST_CHECK_EQUAL(environment.IsCollision({-0.78, 0.78, -1.57}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({-90.0, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({-45.0, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({-45.0, 45.0, 0.0}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({-45.0, 45.0, -90.0}), true);
 }
 
 BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
@@ -204,9 +204,9 @@ BOOST_AUTO_TEST_CASE(three_segment_multiple_part_collision) {
   FclEnvironment environment("conf.testfile");
 
   BOOST_CHECK_EQUAL(environment.IsCollision({0.0, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.0, 0.0}), true);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, 0.0}), false);
-  BOOST_CHECK_EQUAL(environment.IsCollision({0.78, 0.78, -1.57}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 0.0, 0.0}), true);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, 0.0}), false);
+  BOOST_CHECK_EQUAL(environment.IsCollision({45.0, 45.0, -90.0}), true);
 }
 
 BOOST_AUTO_TEST_CASE(trivial_distance) {
@@ -234,10 +234,10 @@ BOOST_AUTO_TEST_CASE(trivial_distance) {
   BOOST_CHECK_CLOSE(d[0].first, 5.0, AbsToRelTolerance(5.0, 0.11));
   BOOST_CHECK_CLOSE(d[0].second[0], 11.0, 1.0);
 
-  d = environment.GetDistanceProfile({0.78});
+  d = environment.GetDistanceProfile({45.0});
   BOOST_CHECK_EQUAL(d.size(), 1);
   BOOST_CHECK_EQUAL(d[0].second.size(), 1);
-  BOOST_CHECK_CLOSE(d[0].first, 7.89, AbsToRelTolerance(7.89, 0.11));
+  BOOST_CHECK_CLOSE(d[0].first, 7.929, AbsToRelTolerance(7.929, 0.11));
   BOOST_CHECK_CLOSE(d[0].second[0], 11.0, 1.0);
 }
 
@@ -271,12 +271,12 @@ BOOST_AUTO_TEST_CASE(trivial_distance_two_part) {
   BOOST_CHECK_CLOSE(d[0].second[0], 6.0, 1.0);
   BOOST_CHECK_CLOSE(d[1].second[0], 11.0, 1.0);
 
-  d = environment.GetDistanceProfile({0.78});
+  d = environment.GetDistanceProfile({45.0});
   BOOST_CHECK_EQUAL(d.size(), 2);
   BOOST_CHECK_EQUAL(d[0].second.size(), 1);
   BOOST_CHECK_EQUAL(d[1].second.size(), 1);
-  BOOST_CHECK_CLOSE(d[0].first, 11.4454, AbsToRelTolerance(11.4454, 0.11));
-  BOOST_CHECK_CLOSE(d[1].first, 7.89, AbsToRelTolerance(7.89, 0.11));
+  BOOST_CHECK_CLOSE(d[0].first, 11.4645, AbsToRelTolerance(11.4645, 0.11));
+  BOOST_CHECK_CLOSE(d[1].first, 7.929, AbsToRelTolerance(7.929, 0.11));
   BOOST_CHECK_CLOSE(d[0].second[0], 6.0, 1.0);
   BOOST_CHECK_CLOSE(d[1].second[0], 11.0, 1.0);
 }
@@ -315,27 +315,27 @@ BOOST_AUTO_TEST_CASE(two_segment_distance) {
   BOOST_CHECK_CLOSE(d[1].second[0], 21.0, 1.0);
   BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
 
-  d = environment.GetDistanceProfile({0.78, 0.0});
+  d = environment.GetDistanceProfile({45.0, 0.0});
   BOOST_CHECK_EQUAL(d.size(), 2);
   BOOST_CHECK_EQUAL(d[0].second.size(), 1);
-  BOOST_CHECK_CLOSE(d[0].first, 17.89, AbsToRelTolerance(17.89, 0.11));
+  BOOST_CHECK_CLOSE(d[0].first, 17.929, AbsToRelTolerance(17.929, 0.11));
   BOOST_CHECK_CLOSE(d[0].second[0], 11.0, 1.0);
   BOOST_CHECK_EQUAL(d[1].second.size(), 2);
-  BOOST_CHECK_CLOSE(d[1].first, 10.78, AbsToRelTolerance(10.78, 0.11));
+  BOOST_CHECK_CLOSE(d[1].first, 10.858, AbsToRelTolerance(10.858, 0.11));
   BOOST_CHECK_CLOSE(d[1].second[0], 21.0, 1.0);
   BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
 
-  d = environment.GetDistanceProfile({0.78, 0.78});
+  d = environment.GetDistanceProfile({45.0, 45.0});
   BOOST_CHECK_EQUAL(d.size(), 2);
   BOOST_CHECK_EQUAL(d[0].second.size(), 1);
-  BOOST_CHECK_CLOSE(d[0].first, 17.89, AbsToRelTolerance(17.89, 0.11));
+  BOOST_CHECK_CLOSE(d[0].first, 17.929, AbsToRelTolerance(17.929, 0.11));
   BOOST_CHECK_CLOSE(d[0].second[0], 11.0, 1.0);
   BOOST_CHECK_EQUAL(d[1].second.size(), 2);
-  BOOST_CHECK_CLOSE(d[1].first, 17.78, AbsToRelTolerance(17.78, 0.11));
-  BOOST_CHECK_CLOSE(d[1].second[0], 19.498, 1.0);
+  BOOST_CHECK_CLOSE(d[1].first, 17.929, AbsToRelTolerance(17.929, 0.11));
+  BOOST_CHECK_CLOSE(d[1].second[0], 19.4776, 1.0);
   BOOST_CHECK_CLOSE(d[1].second[1], 11.0, 1.0);
 
-  d = environment.GetDistanceProfile({0.0, 2.5});
+  d = environment.GetDistanceProfile({0.0, 135.0});
   BOOST_CHECK_EQUAL(d.size(), 2);
   BOOST_CHECK_EQUAL(d[0].second.size(), 1);
   BOOST_CHECK_CLOSE(d[0].first, 15.0, AbsToRelTolerance(15.0, 0.11));
@@ -359,12 +359,12 @@ BOOST_AUTO_TEST_CASE(three_segment_3d_distance) {
       "}"
       "segments {"
       "  a: 10"
-      "  alpha: 1.57"
+      "  alpha: 90.0"
       "  parts: \"seg2.testfile\""
       "}"
       "segments {"
       "  a: 10"
-      "  theta: 1.57"
+      "  theta: 90.0"
       "  parts: \"seg3.testfile\""
       "}"
       );
@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE(three_segment_3d_distance) {
   BOOST_CHECK_CLOSE(d[2].second[1], 11.0, 1.0);
   BOOST_CHECK_CLOSE(d[2].second[2], 11.0, 1.0);
 
-  d = environment.GetDistanceProfile({0.0, 0.0, -1.57});
+  d = environment.GetDistanceProfile({0.0, 0.0, -90.0});
   BOOST_CHECK_EQUAL(d.size(), 3);
   BOOST_CHECK_EQUAL(d[0].second.size(), 1);
   BOOST_CHECK_CLOSE(d[0].first, 25.0, AbsToRelTolerance(25.0, 0.11));
