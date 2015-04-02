@@ -38,6 +38,22 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "make-environment",
+    srcs = ["make-environment.cc"],
+    hdrs = ["make-environment.h"],
+    deps = [
+        ":environment-interface",
+        ":environment-proto",
+        ":fcl-environment",
+    ],
+    linkopts = [
+        "-lboost_filesystem",
+        "-lboost_thread",
+        "-lprotobuf",
+    ],
+)
+
 # TODO: Replace with proper protobuffer rules when implemented in Bazel.
 cc_library(
     name = "environment-proto",
