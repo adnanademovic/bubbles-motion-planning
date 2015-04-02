@@ -46,8 +46,12 @@ message Robot {
 }
 
 message EnvironmentConfig {
-  optional Robot robot_config = 1;
-  optional string robot_filename = 2;
-  optional string environment_filename = 3;
-  optional double max_underestimate = 4 [default = 0.0];
+  enum Type {
+    FCL = 0;
+  }
+  optional Type type = 1 [default = FCL];
+  optional Robot robot_config = 2;
+  optional string robot_filename = 3;
+  optional string environment_filename = 4;
+  optional double max_underestimate = 5 [default = 0.0];
 }
