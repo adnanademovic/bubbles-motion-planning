@@ -41,9 +41,10 @@ BubbleTree::BubbleTree(
       max_bubbles_per_branch_(max_bubbles_per_branch),
       bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()),
       min_move_size_(min_move_size / root.size()) {
-  // TODO: make this an assertion
-  fprintf(stderr, "Collision at root point: %s\n",
-          bubble_source_->IsCollision(root) ? "YES" : "NO");
+  if (bubble_source_->IsCollision(root)) {
+    fprintf(stderr, "Collision at root point!");
+    throw;
+  }
 }
 
 TreeNode* BubbleTree::AddNode(
