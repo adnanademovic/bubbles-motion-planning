@@ -28,9 +28,13 @@
 
 #include <algorithm>
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 #include <fcl/BVH/BVH_model.h>
 #include <fcl/distance.h>
+
+#include <google/protobuf/text_format.h>
 
 namespace com {
 namespace ademovic {
@@ -108,15 +112,24 @@ fcl::BVHModel<fcl::OBBRSS>* ParseModel(
 FclEnvironment::FclEnvironment(const std::string& configuration) {
   boost::filesystem::path config_file_path(configuration);
   config_file_path.remove_filename();
-  boost::property_tree::ptree config_tree;
-  boost::property_tree::read_json(configuration, config_tree);
-  ConfigureFromPtree(config_tree, config_file_path);
+  std::ifstream fin(configuration);
+  EnvironmentConfig config_pb;
+  std::string input_string((std::istreambuf_iterator<char>(fin)),
+                           std::istreambuf_iterator<char>());
+  bool success = google::protobuf::TextFormat::ParseFromString(
+      input_string, &config_pb);
+  fin.close();
+  if (!success) {
+    std::cerr << "Failed parsing file: " << configuration << std::endl;
+    throw;
+  }
+  ConfigureFromPB(config_pb, config_file_path);
 }
 
 FclEnvironment::FclEnvironment(
-    const boost::property_tree::ptree& config_tree,
+    const EnvironmentConfig& configuration,
     const boost::filesystem::path& config_file_path) {
-  ConfigureFromPtree(config_tree, config_file_path);
+  ConfigureFromPB(configuration, config_file_path);
 }
 
 bool FclEnvironment::IsCollision(const std::vector<double>& q) const {
@@ -188,19 +201,18 @@ EnvironmentInterface::DistanceProfile FclEnvironment::GetDistanceProfile(
   return distances;
 }
 
-void FclEnvironment::LoadDh(
-    const std::vector<std::vector<double> >& configuration) {
+void FclEnvironment::LoadDh(const Robot& robot) {
   // each part gets transformed ignoring the last coordinate transform
   dh_inverted_.emplace_back(new fcl::Transform3f);
-  for (const std::vector<double>& param : configuration) {
+  for (const Segment& param : robot.segments()) {
     dh_parameters_.emplace_back(new fcl::Transform3f);
     fcl::Transform3f* t = dh_parameters_.back().get();
 
     fcl::Matrix3f rotations;
-    rotations.setEulerZYX(0.0, 0.0, param[1]);
+    rotations.setEulerZYX(0.0, 0.0, param.theta());
     *t *= fcl::Transform3f(rotations);
-    *t *= fcl::Transform3f(fcl::Vec3f(param[0], 0.0, param[2]));
-    rotations.setEulerZYX(param[3], 0.0, 0.0);
+    *t *= fcl::Transform3f(fcl::Vec3f(param.a(), 0.0, param.d()));
+    rotations.setEulerZYX(param.alpha(), 0.0, 0.0);
     *t *= fcl::Transform3f(rotations);
 
     dh_inverted_.emplace_back(new fcl::Transform3f(*t));
@@ -210,37 +222,54 @@ void FclEnvironment::LoadDh(
   }
 }
 
-void FclEnvironment::ConfigureFromPtree(
-    const boost::property_tree::ptree& config_tree,
+void FclEnvironment::ConfigureFromPB(
+    const EnvironmentConfig& configuration,
     const boost::filesystem::path& config_file_path) {
-  std::string robot = config_tree.get<std::string>("robot");
-  boost::filesystem::path robot_file_path(config_file_path / robot);
-  boost::property_tree::ptree robot_tree;
-  boost::property_tree::read_json(robot_file_path.native(), robot_tree);
+  if (!configuration.has_robot_config() &&
+      !configuration.has_robot_filename()) {
+    std::cerr << "Robot config missing from Protocol Buffer:" << std::endl
+              << configuration.DebugString() << std::endl;
+    throw;
+  }
+  if (!configuration.has_environment_filename()) {
+    std::cerr << "Environment missing from Protocol Buffer:" << std::endl
+              << configuration.DebugString() << std::endl;
+    throw;
+  }
+  boost::filesystem::path robot_file_path(config_file_path);
+  Robot robot = configuration.robot_config();
+  if (configuration.has_robot_filename()) {
+    robot_file_path /= configuration.robot_filename();
+    std::ifstream fin(robot_file_path.native());
+    std::string input_string((std::istreambuf_iterator<char>(fin)),
+                             std::istreambuf_iterator<char>());
+    bool success = google::protobuf::TextFormat::ParseFromString(
+        input_string, &robot);
+    fin.close();
+    if (!success) {
+      std::cerr << "Failed parsing file: " << robot_file_path.native()
+                << std::endl;
+      throw;
+    }
+  }
   robot_file_path.remove_filename();
 
-  std::vector<std::vector<double> > config;
-  for (auto& item : robot_tree.get_child("dh")) {
-    config.emplace_back();
-    for (auto& param : item.second)
-      config.back().push_back(param.second.get_value<double>());
+  std::vector<int> parts_per_joint;
+  std::vector<std::string> parts;
+  for (const Segment& item : robot.segments()) {
+    parts_per_joint.push_back(item.parts_size());
+    for (const std::string& part : item.parts())
+      parts.push_back((robot_file_path / part).native());
   }
 
-  std::vector<int> parts_per_joint;
-  for (auto& item : robot_tree.get_child("parts_per_joint"))
-    parts_per_joint.push_back(item.second.get_value<int>());
-  std::vector<std::string> parts;
-  for (auto& item : robot_tree.get_child("parts"))
-    parts.push_back(
-        (robot_file_path / item.second.get_value<std::string>()).native());
-  std::string environment = config_tree.get<std::string>("environment");
-  double max_underestimate = config_tree.get<double>("max_underestimate");
+  const std::string& environment = configuration.environment_filename();
+  double max_underestimate = configuration.max_underestimate();
 
   part_count_ = parts.size();
   variance_ = max_underestimate;
   is_joint_start_.resize(parts.size(), false);
 
-  LoadDh(config);
+  LoadDh(robot);
 
   int part_index = 0;
   int segment_index = -1;

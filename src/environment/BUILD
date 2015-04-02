@@ -27,14 +27,23 @@ cc_library(
     hdrs = ["fcl-environment.h"],
     deps = [
         ":environment-interface",
+        ":environment-proto",
     ],
     linkopts = [
         "-lboost_filesystem",
-        "-lboost_serialization",
         "-lboost_system",
         "-lboost_thread",
         "-lfcl",
+        "-lprotobuf",
     ],
+)
+
+# TODO: Replace with proper protobuffer rules when implemented in Bazel.
+cc_library(
+    name = "environment-proto",
+    srcs = ["environment.pb.cc"],
+    hdrs = ["environment.pb.h"],
+    linkopts = ["-lprotobuf"],
 )
 
 cc_test(

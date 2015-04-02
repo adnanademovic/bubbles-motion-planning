@@ -34,12 +34,11 @@
 
 #define BOOST_SPIRIT_THREADSAFE
 #include <boost/filesystem.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <fcl/collision.h>
 
+#include "environment.pb.h"
 #include "environment-interface.h"
 
 namespace com {
@@ -50,7 +49,7 @@ namespace environment {
 class FclEnvironment : public EnvironmentInterface {
  public:
   FclEnvironment(const std::string& configuration);
-  FclEnvironment(const boost::property_tree::ptree& config_tree,
+  FclEnvironment(const EnvironmentConfig& configuration,
                  const boost::filesystem::path& config_file_path);
 
   bool IsCollision(const std::vector<double>& q) const;
@@ -59,9 +58,9 @@ class FclEnvironment : public EnvironmentInterface {
 
  private:
   // Configuration consists of lines of "a alpha d theta" format
-  void LoadDh(const std::vector<std::vector<double> >& configuration);
-  void ConfigureFromPtree(const boost::property_tree::ptree& config_tree,
-                          const boost::filesystem::path& config_file_path);
+  void LoadDh(const Robot& robot);
+  void ConfigureFromPB(const EnvironmentConfig& configuration,
+                       const boost::filesystem::path& config_file_path);
 
   int part_count_;
   double variance_;
