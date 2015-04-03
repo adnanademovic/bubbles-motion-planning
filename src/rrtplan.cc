@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#include <chrono>
 #include <cstdio>
 #include <string>
 
@@ -32,6 +33,25 @@
 #include "rrt.h"
 
 DEFINE_bool(verbose, false, "Print algorithm progress information");
+DEFINE_string(output_type, "path",
+    "Set the information that should be returned in the output ("
+    "path - array of configurations, "
+    "times - duration of each step in microseconds"
+    ")");
+
+namespace {
+static bool ValidateOutputType(const char* flagname, const std::string& value) {
+  if (value != "path" && value != "times") {
+    printf("Invalid value for --%s: %s\nOptions are: path, times\n",
+           flagname, value.c_str());
+    return false;
+  }
+  return true;
+}
+
+static const bool simulation_case_dummy = google::RegisterFlagValidator(
+    &FLAGS_output_type, &ValidateOutputType);
+}  // namespace
 
 using namespace com::ademovic::bubblesmp;
 
@@ -67,6 +87,25 @@ void OutputPath(std::vector<std::shared_ptr<TreePoint> > points) {
     DrawLine(points[i - 1]->position(), points[i]->position());
 }
 
+void OutputTimes(const std::vector<long int>& times) {
+  for (long int t : times)
+    printf("%ld\n", t);
+}
+
+template<typename T = std::chrono::microseconds>
+struct TimeMeasure
+{
+  template<typename F, typename ...Args>
+  static typename T::rep Run(F func, Args&&... args)
+  {
+    auto start = std::chrono::system_clock::now();
+    func(std::forward<Args>(args)...);
+    auto duration = std::chrono::duration_cast<T>
+      (std::chrono::system_clock::now() - start);
+    return duration.count();
+  }
+};
+
 std::string MakeUsage(const char* argv0) {
   std::string usage;
   usage += "determines a motion plan for the given task.\n"
@@ -91,13 +130,20 @@ int main(int argc, char** argv) {
 
   Rrt rrt(argv[1]);
   int step = 0;
-  while (!rrt.Step()) {
+  bool done = false;
+  std::vector<long int> durations;
+  while (!done) {
+    durations.push_back(static_cast<long int>(
+        TimeMeasure<std::chrono::microseconds>::Run(
+          [&retval = done, &obj = rrt]{retval = obj.Step();})));
+    done = rrt.Step();
     ++step;
     if (FLAGS_verbose)
       fprintf(stderr, "Current step: %6d\n", step);
   }
-  if (FLAGS_verbose)
-    fprintf(stderr, "Final step: %6d\n", step);
-  OutputPath(rrt.GetSolution());
+  if (FLAGS_output_type == "path")
+    OutputPath(rrt.GetSolution());
+  else if (FLAGS_output_type == "times")
+    OutputTimes(durations);
   return 0;
 }
