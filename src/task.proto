@@ -42,6 +42,7 @@ message TreeConfig {
     CLASSIC = 1;
   }
   optional Type type = 1 [default = BUBBLE];
+  optional bool attempt_connect = 6 [default = true];
 
   // For Bubble tree
   optional uint32 max_bubbles_per_branch = 2 [default = 50];

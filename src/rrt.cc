@@ -72,6 +72,7 @@ Rrt::Rrt(const std::string& configuration) {
 void Rrt::Configure(const TaskConfig& config,
                     const boost::filesystem::path& config_file_path) {
   done_ = false;
+  connect_ = config.tree().attempt_connect();
   std::vector<double> src, dst;
   for (double q : config.source().q())
     src.push_back(q);
@@ -114,9 +115,11 @@ void Rrt::Configure(const TaskConfig& config,
 }
 
 Rrt::Rrt(RrtTree* src_tree, RrtTree* dst_tree,
-         generators::RandomPointGeneratorInterface* random_point_generator)
+         generators::RandomPointGeneratorInterface* random_point_generator,
+         bool attempt_connect)
     : random_point_generator_(random_point_generator),
-      src_tree_(src_tree), dst_tree_(dst_tree), done_(false) {}
+      src_tree_(src_tree), dst_tree_(dst_tree), done_(false),
+      connect_(attempt_connect) {}
 
 bool Rrt::Run(int max_steps) {
   for (int i = 0; i < max_steps; ++i)
@@ -125,8 +128,8 @@ bool Rrt::Run(int max_steps) {
   return false;
 }
 
-bool Rrt::Step(bool connect) {
-  return Step(random_point_generator_->NextPoint(), connect);
+bool Rrt::Step() {
+  return Step(random_point_generator_->NextPoint(), connect_);
 }
 
 bool Rrt::Step(const std::vector<double>& q, bool connect) {
@@ -143,6 +146,9 @@ bool Rrt::Step(const std::vector<double>& q, bool connect) {
     thread.join();
   }
 
+  // TODO: account for doing steps in parallel when making the following part
+  //       run in a second thread. Specifically, all connect nodes should be
+  //       passed to local reference variables.
   src_connect_node_ = src_tree_->GetNewestNode();
   dst_connect_node_ = dst_tree_->GetNewestNode();
 
