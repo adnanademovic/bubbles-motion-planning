@@ -29,6 +29,7 @@
 #include <string>
 
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 #include "rrt.h"
 
@@ -122,6 +123,7 @@ int main(int argc, char** argv) {
   google::SetUsageMessage(MakeUsage("rrtplan"));
   google::SetVersionString("");
   google::ParseCommandLineFlags(&argc, &argv, true);
+  google::InitGoogleLogging(google::GetArgv0());
   if (argc < 2) {
     fprintf(stdout, "%s: %s\n",
         google::ProgramInvocationShortName(), google::ProgramUsage());
@@ -138,8 +140,7 @@ int main(int argc, char** argv) {
           [&retval = done, &obj = rrt]{retval = obj.Step();})));
     done = rrt.Step();
     ++step;
-    if (FLAGS_verbose)
-      fprintf(stderr, "Current step: %6d\n", step);
+    LOG(INFO) << "Last step (" << step << ") took " << durations.back() << "us";
   }
   if (FLAGS_output_type == "path")
     OutputPath(rrt.GetSolution());

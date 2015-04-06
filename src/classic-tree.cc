@@ -29,6 +29,8 @@
 #include <cmath>
 #include <cstdio>
 
+#include <glog/logging.h>
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
@@ -39,8 +41,7 @@ ClassicTree::ClassicTree(
     const IndexSettings& index_settings)
     : RrtTree(root, index_settings), eps_(max_step / substeps),
       substeps_(substeps), collision_source_(collision_source) {
-  fprintf(stderr, "Collision at root point: %s\n",
-          collision_source_->IsCollision(root) ? "YES" : "NO");
+  CHECK(collision_source_->IsCollision(root)) << "Collision at root point";
 }
 
 TreeNode* ClassicTree::AddNode(

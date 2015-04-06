@@ -26,10 +26,10 @@
 
 #include "make-environment.h"
 
-#include <iostream>
 #include <fstream>
 #include <string>
 
+#include <glog/logging.h>
 #include <google/protobuf/text_format.h>
 
 #include "fcl-environment.h"
@@ -50,10 +50,7 @@ EnvironmentInterface* NewEnvironmentFromProtoBuffer(
   bool success = google::protobuf::TextFormat::ParseFromString(
       input_string, &config_pb);
   fin.close();
-  if (!success) {
-    std::cerr << "Failed parsing file: " << configuration << std::endl;
-    throw;
-  }
+  CHECK(success) << "Failed parsing file: " << configuration << std::endl;
   return NewEnvironmentFromProtoBuffer(config_pb, config_file_path);
 }
 
@@ -65,9 +62,9 @@ EnvironmentInterface* NewEnvironmentFromProtoBuffer(
       return new FclEnvironment(configuration, config_file_path);
       break;
     default:
-      std::cerr << "Type missing in configuration:" << std::endl
-                << configuration.DebugString() << std::endl;
-      throw;
+      LOG(FATAL) << (configuration.has_type() ? "Unsuported" : "Missing")
+                 << " type in EnvironmentConfig:" << std::endl
+                 << configuration.DebugString();
   }
 }
 

@@ -44,6 +44,7 @@ cc_library(
         ":rrt-tree",
         "//bubbles-motion-planning/src/environment:environment-feedback",
     ],
+    linkopts = ["-lglog"],
 )
 
 cc_library(
@@ -54,6 +55,7 @@ cc_library(
         ":rrt-tree",
         "//bubbles-motion-planning/src/environment:environment-feedback",
     ],
+    linkopts = ["-lglog"],
 )
 
 cc_library(
@@ -88,6 +90,7 @@ cc_library(
     linkopts = [
         "-lboost_filesystem",
         "-lboost_thread",
+        "-lglog",
         "-lprotobuf",
     ],
 )
@@ -219,7 +222,10 @@ cc_binary(
     name = "rrtplan",
     srcs = ["rrtplan.cc"],
     deps = [":rrt"],
-    linkopts = ["-lgflags"],
+    linkopts = [
+        "-lgflags",
+        "-lglog",
+    ],
     data = ["//motion-planning-data/abb-irb-120:tasks"],
 )
 

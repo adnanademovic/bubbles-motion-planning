@@ -33,10 +33,11 @@ cc_library(
     srcs = ["make-generator.cc"],
     hdrs = ["make-generator.h"],
     deps = [
-        ":simple-generator",
+        ":generator-proto",
         ":random-point-generator-interface",
+        ":simple-generator",
     ],
-    data = [":generator-proto"],
+    linkopts = ["-lglog"],
 )
 
 cc_library(

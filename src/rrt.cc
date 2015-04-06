@@ -31,6 +31,7 @@
 #include <thread>
 #include <queue>
 
+#include <glog/logging.h>
 #include <google/protobuf/text_format.h>
 
 #include "environment/environment-feedback.h"
@@ -62,10 +63,7 @@ Rrt::Rrt(const std::string& configuration) {
   bool success = google::protobuf::TextFormat::ParseFromString(
       input_string, &config_pb);
   fin.close();
-  if (!success) {
-    std::cerr << "Failed parsing file: " << configuration << std::endl;
-    throw;
-  }
+  CHECK(success) << "Failed parsing file: " << configuration << std::endl;
   Configure(config_pb, config_file_path);
 }
 
@@ -106,9 +104,9 @@ void Rrt::Configure(const TaskConfig& config,
           dst_bubble_source, config.index()));
       break;
     default:
-      std::cerr << stderr, "Invalid TreeConfig type given\n";
-      throw;
-      break;
+      LOG(FATAL) << (config.tree().has_type() ? "Unsuported" : "Missing")
+                 << " type in TreeConfig:" << std::endl
+                 << config.tree().DebugString();
   }
   random_point_generator_.reset(NewGeneratorFromProtoBuffer(
       src_bubble_source->GetAngleRanges(), config.generator()));

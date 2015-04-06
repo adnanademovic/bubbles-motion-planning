@@ -29,11 +29,11 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
-#include <iostream>
 
 #include <fcl/BVH/BVH_model.h>
 #include <fcl/distance.h>
 
+#include <glog/logging.h>
 #include <google/protobuf/text_format.h>
 
 namespace com {
@@ -123,10 +123,7 @@ FclEnvironment::FclEnvironment(const std::string& configuration) {
   bool success = google::protobuf::TextFormat::ParseFromString(
       input_string, &config_pb);
   fin.close();
-  if (!success) {
-    std::cerr << "Failed parsing file: " << configuration << std::endl;
-    throw;
-  }
+  CHECK(success) << "Failed parsing file: " << configuration;
   ConfigureFromPB(config_pb, config_file_path);
 }
 
@@ -226,12 +223,10 @@ void FclEnvironment::LoadDhAndRanges(const Robot& robot) {
     fcl::Transform3f* t_inv = dh_inverted_.back().get();
     t_inv->inverse();
     *t_inv *= *dh_inverted_[dh_inverted_.size() - 2];
-    if (!param.has_range() || !param.range().has_min() ||
-        !param.range().has_max()) {
-      std::cerr << "Range missing from Protocol Buffer at:" << std::endl
-                << param.DebugString() << std::endl;
-      throw;
-    }
+    CHECK (param.has_range() && param.range().has_min() &&
+        param.range().has_max())
+        << "Range missing from Protocol Buffer at:" << std::endl
+        << param.DebugString();
     limits_.emplace_back(param.range().min(), param.range().max());
   }
 }
@@ -239,17 +234,12 @@ void FclEnvironment::LoadDhAndRanges(const Robot& robot) {
 void FclEnvironment::ConfigureFromPB(
     const EnvironmentConfig& configuration,
     const boost::filesystem::path& config_file_path) {
-  if (!configuration.has_robot_config() &&
-      !configuration.has_robot_filename()) {
-    std::cerr << "Robot config missing from Protocol Buffer:" << std::endl
-              << configuration.DebugString() << std::endl;
-    throw;
-  }
-  if (!configuration.has_environment_filename()) {
-    std::cerr << "Environment missing from Protocol Buffer:" << std::endl
-              << configuration.DebugString() << std::endl;
-    throw;
-  }
+  CHECK(configuration.has_robot_config() || configuration.has_robot_filename())
+      << "Robot config missing from Protocol Buffer:" << std::endl
+      << configuration.DebugString();
+  CHECK(configuration.has_environment_filename())
+      << "Environment missing from Protocol Buffer:" << std::endl
+      << configuration.DebugString();
   boost::filesystem::path robot_file_path(config_file_path);
   Robot robot = configuration.robot_config();
   if (configuration.has_robot_filename()) {
@@ -260,11 +250,7 @@ void FclEnvironment::ConfigureFromPB(
     bool success = google::protobuf::TextFormat::ParseFromString(
         input_string, &robot);
     fin.close();
-    if (!success) {
-      std::cerr << "Failed parsing file: " << robot_file_path.native()
-                << std::endl;
-      throw;
-    }
+    CHECK(success) << "Failed parsing file: " << robot_file_path.native();
   }
   robot_file_path.remove_filename();
 

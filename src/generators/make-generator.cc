@@ -26,6 +26,8 @@
 
 #include "make-generator.h"
 
+#include <glog/logging.h>
+
 #include "simple-generator.h"
 
 namespace com {
@@ -43,7 +45,9 @@ RandomPointGeneratorInterface* NewGeneratorFromProtoBuffer(
           : new SimpleGenerator(limits);
       break;
     default:
-      return nullptr;
+      LOG(FATAL) << (settings.has_type() ? "Unsuported" : "Missing")
+                 << " type in GeneratorSettings:" << std::endl
+                 << settings.DebugString();
   }
 }
 

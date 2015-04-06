@@ -62,6 +62,7 @@ cc_library(
         "-lboost_system",
         "-lboost_thread",
         "-lfcl",
+        "-lglog",
         "-lm",
         "-lprotobuf",
     ],
@@ -79,6 +80,7 @@ cc_library(
     linkopts = [
         "-lboost_filesystem",
         "-lboost_thread",
+        "-lglog",
         "-lprotobuf",
     ],
 )
