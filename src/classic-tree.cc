@@ -41,7 +41,7 @@ ClassicTree::ClassicTree(
     const IndexSettings& index_settings)
     : RrtTree(root, index_settings), eps_(max_step / substeps),
       substeps_(substeps), collision_source_(collision_source) {
-  CHECK(collision_source_->IsCollision(root)) << "Collision at root point";
+  CHECK(!collision_source_->IsCollision(root)) << "Collision at root point";
 }
 
 TreeNode* ClassicTree::AddNode(
