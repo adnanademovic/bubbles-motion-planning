@@ -29,11 +29,19 @@ licenses(["notice"])  # FreeBSD
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "halton-sequence-generator",
+    srcs = ["halton-sequence-generator.cc"],
+    hdrs = ["halton-sequence-generator.h"],
+    deps = [":random-point-generator-interface"],
+)
+
+cc_library(
     name = "make-generator",
     srcs = ["make-generator.cc"],
     hdrs = ["make-generator.h"],
     deps = [
         ":generator-proto",
+        ":halton-sequence-generator",
         ":random-point-generator-interface",
         ":simple-generator",
     ],

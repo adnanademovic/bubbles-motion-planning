@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2015, Adnan Ademovic
+// Copyright (c) 2014, Adnan Ademovic
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -24,16 +24,40 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-syntax = "proto2";
+#ifndef COM_ADEMOVIC_BUBBLESMP_GENERATORS_HALTON_SEQUENCE_GENERATOR_H_
+#define COM_ADEMOVIC_BUBBLESMP_GENERATORS_HALTON_SEQUENCE_GENERATOR_H_
 
-package com.ademovic.bubblesmp.generators;
+#include <utility>
+#include <vector>
 
-message GeneratorSettings {
-  enum Type {
-    SIMPLE = 0;
-    HALTON = 1;
-  }
-  optional Type type = 1 [default = SIMPLE];
-  optional uint32 seed = 2;
-  repeated uint32 keys = 3;
-}
+#include "random-point-generator-interface.h"
+
+namespace com {
+namespace ademovic {
+namespace bubblesmp {
+namespace generators {
+
+class HaltonSequenceGenerator : public RandomPointGeneratorInterface {
+ public:
+  HaltonSequenceGenerator(
+      const std::vector<std::pair<double, double> >& limits,
+      const std::vector<unsigned>& keys, unsigned skips);
+  HaltonSequenceGenerator(
+      const std::vector<std::pair<double, double> >& limits,
+      const std::vector<unsigned>& keys);
+  std::vector<double> NextPoint();
+
+ protected:
+  unsigned dimensions_;
+  std::vector<double> starts_;
+  std::vector<std::vector<double> > steps_;
+  std::vector<std::vector<unsigned> > current_;
+  std::vector<unsigned> keys_;
+};
+
+}  // namespace generators
+}  // namespace bubblesmp
+}  // namespace ademovic
+}  // namespace com
+
+#endif  // COM_ADEMOVIC_BUBBLESMP_GENERATORS_HALTON_SEQUENCE_GENERATOR_H_

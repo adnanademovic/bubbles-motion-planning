@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2015, Adnan Ademovic
+// Copyright (c) 2014, Adnan Ademovic
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -24,45 +24,53 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "make-generator.h"
-
-#include <glog/logging.h>
-
 #include "halton-sequence-generator.h"
-#include "simple-generator.h"
+
+#include <chrono>
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace generators {
 
-RandomPointGeneratorInterface* NewGeneratorFromProtoBuffer(
+// TODO: add validity checks for keys.
+HaltonSequenceGenerator::HaltonSequenceGenerator(
     const std::vector<std::pair<double, double> >& limits,
-    const GeneratorSettings& settings) {
-  switch (settings.type()) {
-    case GeneratorSettings::SIMPLE:
-      return settings.has_seed()
-          ? new SimpleGenerator(limits, settings.seed())
-          : new SimpleGenerator(limits);
-      break;
-    case GeneratorSettings::HALTON:
-      {
-        std::vector<unsigned> keys;
-        for (unsigned key : settings.keys())
-          keys.push_back(key);
-        CHECK_EQ(keys.size(), limits.size())
-            << "The number of keys for the Halton sequence must be equal to "
-            << "the number of dimensions of the space";
-        return settings.has_seed()
-            ? new HaltonSequenceGenerator(limits, keys, settings.seed())
-            : new HaltonSequenceGenerator(limits, keys);
-      }
-      break;
-    default:
-      LOG(FATAL) << (settings.has_type() ? "Unsuported" : "Missing")
-                 << " type in GeneratorSettings:" << std::endl
-                 << settings.DebugString();
+    const std::vector<unsigned>& keys, unsigned skips)
+    : dimensions_(limits.size()),
+      current_(dimensions_, std::vector<unsigned>(1, 1)), keys_(keys) {
+  for (unsigned i = 0; i < dimensions_; ++i) {
+    starts_.push_back(limits[i].first);
+    steps_.emplace_back(1, (limits[i].second - limits[i].first) / keys[i]);
   }
+  for (unsigned i = 0; i < skips; ++i)
+    NextPoint();
+}
+
+HaltonSequenceGenerator::HaltonSequenceGenerator(
+    const std::vector<std::pair<double, double> >& limits,
+    const std::vector<unsigned>& keys)
+    : HaltonSequenceGenerator(
+        limits, keys,
+        std::chrono::system_clock::now().time_since_epoch().count() & 0xFFFF) {}
+
+std::vector<double> HaltonSequenceGenerator::NextPoint() {
+  std::vector<double> point = starts_;
+  for (unsigned i = 0; i < dimensions_; ++i) {
+    int depth = current_[i].size();
+    for (unsigned j = 0; j < depth; ++j) {
+      point[i] += steps_[i][j] * current_[i][j];
+    }
+    int current_depth = 0;
+    while (++current_[i][current_depth] >= keys_[i]) {
+      current_[i][current_depth++] = 0;
+      if (current_depth >= depth) {
+        steps_[i].push_back(steps_[i].back() / keys_[i]);
+        current_[i].push_back(0);
+      }
+    }
+  }
+  return point;
 }
 
 }  // namespace generators
