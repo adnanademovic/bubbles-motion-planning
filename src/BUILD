@@ -237,4 +237,5 @@ cc_test(
         "-lboost_unit_test_framework",
         "-lm",
     ],
+    size = "small",
 )

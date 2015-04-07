@@ -101,6 +101,7 @@ cc_test(
         ":make-environment",
     ],
     linkopts = ["-lboost_unit_test_framework"],
+    size = "small",
 )
 
 cc_test(
@@ -108,4 +109,5 @@ cc_test(
     srcs = ["fcl-environment_test.cc"],
     deps = [":fcl-environment"],
     linkopts = ["-lboost_unit_test_framework"],
+    size = "small",
 )
