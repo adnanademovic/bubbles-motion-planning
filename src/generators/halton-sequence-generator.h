@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014, Adnan Ademovic
+// Copyright (c) 2015, Adnan Ademovic
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
