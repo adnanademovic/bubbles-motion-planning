@@ -67,3 +67,10 @@ cc_library(
     hdrs = ["generator.pb.h"],
     linkopts = ["-lprotobuf"],
 )
+
+cc_test(
+    name = "halton-sequence-generator_test",
+    srcs = ["halton-sequence-generator_test.cc"],
+    deps = [":halton-sequence-generator"],
+    linkopts = ["-lboost_unit_test_framework"],
+)
