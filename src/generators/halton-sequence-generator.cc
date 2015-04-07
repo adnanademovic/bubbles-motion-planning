@@ -57,11 +57,11 @@ HaltonSequenceGenerator::HaltonSequenceGenerator(
 std::vector<double> HaltonSequenceGenerator::NextPoint() {
   std::vector<double> point = starts_;
   for (unsigned i = 0; i < dimensions_; ++i) {
-    int depth = current_[i].size();
+    unsigned depth = current_[i].size();
     for (unsigned j = 0; j < depth; ++j) {
       point[i] += steps_[i][j] * current_[i][j];
     }
-    int current_depth = 0;
+    unsigned current_depth = 0;
     while (++current_[i][current_depth] >= keys_[i]) {
       current_[i][current_depth++] = 0;
       if (current_depth >= depth) {

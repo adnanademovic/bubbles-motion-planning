@@ -116,8 +116,8 @@ Rrt::Rrt(RrtTree* src_tree, RrtTree* dst_tree,
          generators::RandomPointGeneratorInterface* random_point_generator,
          bool attempt_connect)
     : random_point_generator_(random_point_generator),
-      src_tree_(src_tree), dst_tree_(dst_tree), done_(false),
-      connect_(attempt_connect) {}
+      src_tree_(src_tree), dst_tree_(dst_tree), connect_(attempt_connect),
+      done_(false) {}
 
 bool Rrt::Run(int max_steps) {
   for (int i = 0; i < max_steps; ++i)
