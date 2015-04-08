@@ -58,6 +58,7 @@ cc_library(
     srcs = ["simple-generator.cc"],
     hdrs = ["simple-generator.h"],
     deps = [":random-point-generator-interface"],
+    linkopts = ["-lm"],
 )
 
 # TODO: Replace with proper protobuffer rules when implemented in Bazel.
