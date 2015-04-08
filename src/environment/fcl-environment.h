@@ -50,6 +50,7 @@ class FclEnvironment : public EnvironmentInterface {
   FclEnvironment(const std::string& configuration);
   FclEnvironment(const EnvironmentConfig& configuration,
                  const boost::filesystem::path& config_file_path);
+  virtual ~FclEnvironment() {}
 
   bool IsCollision(const std::vector<double>& q) const;
   EnvironmentInterface::DistanceProfile GetDistanceProfile(

@@ -38,6 +38,7 @@ namespace bubblesmp {
 class Bubble : public TreePoint {
  public:
   Bubble(const std::vector<double>& position, const std::vector<double>& size);
+  virtual ~Bubble() {}
   std::vector<double> size() const;
   bool Contains(const std::vector<double>& q) const;
   // Returns coordinates at which a line connecting the bubble center and q

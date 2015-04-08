@@ -42,6 +42,7 @@ namespace bubblesmp {
 class RrtTree {
  public:
   RrtTree(const std::vector<double>& root, const IndexSettings& index_settings);
+  virtual ~RrtTree() {}
 
   bool Connect(const std::vector<double>& q_target);
   TreeNode* GetNewestNode() const;

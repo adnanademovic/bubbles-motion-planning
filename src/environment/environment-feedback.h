@@ -38,6 +38,7 @@ namespace environment {
 class EnvironmentFeedback {
  public:
   EnvironmentFeedback(EnvironmentInterface* environment);
+  virtual ~EnvironmentFeedback() {}
   // Caller needs to handle ownership of the returned Bubble.
   Bubble* NewBubble(const std::vector<double>& coordinates) const;
   bool IsCollision(const std::vector<double>& coordinates) const;

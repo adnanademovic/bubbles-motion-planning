@@ -50,6 +50,7 @@ class Rrt {
   Rrt(RrtTree* src_tree, RrtTree* dst_tree,
       generators::RandomPointGeneratorInterface* random_point_generator,
       bool attempt_connect = false);
+  virtual ~Rrt() {}
 
   bool Run(int max_steps);
   bool Step();

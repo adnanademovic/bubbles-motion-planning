@@ -50,6 +50,7 @@ class PointIndex {
   PointIndex(const std::vector<double>& q_root, TreeNode* root_node);
   PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
              const IndexSettings& flann_settings);
+  virtual ~PointIndex() {}
 
   // PointIndex doesn't take ownership of parent
   void AddPoint(const std::vector<double>& q, TreeNode* parent);

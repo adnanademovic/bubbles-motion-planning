@@ -37,6 +37,7 @@ namespace bubblesmp {
 class TreePoint {
  public:
   TreePoint(const std::vector<double>& position);
+  virtual ~TreePoint() {}
   std::vector<double> position() const;
  protected:
   std::vector<double> position_;
@@ -47,6 +48,7 @@ struct TreeNode {
   // Does not take ownership of parent.
   TreeNode(TreePoint* point, TreeNode* parent)
       : point(point), parent(parent) {}
+  virtual ~TreeNode() {}
   std::shared_ptr<TreePoint> point;
   TreeNode* parent;
 };

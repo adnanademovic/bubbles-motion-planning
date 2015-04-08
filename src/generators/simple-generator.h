@@ -43,6 +43,7 @@ class SimpleGenerator : public RandomPointGeneratorInterface {
   SimpleGenerator(
       const std::vector<std::pair<double, double> >& limits, unsigned seed);
   SimpleGenerator(const std::vector<std::pair<double, double> >& limits);
+  virtual ~SimpleGenerator() {}
   std::vector<double> NextPoint();
 
  protected:

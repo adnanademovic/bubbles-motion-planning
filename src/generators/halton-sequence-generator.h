@@ -45,6 +45,7 @@ class HaltonSequenceGenerator : public RandomPointGeneratorInterface {
   HaltonSequenceGenerator(
       const std::vector<std::pair<double, double> >& limits,
       const std::vector<unsigned>& keys);
+  virtual ~HaltonSequenceGenerator() {}
   std::vector<double> NextPoint();
 
  protected:

@@ -37,6 +37,7 @@ namespace environment {
 
 class EnvironmentInterface {
  public:
+  virtual ~EnvironmentInterface() {}
   typedef std::vector<std::pair<double, std::vector<double> > > DistanceProfile;
 
   virtual bool IsCollision(const std::vector<double>& q) const = 0;
