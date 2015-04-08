@@ -226,7 +226,6 @@ cc_binary(
         "-lgflags",
         "-lglog",
     ],
-    data = ["//motion-planning-data/abb-irb-120:tasks"],
 )
 
 cc_test(
