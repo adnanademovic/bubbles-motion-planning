@@ -43,6 +43,7 @@ HaltonSequenceGenerator::HaltonSequenceGenerator(
     starts_.push_back(limits[i].first);
     steps_.emplace_back(1, (limits[i].second - limits[i].first) / keys[i]);
   }
+  // TODO: generate the state instead of doing the incremental calculation.
   for (unsigned i = 0; i < skips; ++i)
     NextPoint();
 }
