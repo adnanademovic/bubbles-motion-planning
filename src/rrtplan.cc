@@ -157,5 +157,8 @@ int main(int argc, char** argv) {
     else if (FLAGS_output_type == "times")
       OutputTimes(durations);
   }
+  google::protobuf::ShutdownProtobufLibrary();
+  google::ShutdownGoogleLogging();
+  google::ShutDownCommandLineFlags();
   return 0;
 }
