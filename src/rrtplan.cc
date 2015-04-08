@@ -57,36 +57,12 @@ static const bool simulation_case_dummy = google::RegisterFlagValidator(
 
 using namespace com::ademovic::bubblesmp;
 
-void DrawLine(
-    const std::vector<double>& start, const std::vector<double>& goal) {
-  double max_step = 3.6;
-  std::vector<double> delta;
-  for (size_t i = 0; i < start.size(); ++i)
-    delta.push_back(goal[i] - start[i]);
-  double distance = 0.0;
-  for (double diff : delta)
-    distance += fabs(diff);
-  if (distance < max_step) {
-    for (const auto& pos : goal)
-      printf("%lf ", pos);
-    printf("\n");
-  } else {
-    int steps = static_cast<int>(distance / max_step + 1);
-    for (size_t i = 0; i < delta.size(); ++i)
-      delta[i] /= steps;
-    for (int i = 1; i <= steps; ++i) {
-      for (size_t j = 0; j < start.size(); ++j)
-        printf("%lf ", start[j] + i * delta[j]);
-      printf("\n");
-    }
-  }
-}
-
 void OutputPath(std::vector<std::shared_ptr<TreePoint> > points) {
-  if (!points.empty())
-    DrawLine(points[0]->position(), points[0]->position());
-  for (size_t i = 1; i < points.size(); ++i)
-    DrawLine(points[i - 1]->position(), points[i]->position());
+  for (const std::shared_ptr<TreePoint> q : points) {
+    for (double qi : q->position())
+      printf(" %lf", qi);
+    printf("\n");
+  }
 }
 
 void OutputTimes(const std::vector<long int>& times) {
