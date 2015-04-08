@@ -27,6 +27,7 @@
 #include <chrono>
 #include <cstdio>
 #include <string>
+#include <queue>
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -129,22 +130,32 @@ int main(int argc, char** argv) {
         google::ProgramInvocationShortName(), google::ProgramUsage());
     return 2;
   }
+  LOG(INFO) << "Number of configurations to open: " << argc - 1;
+  LOG(INFO) << "Verifying configurations...";
+  for (int task = 1; task < argc; ++task)
+    Rrt rrt_verification(argv[task]);
+  LOG(INFO) << "All configurations are valid";
 
-  Rrt rrt(argv[1]);
-  int step = 0;
-  bool done = false;
-  std::vector<long int> durations;
-  while (!done) {
-    durations.push_back(static_cast<long int>(
-        TimeMeasure<std::chrono::microseconds>::Run(
-          [&retval = done, &obj = rrt]{retval = obj.Step();})));
-    done = rrt.Step();
-    ++step;
-    LOG(INFO) << "Last step (" << step << ") took " << durations.back() << "us";
+  for (int task = 1; task < argc; ++task) {
+    Rrt rrt(argv[task]);
+    LOG(INFO) << "Running case: " << argv[task];
+    int step = 0;
+    bool done = false;
+    std::vector<long int> durations;
+    while (!done) {
+      durations.push_back(static_cast<long int>(
+          TimeMeasure<std::chrono::microseconds>::Run(
+            [&retval = done, &obj = rrt]{retval = obj.Step();})));
+      done = rrt.Step();
+      ++step;
+      LOG(INFO) << "Step " << step << " took " << durations.back() << " us";
+    }
+    if (argc > 1)
+      printf("Case: %s\n", argv[task]);
+    if (FLAGS_output_type == "path")
+      OutputPath(rrt.GetSolution());
+    else if (FLAGS_output_type == "times")
+      OutputTimes(durations);
   }
-  if (FLAGS_output_type == "path")
-    OutputPath(rrt.GetSolution());
-  else if (FLAGS_output_type == "times")
-    OutputTimes(durations);
   return 0;
 }
