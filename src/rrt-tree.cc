@@ -33,7 +33,7 @@ namespace bubblesmp {
 RrtTree::RrtTree(
     const std::vector<double>& root, const IndexSettings& index_settings)
     : point_index_(new PointIndex(
-          root, new TreeNode(new TreePoint(root), nullptr), IndexSettings())) {}
+          root, new TreeNode(new TreePoint(root), nullptr), index_settings)) {}
 
 bool RrtTree::Connect(const std::vector<double>& q_target) {
   AttachmentPoint connection_point = point_index_->GetNearestPoint(q_target);

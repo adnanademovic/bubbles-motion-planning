@@ -42,6 +42,7 @@ BubbleTree::BubbleTree(
     double min_move_size, const IndexSettings& index_settings)
     : RrtTree(root, index_settings),
       max_bubbles_per_branch_(max_bubbles_per_branch),
+      max_binary_search_depth_(max_binary_search_depth),
       bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()),
       min_move_size_(min_move_size / root.size()) {
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
