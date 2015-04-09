@@ -34,10 +34,21 @@ namespace bubblesmp {
 
 Bubble::Bubble(const std::vector<double>& position,
                const std::vector<double>& size)
-    : TreePoint(position), size_(size) {}
+    : TreePoint(position), size_(size) {
+  is_collision_ = false;
+  for (double dimension : size_)
+    if (dimension == 0.0) {
+      is_collision_ = true;
+      break;
+    }
+}
 
 std::vector<double> Bubble::size() const {
   return size_;
+}
+
+bool Bubble::IsCollision() const {
+  return is_collision_;
 }
 
 bool Bubble::Contains(const std::vector<double>& q) const {

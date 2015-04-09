@@ -40,6 +40,7 @@ class Bubble : public TreePoint {
   Bubble(const std::vector<double>& position, const std::vector<double>& size);
   virtual ~Bubble() {}
   std::vector<double> size() const;
+  bool IsCollision() const;
   bool Contains(const std::vector<double>& q) const;
   // Returns coordinates at which a line connecting the bubble center and q
   // intersects the bubble's hull.
@@ -47,6 +48,7 @@ class Bubble : public TreePoint {
 
  private:
   std::vector<double> size_;
+  bool is_collision_;
 };
 
 }  // namespace bubblesmp

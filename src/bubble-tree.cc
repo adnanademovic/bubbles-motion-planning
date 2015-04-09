@@ -72,6 +72,9 @@ bool BubbleTree::CanReachBetween(
     q_mid[i] = (q_1[i] + q_2[i]) / 2.0;
   std::unique_ptr<Bubble> bubble(bubble_source_->NewBubble(q_mid));
 
+  if (bubble->IsCollision())
+    return false;
+
   if (!bubble->Contains(q_1) && !CanReachBetween(
         q_1, bubble->IntersectsHullAt(q_1), iterations_left))
     return false;

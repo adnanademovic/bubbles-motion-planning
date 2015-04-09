@@ -51,6 +51,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 BOOST_AUTO_TEST_CASE(contains_insides) {
   Bubble bubble({1.0, 2.0, 3.0}, {0.3, 0.7, 0.6});
 
+  BOOST_CHECK(!bubble.IsCollision());
   BOOST_CHECK(bubble.Contains({1.2, 2.0, 3.0}));
   BOOST_CHECK(bubble.Contains({1.0, 2.5, 3.0}));
   BOOST_CHECK(bubble.Contains({1.0, 2.0, 3.4}));
@@ -66,6 +67,7 @@ BOOST_AUTO_TEST_CASE(contains_insides) {
 BOOST_AUTO_TEST_CASE(does_not_contain_exterior) {
   Bubble bubble({1.0, 2.0, 3.0}, {0.3, 0.7, 0.6});
 
+  BOOST_CHECK(!bubble.IsCollision());
   BOOST_CHECK(!bubble.Contains({1.4, 2.0, 3.0}));
   BOOST_CHECK(!bubble.Contains({1.0, 2.8, 3.0}));
   BOOST_CHECK(!bubble.Contains({1.0, 2.0, 3.7}));
@@ -81,6 +83,7 @@ BOOST_AUTO_TEST_CASE(does_not_contain_exterior) {
 BOOST_AUTO_TEST_CASE(hull_intersection_2d) {
   Bubble bubble({15.0, 20.0}, {10.0, 5.0});
 
+  BOOST_CHECK(!bubble.IsCollision());
   CheckCloseCollections(bubble.IntersectsHullAt({34.0, 20.0}), {25.0, 20.0});
   CheckCloseCollections(bubble.IntersectsHullAt({2.0, 20.0}), {5.0, 20.0});
   CheckCloseCollections(bubble.IntersectsHullAt({15.0, 47.0}), {15.0, 25.0});
@@ -102,3 +105,11 @@ BOOST_AUTO_TEST_CASE(hull_intersection_2d) {
   CheckCloseCollections(
       bubble.IntersectsHullAt({30.0, 30.0}), {sol_x, sol_y}, 2.0);
 }
+
+BOOST_AUTO_TEST_CASE(colliding_bubble) {
+  Bubble bubble({1.0, 2.0, 3.0}, {0.3, 0.0, 0.6});
+
+  BOOST_CHECK(bubble.IsCollision());
+}
+
+
