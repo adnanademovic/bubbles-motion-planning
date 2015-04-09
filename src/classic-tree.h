@@ -48,6 +48,9 @@ class ClassicTree : public RrtTree {
       const IndexSettings& index_settings);
   virtual ~ClassicTree() {}
 
+  virtual bool CanReach(
+      const TreeNode& node, const std::vector<double>& q_target) const;
+
  private:
   // Does not take ownership of parent.
   // Has ownership of returned pointer.

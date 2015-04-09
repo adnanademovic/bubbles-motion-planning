@@ -36,7 +36,8 @@ namespace ademovic {
 namespace bubblesmp {
 
 BubbleTree::BubbleTree(
-    int max_bubbles_per_branch, const std::vector<double>& root,
+    int max_bubbles_per_branch, unsigned max_binary_search_depth,
+    const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
     double min_move_size, const IndexSettings& index_settings)
     : RrtTree(root, index_settings),
@@ -44,6 +45,40 @@ BubbleTree::BubbleTree(
       bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()),
       min_move_size_(min_move_size / root.size()) {
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
+}
+
+bool BubbleTree::CanReach(
+      const TreeNode& node, const std::vector<double>& q_target) const {
+  Bubble* current_bubble = static_cast<Bubble*>(node.point.get());
+
+  if (current_bubble->Contains(q_target))
+    return true;
+  return CanReachBetween(current_bubble->IntersectsHullAt(q_target), q_target,
+                         max_binary_search_depth_);
+}
+
+bool BubbleTree::CanReachBetween(
+    const std::vector<double>& q_1, const std::vector<double>& q_2,
+    unsigned iterations_left) const {
+  if (iterations_left == 0)
+    return false;
+
+  iterations_left--;
+
+  unsigned dims = q_1.size();
+  std::vector<double> q_mid(dims, 0.0);
+  for (unsigned i = 0; i < dims; ++i)
+    q_mid[i] = (q_1[i] + q_2[i]) / 2.0;
+  std::unique_ptr<Bubble> bubble(bubble_source_->NewBubble(q_mid));
+
+  if (!bubble->Contains(q_1) && !CanReachBetween(
+        q_1, bubble->IntersectsHullAt(q_1), iterations_left))
+    return false;
+  if (!bubble->Contains(q_2) && !CanReachBetween(
+        q_2, bubble->IntersectsHullAt(q_2), iterations_left))
+    return false;
+
+  return true;
 }
 
 TreeNode* BubbleTree::AddNode(

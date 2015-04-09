@@ -50,6 +50,11 @@ void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
   *return_value = rrt_tree->Connect(q);
 }
 
+void attempt_connect_thread(RrtTree* rrt_tree, TreeNode* node,
+                            const std::vector<double>& q, bool* return_value) {
+  *return_value = rrt_tree->CanReach(*node, q);
+}
+
 }  // namespace
 
 
@@ -87,10 +92,12 @@ void Rrt::Configure(const TaskConfig& config,
   switch (config.tree().type()) {
     case (TreeConfig::BUBBLE):
       src_tree_.reset(new BubbleTree(
-          static_cast<int>(config.tree().max_bubbles_per_branch()), src,
+          static_cast<int>(config.tree().max_bubbles_per_branch()),
+          config.tree().max_binary_search_depth(), src,
           src_bubble_source, config.tree().min_move_length(), config.index()));
       dst_tree_.reset(new BubbleTree(
-          static_cast<int>(config.tree().max_bubbles_per_branch()), dst,
+          static_cast<int>(config.tree().max_bubbles_per_branch()),
+          config.tree().max_binary_search_depth(), dst,
           dst_bubble_source, config.tree().min_move_length(), config.index()));
       break;
     case (TreeConfig::CLASSIC):
@@ -144,9 +151,6 @@ bool Rrt::Step(const std::vector<double>& q, bool connect) {
     thread.join();
   }
 
-  // TODO: account for doing steps in parallel when making the following part
-  //       run in a second thread. Specifically, all connect nodes should be
-  //       passed to local reference variables.
   src_connect_node_ = src_tree_->GetNewestNode();
   dst_connect_node_ = dst_tree_->GetNewestNode();
 
@@ -159,23 +163,18 @@ bool Rrt::Step(const std::vector<double>& q, bool connect) {
     src_connected = dst_connected = false;
 
     threads.clear();
-    threads.emplace_back(step_thread, src_tree_.get(),
+    threads.emplace_back(attempt_connect_thread, src_tree_.get(),
+                         src_connect_node_,
                          dst_connect_node_->point->position(), &src_connected);
-    threads.emplace_back(step_thread, dst_tree_.get(),
+    threads.emplace_back(attempt_connect_thread, dst_tree_.get(),
+                         dst_connect_node_,
                          src_connect_node_->point->position(), &dst_connected);
 
     for (std::thread& thread : threads) {
       thread.join();
     }
 
-    if (src_connected) {
-      src_connect_node_ = src_tree_->GetNewestNode();
-      done_ = true;
-      return true;
-    }
-
-    if (dst_connected) {
-      dst_connect_node_ = dst_tree_->GetNewestNode();
+    if (src_connected || dst_connected) {
       done_ = true;
       return true;
     }

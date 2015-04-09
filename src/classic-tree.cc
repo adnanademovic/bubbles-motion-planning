@@ -44,6 +44,45 @@ ClassicTree::ClassicTree(
   CHECK(!collision_source_->IsCollision(root)) << "Collision at root point";
 }
 
+// TODO: improve efficiency by using a more randomized sweep
+bool ClassicTree::CanReach(
+      const TreeNode& node, const std::vector<double>& q_target) const {
+  std::vector<double> current(node.point->position());
+  std::vector<double> step(q_target);
+  unsigned int axis_count = q_target.size();
+
+  double length = 0.0;
+  for (unsigned int i = 0; i < axis_count; ++i) {
+    step[i] -= current[i];
+    length += step[i] * step[i];
+  }
+
+  length = sqrt(length);
+  int max_steps = int(length / eps_) + 1;
+  length = eps_ / length;
+
+  for (unsigned int i = 0; i < axis_count; ++i)
+    step[i] *= length;
+  for (int s = 0; s < max_steps; ++s) {
+    for (unsigned int i = 0; i < axis_count; ++i)
+      current[i] += step[i];
+
+    if (s == max_steps - 1)
+      current = q_target;
+
+    if (collision_source_->IsCollision(current)) {
+      int steps_shortened = s - s % substeps_;
+      if (!steps_shortened)
+        return false;
+      current = node.point->position();
+      for (unsigned int i = 0; i < axis_count; ++i)
+        current[i] += step[i] * steps_shortened;
+      return false;
+    }
+  }
+  return true;
+}
+
 TreeNode* ClassicTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
   TreeNode* current_node = new TreeNode(new TreePoint(q), parent);

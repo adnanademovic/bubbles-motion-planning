@@ -44,10 +44,14 @@ namespace bubblesmp {
 // multiple threads.
 class BubbleTree : public RrtTree {
  public:
-  BubbleTree(int max_bubbles_per_branch, const std::vector<double>& root,
+  BubbleTree(int max_bubbles_per_branch, unsigned max_binary_search_depth,
+             const std::vector<double>& root,
              std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
              double min_move_size, const IndexSettings& index_settings);
   virtual ~BubbleTree() {}
+
+  virtual bool CanReach(
+      const TreeNode& node, const std::vector<double>& q_target) const;
 
  private:
   // Does not take ownership of parent.
@@ -56,7 +60,12 @@ class BubbleTree : public RrtTree {
   virtual bool ConnectLine(
       const AttachmentPoint& point, const std::vector<double>& q_target);
 
+  bool CanReachBetween(
+      const std::vector<double>& q_1, const std::vector<double>& q_2,
+      unsigned iterations_left) const;
+
   int max_bubbles_per_branch_;
+  unsigned max_binary_search_depth_;
   std::shared_ptr<environment::EnvironmentFeedback> bubble_source_;
   std::vector<std::pair<double, double> > limits_;
   double min_move_size_;

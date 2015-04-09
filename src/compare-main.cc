@@ -59,12 +59,13 @@ void RunBubbleTree(unsigned seed, const TestCase& test_case) {
   index_settings.mutable_search_params()->set_checks(128);
 
   int bubbles_per_branch = 50;
+  unsigned bin_search_depth = 4;
   RrtTree* src_tree = new BubbleTree(
-      bubbles_per_branch, test_case.start, src_bubble_source, 1.8,
-      index_settings);
+      bubbles_per_branch, bin_search_depth, test_case.start, src_bubble_source,
+      1.8, index_settings);
   RrtTree* dst_tree = new BubbleTree(
-      bubbles_per_branch, test_case.goal, dst_bubble_source, 1.8,
-      index_settings);
+      bubbles_per_branch, bin_search_depth, test_case.goal, dst_bubble_source,
+      1.8, index_settings);
 
   generators::GeneratorSettings generator_settings;
   generator_settings.set_type(generators::GeneratorSettings::SIMPLE);
