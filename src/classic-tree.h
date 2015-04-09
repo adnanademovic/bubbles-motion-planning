@@ -43,7 +43,7 @@ namespace bubblesmp {
 class ClassicTree : public RrtTree {
  public:
   ClassicTree(
-      double max_step, int substeps, const std::vector<double>& root,
+      double max_step, unsigned substeps, const std::vector<double>& root,
       std::shared_ptr<environment::EnvironmentFeedback> collision_source,
       const IndexSettings& index_settings);
   virtual ~ClassicTree() {}

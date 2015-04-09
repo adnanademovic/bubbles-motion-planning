@@ -44,7 +44,7 @@ namespace bubblesmp {
 // multiple threads.
 class BubbleTree : public RrtTree {
  public:
-  BubbleTree(int max_bubbles_per_branch, unsigned max_binary_search_depth,
+  BubbleTree(unsigned max_bubbles_per_branch, unsigned max_binary_search_depth,
              const std::vector<double>& root,
              std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
              double min_move_size, const IndexSettings& index_settings);

@@ -92,22 +92,20 @@ void Rrt::Configure(const TaskConfig& config,
   switch (config.tree().type()) {
     case (TreeConfig::BUBBLE):
       src_tree_.reset(new BubbleTree(
-          static_cast<int>(config.tree().max_bubbles_per_branch()),
+          config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), src,
           src_bubble_source, config.tree().min_move_length(), config.index()));
       dst_tree_.reset(new BubbleTree(
-          static_cast<int>(config.tree().max_bubbles_per_branch()),
+          config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), dst,
           dst_bubble_source, config.tree().min_move_length(), config.index()));
       break;
     case (TreeConfig::CLASSIC):
       src_tree_.reset(new ClassicTree(
-          config.tree().step_length(),
-          static_cast<int>(config.tree().checks_per_step()), src,
+          config.tree().step_length(), config.tree().checks_per_step(), src,
           src_bubble_source, config.index()));
       dst_tree_.reset(new ClassicTree(
-          config.tree().step_length(),
-          static_cast<int>(config.tree().checks_per_step()), dst,
+          config.tree().step_length(), config.tree().checks_per_step(), dst,
           dst_bubble_source, config.index()));
       break;
     default:
