@@ -47,7 +47,7 @@ message TreeConfig {
   // For Bubble tree
   optional uint32 max_bubbles_per_branch = 2 [default = 50];
   optional uint32 max_binary_search_depth = 7 [default = 4];
-  optional double min_move_length = 3 [default = 1.8];
+  optional double min_move_length = 3 [default = 0.9];
 
   // For Classic tree
   optional double step_length = 4 [default = 3.6];

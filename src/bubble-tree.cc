@@ -44,7 +44,7 @@ BubbleTree::BubbleTree(
       max_bubbles_per_branch_(max_bubbles_per_branch),
       max_binary_search_depth_(max_binary_search_depth),
       bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()),
-      min_move_size_(min_move_size / root.size()) {
+      min_move_size_(min_move_size) {
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
 }
 
@@ -109,7 +109,7 @@ bool BubbleTree::ConnectLine(
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
 
-  double previous_move_size = min_move_size_;
+  double move_size_limit = min_move_size_;
 
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
     current_bubble = static_cast<Bubble*>(current_node->point.get());
@@ -120,14 +120,18 @@ bool BubbleTree::ConnectLine(
 
     std::vector<double> q_next(current_bubble->IntersectsHullAt(q_target));
     std::vector<double> q_prev(current_bubble->position());
+
+    // Just like Classic RRT has a big step size that would represent the
+    // resolution of the movement, Bubble RRT has its own as a lower limit,
+    // whereby the limit is either the big step or embracing the target.
+    // Embracing the target is checked in the early return above.
+    // TODO: experiment with more heuristics.
     double current_move_size = 0.0;
-    for (size_t j = 0; j < q_next.size(); ++j) {
-      double diff = q_next[j] - q_prev[j];
-      current_move_size += diff * diff;
-    }
-    if (previous_move_size < current_move_size)
-      previous_move_size = current_move_size;
-    else if (current_move_size < 0.01 * previous_move_size)
+    for (size_t j = 0; j < q_next.size(); ++j)
+      current_move_size += fabs(q_next[j] - q_prev[j]);
+    if (move_size_limit < 0.05 * current_move_size)
+      move_size_limit = 0.05 * current_move_size;
+    else if (current_move_size < move_size_limit)
       return false;
 
     current_node = AddNode(q_next, current_node);
