@@ -75,7 +75,7 @@ bool EnvironmentFeedback::IsCollision(
 std::vector<std::pair<double, double> >
     EnvironmentFeedback::GetAngleRanges() const {
   return environment_->GetAngleRanges();
-};
+}
 
 }  // namespace environment
 }  // namespace bubblesmp

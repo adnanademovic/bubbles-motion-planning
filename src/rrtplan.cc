@@ -84,6 +84,10 @@ struct TimeMeasure
   }
 };
 
+void DoStep(Rrt* rrt, bool* done) {
+  *done = rrt->Step();
+}
+
 std::string MakeUsage(const char* argv0) {
   std::string usage;
   usage += "determines a motion plan for the given task.\n"
@@ -121,8 +125,7 @@ int main(int argc, char** argv) {
     while (!done) {
       durations.push_back(static_cast<long int>(
           TimeMeasure<std::chrono::microseconds>::Run(
-            [&retval = done, &obj = rrt]{retval = obj.Step();})));
-      done = rrt.Step();
+            DoStep, &rrt, &done)));
       ++step;
       LOG(INFO) << "Step " << step << " took " << durations.back() << " us";
     }
