@@ -39,7 +39,7 @@ cc_library(
     hdrs = ["environment-feedback.h"],
     deps = [
         ":environment-interface",
-        "//bubbles-motion-planning/src:bubble",
+        "//bubblesmp:bubble",
     ],
     linkopts = [
         "-lboost_filesystem",

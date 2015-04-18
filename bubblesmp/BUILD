@@ -42,7 +42,7 @@ cc_library(
     deps = [
         ":bubble",
         ":rrt-tree",
-        "//bubbles-motion-planning/src/environment:environment-feedback",
+        "//bubblesmp/environment:environment-feedback",
     ],
     linkopts = ["-lglog"],
 )
@@ -53,7 +53,7 @@ cc_library(
     hdrs = ["classic-tree.h"],
     deps = [
         ":rrt-tree",
-        "//bubbles-motion-planning/src/environment:environment-feedback",
+        "//bubblesmp/environment:environment-feedback",
     ],
     linkopts = ["-lglog"],
 )
@@ -81,10 +81,10 @@ cc_library(
         ":classic-tree",
         ":rrt-tree",
         ":task-proto",
-        "//bubbles-motion-planning/src/environment:environment-feedback",
-        "//bubbles-motion-planning/src/environment:make-environment",
-        "//bubbles-motion-planning/src/generators:make-generator",
-        "//bubbles-motion-planning/src/generators" +
+        "//bubblesmp/environment:environment-feedback",
+        "//bubblesmp/environment:make-environment",
+        "//bubblesmp/generators:make-generator",
+        "//bubblesmp/generators" +
             ":random-point-generator-interface",
     ],
     linkopts = [
@@ -123,8 +123,8 @@ cc_library(
     hdrs = ["task.pb.h"],
     deps = [
         ":index-proto",
-        "//bubbles-motion-planning/src/environment:environment-proto",
-        "//bubbles-motion-planning/src/generators:generator-proto",
+        "//bubblesmp/environment:environment-proto",
+        "//bubblesmp/generators:generator-proto",
     ],
     linkopts = ["-lprotobuf"],
 )
