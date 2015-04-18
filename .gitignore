@@ -1,3 +1,9 @@
 # Protobuffer generated files
 *.pb.h
 *.pb.cc
+
+# Bazel directories
+bazel-*
+
+# GRPC C++ plugin
+grpc_cpp_plugin
