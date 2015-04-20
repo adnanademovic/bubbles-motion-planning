@@ -31,7 +31,7 @@
 
 #include <flann/flann.hpp>
 
-#include "index.pb.h"
+#include "bubblesmp/index.pb.h"
 #include "tree-node.h"
 
 namespace com {

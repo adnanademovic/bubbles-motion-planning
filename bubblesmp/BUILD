@@ -28,6 +28,8 @@ licenses(["notice"])  # FreeBSD
 
 package(default_visibility = ["//visibility:public"])
 
+load("//tools/protobuf/protobuf", "proto_library")
+
 cc_library(
     name = "bubble",
     srcs = ["bubble.cc"],
@@ -63,7 +65,7 @@ cc_library(
     srcs = ["point-index.cc"],
     hdrs = ["point-index.h"],
     deps = [
-        ":index-proto",
+        ":index_proto",
         ":tree-node",
     ],
     linkopts = [
@@ -80,7 +82,7 @@ cc_library(
         ":bubble-tree",
         ":classic-tree",
         ":rrt-tree",
-        ":task-proto",
+        ":task_proto",
         "//bubblesmp/environment:environment-feedback",
         "//bubblesmp/environment:make-environment",
         "//bubblesmp/generators:make-generator",
@@ -108,25 +110,19 @@ cc_library(
     hdrs = ["tree-node.h"],
 )
 
-# TODO: Replace with proper protobuffer rules when implemented in Bazel.
-cc_library(
-    name = "index-proto",
-    srcs = ["index.pb.cc"],
-    hdrs = ["index.pb.h"],
-    linkopts = ["-lprotobuf"],
+proto_library(
+    name = "index_proto",
+    srcs = ["index.proto"],
 )
 
-# TODO: Replace with proper protobuffer rules when implemented in Bazel.
-cc_library(
-    name = "task-proto",
-    srcs = ["task.pb.cc"],
-    hdrs = ["task.pb.h"],
+proto_library(
+    name = "task_proto",
+    srcs = ["task.proto"],
     deps = [
-        ":index-proto",
-        "//bubblesmp/environment:environment-proto",
-        "//bubblesmp/generators:generator-proto",
+        ":index_proto",
+        "//bubblesmp/environment:environment_proto",
+        "//bubblesmp/generators:generator_proto",
     ],
-    linkopts = ["-lprotobuf"],
 )
 
 cc_binary(

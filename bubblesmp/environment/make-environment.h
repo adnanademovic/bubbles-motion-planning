@@ -30,7 +30,7 @@
 #define BOOST_SPIRIT_THREADSAFE
 #include <boost/filesystem.hpp>
 
-#include "environment.pb.h"
+#include "bubblesmp/environment/environment.pb.h"
 #include "environment-interface.h"
 
 namespace com {

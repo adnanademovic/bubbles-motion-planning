@@ -28,6 +28,8 @@ licenses(["notice"])  # FreeBSD
 
 package(default_visibility = ["//visibility:public"])
 
+load("//tools/protobuf/protobuf", "proto_library")
+
 cc_library(
     name = "halton-sequence-generator",
     srcs = ["halton-sequence-generator.cc"],
@@ -40,7 +42,7 @@ cc_library(
     srcs = ["make-generator.cc"],
     hdrs = ["make-generator.h"],
     deps = [
-        ":generator-proto",
+        ":generator_proto",
         ":halton-sequence-generator",
         ":random-point-generator-interface",
         ":simple-generator",
@@ -61,12 +63,9 @@ cc_library(
     linkopts = ["-lm"],
 )
 
-# TODO: Replace with proper protobuffer rules when implemented in Bazel.
-cc_library(
-    name = "generator-proto",
-    srcs = ["generator.pb.cc"],
-    hdrs = ["generator.pb.h"],
-    linkopts = ["-lprotobuf"],
+proto_library(
+    name = "generator_proto",
+    srcs = ["generator.proto"],
 )
 
 cc_test(
