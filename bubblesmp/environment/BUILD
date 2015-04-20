@@ -42,12 +42,10 @@ cc_library(
     deps = [
         ":environment-interface",
         "//bubblesmp:bubble",
-    ],
-    linkopts = [
-        "-lboost_filesystem",
-        "-lboost_serialization",
-        "-lboost_system",
-        "-lboost_thread",
+        "//third_party/boost:filesystem",
+        "//third_party/boost:serialization",
+        "//third_party/boost:system",
+        "//third_party/boost:thread",
     ],
 )
 
@@ -58,15 +56,13 @@ cc_library(
     deps = [
         ":environment-interface",
         ":environment_proto",
-    ],
-    linkopts = [
-        "-lboost_filesystem",
-        "-lboost_system",
-        "-lboost_thread",
-        "-lfcl",
-        "-lglog",
-        "-lm",
-        "-lprotobuf",
+        "//third_party/boost:filesystem",
+        "//third_party/boost:system",
+        "//third_party/boost:thread",
+        "//third_party/google:glog",
+        "//third_party/google:protobuf",
+        "//third_party:fcl",
+        "//third_party:math",
     ],
 )
 
@@ -78,12 +74,10 @@ cc_library(
         ":environment-interface",
         ":environment_proto",
         ":fcl-environment",
-    ],
-    linkopts = [
-        "-lboost_filesystem",
-        "-lboost_thread",
-        "-lglog",
-        "-lprotobuf",
+        "//third_party/boost:filesystem",
+        "//third_party/boost:thread",
+        "//third_party/google:glog",
+        "//third_party/google:protobuf",
     ],
 )
 
@@ -98,15 +92,17 @@ cc_test(
     deps = [
         ":environment-feedback",
         ":make-environment",
+        "//third_party/boost:unit-test-framework",
     ],
-    linkopts = ["-lboost_unit_test_framework"],
     size = "small",
 )
 
 cc_test(
     name = "fcl-environment_test",
     srcs = ["fcl-environment_test.cc"],
-    deps = [":fcl-environment"],
-    linkopts = ["-lboost_unit_test_framework"],
+    deps = [
+        ":fcl-environment",
+        "//third_party/boost:unit-test-framework",
+    ],
     size = "small",
 )

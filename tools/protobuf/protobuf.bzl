@@ -21,7 +21,6 @@ def proto_library(name, srcs, deps=None, cc_api_version=None, visibility=None):
     name = name,
     hdrs = hdrs,
     srcs = [protogen_name],
-    deps = deps,
-    linkopts = ["-lprotobuf"],
+    deps = ["//third_party/google:protobuf"] + deps,
     visibility = visibility,
   )

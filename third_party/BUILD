@@ -28,54 +28,17 @@ licenses(["notice"])  # FreeBSD
 
 package(default_visibility = ["//visibility:public"])
 
-load("//tools/protobuf/protobuf", "proto_library")
-
 cc_library(
-    name = "halton-sequence-generator",
-    srcs = ["halton-sequence-generator.cc"],
-    hdrs = ["halton-sequence-generator.h"],
-    deps = [":random-point-generator-interface"],
+  name = "math",
+  linkopts = ["-lm"],
 )
 
 cc_library(
-    name = "make-generator",
-    srcs = ["make-generator.cc"],
-    hdrs = ["make-generator.h"],
-    deps = [
-        ":generator_proto",
-        ":halton-sequence-generator",
-        ":random-point-generator-interface",
-        ":simple-generator",
-        "//third_party/google:glog",
-    ],
+  name = "flann",
+  linkopts = ["-lflann_cpp"],
 )
 
 cc_library(
-    name = "random-point-generator-interface",
-    hdrs = ["random-point-generator-interface.h"],
-)
-
-cc_library(
-    name = "simple-generator",
-    srcs = ["simple-generator.cc"],
-    hdrs = ["simple-generator.h"],
-    deps = [
-        ":random-point-generator-interface",
-        "//third_party:math",
-    ],
-)
-
-proto_library(
-    name = "generator_proto",
-    srcs = ["generator.proto"],
-)
-
-cc_test(
-    name = "halton-sequence-generator_test",
-    srcs = ["halton-sequence-generator_test.cc"],
-    deps = [
-        ":halton-sequence-generator",
-        "//third_party/boost:unit-test-framework",
-    ],
-    size = "small",
+  name = "fcl",
+  linkopts = ["-lfcl"],
 )

@@ -45,8 +45,8 @@ cc_library(
         ":bubble",
         ":rrt-tree",
         "//bubblesmp/environment:environment-feedback",
+        "//third_party/google:glog",
     ],
-    linkopts = ["-lglog"],
 )
 
 cc_library(
@@ -56,8 +56,8 @@ cc_library(
     deps = [
         ":rrt-tree",
         "//bubblesmp/environment:environment-feedback",
+        "//third_party/google:glog",
     ],
-    linkopts = ["-lglog"],
 )
 
 cc_library(
@@ -67,10 +67,8 @@ cc_library(
     deps = [
         ":index_proto",
         ":tree-node",
-    ],
-    linkopts = [
-        "-lflann_cpp",
-        "-lgflags",
+        "//third_party/google:gflags",
+        "//third_party:flann",
     ],
 )
 
@@ -86,14 +84,11 @@ cc_library(
         "//bubblesmp/environment:environment-feedback",
         "//bubblesmp/environment:make-environment",
         "//bubblesmp/generators:make-generator",
-        "//bubblesmp/generators" +
-            ":random-point-generator-interface",
-    ],
-    linkopts = [
-        "-lboost_filesystem",
-        "-lboost_thread",
-        "-lglog",
-        "-lprotobuf",
+        "//bubblesmp/generators:random-point-generator-interface",
+        "//third_party/boost:filesystem",
+        "//third_party/google:gflags",
+        "//third_party/google:glog",
+        "//third_party/google:protobuf",
     ],
 )
 
@@ -128,20 +123,20 @@ proto_library(
 cc_binary(
     name = "rrtplan",
     srcs = ["rrtplan.cc"],
-    deps = [":rrt"],
-    linkopts = [
-        "-lgflags",
-        "-lglog",
+    deps = [
+        ":rrt",
+        "//third_party/google:gflags",
+        "//third_party/google:glog",
     ],
 )
 
 cc_test(
     name = "bubble_test",
     srcs = ["bubble_test.cc"],
-    deps = [":bubble"],
-    linkopts = [
-        "-lboost_unit_test_framework",
-        "-lm",
+    deps = [
+        ":bubble",
+        "//third_party/boost:unit-test-framework",
+        "//third_party:math",
     ],
     size = "small",
 )
