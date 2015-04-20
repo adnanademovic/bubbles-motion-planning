@@ -37,7 +37,7 @@
 
 #include "generators/random-point-generator-interface.h"
 #include "rrt-tree.h"
-#include "task.pb.h"
+#include "bubblesmp/task.pb.h"
 
 namespace com {
 namespace ademovic {

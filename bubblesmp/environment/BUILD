@@ -28,6 +28,8 @@ licenses(["notice"])  # FreeBSD
 
 package(default_visibility = ["//visibility:public"])
 
+load("//tools/protobuf/protobuf", "proto_library")
+
 cc_library(
     name = "environment-interface",
     hdrs = ["environment-interface.h"],
@@ -55,7 +57,7 @@ cc_library(
     hdrs = ["fcl-environment.h"],
     deps = [
         ":environment-interface",
-        ":environment-proto",
+        ":environment_proto",
     ],
     linkopts = [
         "-lboost_filesystem",
@@ -74,7 +76,7 @@ cc_library(
     hdrs = ["make-environment.h"],
     deps = [
         ":environment-interface",
-        ":environment-proto",
+        ":environment_proto",
         ":fcl-environment",
     ],
     linkopts = [
@@ -85,12 +87,9 @@ cc_library(
     ],
 )
 
-# TODO: Replace with proper protobuffer rules when implemented in Bazel.
-cc_library(
-    name = "environment-proto",
-    srcs = ["environment.pb.cc"],
-    hdrs = ["environment.pb.h"],
-    linkopts = ["-lprotobuf"],
+proto_library(
+    name = "environment_proto",
+    srcs = ["environment.proto"],
 )
 
 cc_test(

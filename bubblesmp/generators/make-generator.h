@@ -30,7 +30,7 @@
 #include <utility>
 #include <vector>
 
-#include "generator.pb.h"
+#include "bubblesmp/generators/generator.pb.h"
 #include "random-point-generator-interface.h"
 
 namespace com {
