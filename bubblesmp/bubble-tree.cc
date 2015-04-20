@@ -39,11 +39,13 @@ BubbleTree::BubbleTree(
     unsigned max_bubbles_per_branch, unsigned max_binary_search_depth,
     const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
-    double min_move_size, const IndexSettings& index_settings)
+    double min_move_contribution, double min_move_size,
+    const IndexSettings& index_settings)
     : RrtTree(root, index_settings),
       max_bubbles_per_branch_(max_bubbles_per_branch),
       max_binary_search_depth_(max_binary_search_depth),
       bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()),
+      min_move_contribution_(min_move_contribution),
       min_move_size_(min_move_size) {
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
 }
@@ -110,6 +112,7 @@ bool BubbleTree::ConnectLine(
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
 
   double move_size_limit = min_move_size_;
+  size_t dims = q_target.size();
 
   for (int i = 0; i < max_bubbles_per_branch_; ++i) {
     current_bubble = static_cast<Bubble*>(current_node->point.get());
@@ -125,13 +128,20 @@ bool BubbleTree::ConnectLine(
     // resolution of the movement, Bubble RRT has its own as a lower limit,
     // whereby the limit is either the big step or embracing the target.
     // Embracing the target is checked in the early return above.
+    // If that condition is fulfilled, the second heuristic checks if the
+    // newest step is longer than a percentage of the leftover branch.
     // TODO: experiment with more heuristics.
     double current_move_size = 0.0;
-    for (size_t j = 0; j < q_next.size(); ++j)
+    double current_leftover_length = 0.0;
+    for (size_t j = 0; j < dims; ++j) {
       current_move_size += fabs(q_next[j] - q_prev[j]);
+      current_leftover_length += fabs(q_target[j] - q_next[j]);
+    }
     if (move_size_limit < 0.05 * current_move_size)
       move_size_limit = 0.05 * current_move_size;
-    else if (current_move_size < move_size_limit)
+
+    if (current_move_size < move_size_limit &&
+        current_move_size < current_leftover_length * min_move_contribution_)
       return false;
 
     current_node = AddNode(q_next, current_node);

@@ -47,7 +47,8 @@ class BubbleTree : public RrtTree {
   BubbleTree(unsigned max_bubbles_per_branch, unsigned max_binary_search_depth,
              const std::vector<double>& root,
              std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
-             double min_move_size, const IndexSettings& index_settings);
+             double min_move_contribution, double min_move_size,
+             const IndexSettings& index_settings);
   virtual ~BubbleTree() {}
 
   virtual bool CanReach(
@@ -68,6 +69,7 @@ class BubbleTree : public RrtTree {
   unsigned max_binary_search_depth_;
   std::shared_ptr<environment::EnvironmentFeedback> bubble_source_;
   std::vector<std::pair<double, double> > limits_;
+  double min_move_contribution_;
   double min_move_size_;
 };
 

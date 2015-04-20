@@ -94,11 +94,13 @@ void Rrt::Configure(const TaskConfig& config,
       src_tree_.reset(new BubbleTree(
           config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), src,
-          src_bubble_source, config.tree().min_move_length(), config.index()));
+          src_bubble_source, config.tree().min_move_contribution(),
+          config.tree().min_move_length(), config.index()));
       dst_tree_.reset(new BubbleTree(
           config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), dst,
-          dst_bubble_source, config.tree().min_move_length(), config.index()));
+          dst_bubble_source, config.tree().min_move_contribution(),
+          config.tree().min_move_length(), config.index()));
       break;
     case (TreeConfig::CLASSIC):
       src_tree_.reset(new ClassicTree(
