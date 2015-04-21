@@ -47,12 +47,12 @@ namespace {
 
 void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
                  bool* return_value) {
-  *return_value = rrt_tree->Connect(q);
+  *return_value = rrt_tree->Extend(q);
 }
 
 void attempt_connect_thread(RrtTree* rrt_tree, TreeNode* node,
                             const std::vector<double>& q, bool* return_value) {
-  *return_value = rrt_tree->CanReach(*node, q);
+  *return_value = rrt_tree->Connect(*node, q);
 }
 
 }  // namespace

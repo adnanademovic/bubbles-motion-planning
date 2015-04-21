@@ -48,14 +48,14 @@ class ClassicTree : public RrtTree {
       const IndexSettings& index_settings);
   virtual ~ClassicTree() {}
 
-  virtual bool CanReach(
+  virtual bool Connect(
       const TreeNode& node, const std::vector<double>& q_target) const;
 
  private:
   // Does not take ownership of parent.
   // Has ownership of returned pointer.
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
-  virtual bool ConnectLine(
+  virtual bool ExtendFrom(
       const AttachmentPoint& point, const std::vector<double>& q_target);
 
   double eps_;

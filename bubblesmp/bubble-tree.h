@@ -50,14 +50,14 @@ class BubbleTree : public RrtTree {
              double min_move_size, const IndexSettings& index_settings);
   virtual ~BubbleTree() {}
 
-  virtual bool CanReach(
+  virtual bool Connect(
       const TreeNode& node, const std::vector<double>& q_target) const;
 
  private:
   // Does not take ownership of parent.
   // Has ownership of returned pointer.
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
-  virtual bool ConnectLine(
+  virtual bool ExtendFrom(
       const AttachmentPoint& point, const std::vector<double>& q_target);
 
   bool CanReachBetween(

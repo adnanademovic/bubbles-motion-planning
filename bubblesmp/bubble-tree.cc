@@ -48,7 +48,7 @@ BubbleTree::BubbleTree(
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
 }
 
-bool BubbleTree::CanReach(
+bool BubbleTree::Connect(
       const TreeNode& node, const std::vector<double>& q_target) const {
   Bubble* current_bubble = static_cast<Bubble*>(node.point.get());
 
@@ -104,7 +104,7 @@ TreeNode* BubbleTree::AddNode(
   return current_node;
 }
 
-bool BubbleTree::ConnectLine(
+bool BubbleTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());

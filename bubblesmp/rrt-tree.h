@@ -44,14 +44,14 @@ class RrtTree {
   RrtTree(const std::vector<double>& root, const IndexSettings& index_settings);
   virtual ~RrtTree() {}
 
-  bool Connect(const std::vector<double>& q_target);
+  bool Extend(const std::vector<double>& q_target);
   TreeNode* GetNewestNode() const;
-  virtual bool CanReach(
+  virtual bool Connect(
       const TreeNode& node, const std::vector<double>& q_target) const = 0;
 
  protected:
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent) = 0;
-  virtual bool ConnectLine(
+  virtual bool ExtendFrom(
       const AttachmentPoint& point, const std::vector<double>& q_target) = 0;
 
   std::unique_ptr<PointIndex> point_index_;

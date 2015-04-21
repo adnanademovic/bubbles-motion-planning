@@ -44,8 +44,7 @@ ClassicTree::ClassicTree(
   CHECK(!collision_source_->IsCollision(root)) << "Collision at root point";
 }
 
-// TODO: improve efficiency by using a more randomized sweep
-bool ClassicTree::CanReach(
+bool ClassicTree::Connect(
       const TreeNode& node, const std::vector<double>& q_target) const {
   std::vector<double> current(node.point->position());
   std::vector<double> step(q_target);
@@ -91,7 +90,7 @@ TreeNode* ClassicTree::AddNode(
   return current_node;
 }
 
-bool ClassicTree::ConnectLine(
+bool ClassicTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   std::vector<double> current(point.position);
   std::vector<double> step(q_target);
