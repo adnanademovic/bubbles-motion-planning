@@ -47,6 +47,11 @@ message TreeConfig {
   optional bool attempt_connect = 6 [default = false];
 
   // For Bubble tree
+  optional uint32 bubbles_per_extend = 8 [default = 3];
+  optional double min_bubble_reach = 9 [default = 0.6];
+  optional double max_bubble_gap = 10 [default = 0.36];
+
+  // For Greedy Bubble tree
   optional uint32 max_bubbles_per_branch = 2 [default = 50];
   optional uint32 max_binary_search_depth = 7 [default = 4];
   optional double min_move_length = 3 [default = 0.9];

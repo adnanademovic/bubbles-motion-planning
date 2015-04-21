@@ -38,6 +38,29 @@ cc_library(
 )
 
 cc_library(
+    name = "bubble-tree",
+    srcs = ["bubble-tree.cc"],
+    hdrs = ["bubble-tree.h"],
+    deps = [
+        ":bubble",
+        ":rrt-tree",
+        "//bubblesmp/environment:environment-feedback",
+        "//third_party/google:glog",
+    ],
+)
+
+cc_library(
+    name = "classic-tree",
+    srcs = ["classic-tree.cc"],
+    hdrs = ["classic-tree.h"],
+    deps = [
+        ":rrt-tree",
+        "//bubblesmp/environment:environment-feedback",
+        "//third_party/google:glog",
+    ],
+)
+
+cc_library(
     name = "greedy-bubble-tree",
     srcs = ["greedy-bubble-tree.cc"],
     hdrs = ["greedy-bubble-tree.h"],
@@ -77,6 +100,8 @@ cc_library(
     srcs = ["rrt.cc"],
     hdrs = ["rrt.h"],
     deps = [
+        ":bubble-tree",
+        ":classic-tree",
         ":greedy-bubble-tree",
         ":greedy-classic-tree",
         ":rrt-tree",
