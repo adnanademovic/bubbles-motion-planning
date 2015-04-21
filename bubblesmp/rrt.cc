@@ -37,8 +37,8 @@
 #include "environment/environment-feedback.h"
 #include "environment/make-environment.h"
 #include "generators/make-generator.h"
-#include "bubble-tree.h"
-#include "classic-tree.h"
+#include "greedy-bubble-tree.h"
+#include "greedy-classic-tree.h"
 
 namespace com {
 namespace ademovic {
@@ -90,21 +90,21 @@ void Rrt::Configure(const TaskConfig& config,
           environment::NewEnvironmentFromProtoBuffer(
               config.environment(), config_file_path)));
   switch (config.tree().type()) {
-    case (TreeConfig::BUBBLE):
-      src_tree_.reset(new BubbleTree(
+    case (TreeConfig::GREEDY_BUBBLE):
+      src_tree_.reset(new GreedyBubbleTree(
           config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), src,
           src_bubble_source, config.tree().min_move_length(), config.index()));
-      dst_tree_.reset(new BubbleTree(
+      dst_tree_.reset(new GreedyBubbleTree(
           config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), dst,
           dst_bubble_source, config.tree().min_move_length(), config.index()));
       break;
-    case (TreeConfig::CLASSIC):
-      src_tree_.reset(new ClassicTree(
+    case (TreeConfig::GREEDY_CLASSIC):
+      src_tree_.reset(new GreedyClassicTree(
           config.tree().step_length(), config.tree().checks_per_step(), src,
           src_bubble_source, config.index()));
-      dst_tree_.reset(new ClassicTree(
+      dst_tree_.reset(new GreedyClassicTree(
           config.tree().step_length(), config.tree().checks_per_step(), dst,
           dst_bubble_source, config.index()));
       break;

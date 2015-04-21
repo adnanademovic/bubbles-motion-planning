@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "bubble-tree.h"
+#include "greedy-bubble-tree.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -35,7 +35,7 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-BubbleTree::BubbleTree(
+GreedyBubbleTree::GreedyBubbleTree(
     unsigned max_bubbles_per_branch, unsigned max_binary_search_depth,
     const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
@@ -48,7 +48,7 @@ BubbleTree::BubbleTree(
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
 }
 
-bool BubbleTree::Connect(
+bool GreedyBubbleTree::Connect(
       const TreeNode& node, const std::vector<double>& q_target) const {
   Bubble* current_bubble = static_cast<Bubble*>(node.point.get());
 
@@ -58,7 +58,7 @@ bool BubbleTree::Connect(
                          max_binary_search_depth_);
 }
 
-bool BubbleTree::CanReachBetween(
+bool GreedyBubbleTree::CanReachBetween(
     const std::vector<double>& q_1, const std::vector<double>& q_2,
     unsigned iterations_left) const {
   if (iterations_left == 0)
@@ -85,7 +85,7 @@ bool BubbleTree::CanReachBetween(
   return true;
 }
 
-TreeNode* BubbleTree::AddNode(
+TreeNode* GreedyBubbleTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
   TreeNode* current_node = new TreeNode(bubble_source_->NewBubble(q), parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
@@ -104,7 +104,7 @@ TreeNode* BubbleTree::AddNode(
   return current_node;
 }
 
-bool BubbleTree::ExtendFrom(
+bool GreedyBubbleTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());

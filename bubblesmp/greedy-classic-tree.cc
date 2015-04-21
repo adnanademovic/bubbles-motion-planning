@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "classic-tree.h"
+#include "greedy-classic-tree.h"
 
 #include <cmath>
 #include <cstdio>
@@ -35,7 +35,7 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-ClassicTree::ClassicTree(
+GreedyClassicTree::GreedyClassicTree(
     double max_step, unsigned substeps, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> collision_source,
     const IndexSettings& index_settings)
@@ -44,7 +44,7 @@ ClassicTree::ClassicTree(
   CHECK(!collision_source_->IsCollision(root)) << "Collision at root point";
 }
 
-bool ClassicTree::Connect(
+bool GreedyClassicTree::Connect(
       const TreeNode& node, const std::vector<double>& q_target) const {
   std::vector<double> current(node.point->position());
   std::vector<double> step(q_target);
@@ -82,7 +82,7 @@ bool ClassicTree::Connect(
   return true;
 }
 
-TreeNode* ClassicTree::AddNode(
+TreeNode* GreedyClassicTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
   TreeNode* current_node = new TreeNode(new TreePoint(q), parent);
   nodes_.emplace_back(current_node);
@@ -90,7 +90,7 @@ TreeNode* ClassicTree::AddNode(
   return current_node;
 }
 
-bool ClassicTree::ExtendFrom(
+bool GreedyClassicTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   std::vector<double> current(point.position);
   std::vector<double> step(q_target);

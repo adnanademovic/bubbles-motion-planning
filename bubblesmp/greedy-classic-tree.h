@@ -24,8 +24,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef COM_ADEMOVIC_BUBBLESMP_CLASSIC_TREE_H_
-#define COM_ADEMOVIC_BUBBLESMP_CLASSIC_TREE_H_
+#ifndef COM_ADEMOVIC_BUBBLESMP_GREEDY_CLASSIC_TREE_H_
+#define COM_ADEMOVIC_BUBBLESMP_GREEDY_CLASSIC_TREE_H_
 
 #include <memory>
 #include <vector>
@@ -40,13 +40,13 @@ namespace bubblesmp {
 // Should run in one thread, due to sequential nature of "Connect". Thus it is
 // not made threadsafe, but supports a threadsafe BubbleSource to be used in
 // multiple threads.
-class ClassicTree : public RrtTree {
+class GreedyClassicTree : public RrtTree {
  public:
-  ClassicTree(
+  GreedyClassicTree(
       double max_step, unsigned substeps, const std::vector<double>& root,
       std::shared_ptr<environment::EnvironmentFeedback> collision_source,
       const IndexSettings& index_settings);
-  virtual ~ClassicTree() {}
+  virtual ~GreedyClassicTree() {}
 
   virtual bool Connect(
       const TreeNode& node, const std::vector<double>& q_target) const;
@@ -67,4 +67,4 @@ class ClassicTree : public RrtTree {
 }  // namespace ademovic
 }  // namespace com
 
-#endif  // COM_ADEMOVIC_BUBBLESMP_CLASSIC_TREE_H_
+#endif  // COM_ADEMOVIC_BUBBLESMP_GREEDY_CLASSIC_TREE_H_
