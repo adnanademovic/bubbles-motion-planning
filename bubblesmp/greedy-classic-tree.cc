@@ -45,8 +45,8 @@ GreedyClassicTree::GreedyClassicTree(
 }
 
 bool GreedyClassicTree::Connect(
-      const TreeNode& node, const std::vector<double>& q_target) const {
-  std::vector<double> current(node.point->position());
+      TreeNode* node, const std::vector<double>& q_target) {
+  std::vector<double> current(node->point->position());
   std::vector<double> step(q_target);
   unsigned int axis_count = q_target.size();
 
@@ -73,7 +73,7 @@ bool GreedyClassicTree::Connect(
       int steps_shortened = s - s % substeps_;
       if (!steps_shortened)
         return false;
-      current = node.point->position();
+      current = node->point->position();
       for (unsigned int i = 0; i < axis_count; ++i)
         current[i] += step[i] * steps_shortened;
       return false;

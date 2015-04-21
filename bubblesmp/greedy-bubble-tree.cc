@@ -49,8 +49,8 @@ GreedyBubbleTree::GreedyBubbleTree(
 }
 
 bool GreedyBubbleTree::Connect(
-      const TreeNode& node, const std::vector<double>& q_target) const {
-  Bubble* current_bubble = static_cast<Bubble*>(node.point.get());
+      TreeNode* node, const std::vector<double>& q_target) {
+  Bubble* current_bubble = static_cast<Bubble*>(node->point.get());
 
   if (current_bubble->Contains(q_target))
     return true;

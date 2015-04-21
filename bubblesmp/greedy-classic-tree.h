@@ -48,8 +48,7 @@ class GreedyClassicTree : public RrtTree {
       const IndexSettings& index_settings);
   virtual ~GreedyClassicTree() {}
 
-  virtual bool Connect(
-      const TreeNode& node, const std::vector<double>& q_target) const;
+  virtual bool Connect( TreeNode* node, const std::vector<double>& q_target);
 
  private:
   // Does not take ownership of parent.

@@ -51,8 +51,7 @@ class GreedyBubbleTree : public RrtTree {
       double min_move_size, const IndexSettings& index_settings);
   virtual ~GreedyBubbleTree() {}
 
-  virtual bool Connect(
-      const TreeNode& node, const std::vector<double>& q_target) const;
+  virtual bool Connect(TreeNode* node, const std::vector<double>& q_target);
 
  private:
   // Does not take ownership of parent.

@@ -46,8 +46,7 @@ class RrtTree {
 
   bool Extend(const std::vector<double>& q_target);
   TreeNode* GetNewestNode() const;
-  virtual bool Connect(
-      const TreeNode& node, const std::vector<double>& q_target) const = 0;
+  virtual bool Connect(TreeNode* node, const std::vector<double>& q_target) = 0;
 
  protected:
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent) = 0;
