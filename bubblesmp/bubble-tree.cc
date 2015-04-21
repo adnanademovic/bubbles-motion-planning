@@ -155,7 +155,6 @@ bool BubbleTree::ExtendFrom(
 
     current_node = AddNode(q_next, current_node);
   }
-  AddNode(q_target, current_node);
   return false;
 }
 
