@@ -38,9 +38,9 @@ cc_library(
 )
 
 cc_library(
-    name = "bubble-tree",
-    srcs = ["bubble-tree.cc"],
-    hdrs = ["bubble-tree.h"],
+    name = "greedy-bubble-tree",
+    srcs = ["greedy-bubble-tree.cc"],
+    hdrs = ["greedy-bubble-tree.h"],
     deps = [
         ":bubble",
         ":rrt-tree",
@@ -50,9 +50,9 @@ cc_library(
 )
 
 cc_library(
-    name = "classic-tree",
-    srcs = ["classic-tree.cc"],
-    hdrs = ["classic-tree.h"],
+    name = "greedy-classic-tree",
+    srcs = ["greedy-classic-tree.cc"],
+    hdrs = ["greedy-classic-tree.h"],
     deps = [
         ":rrt-tree",
         "//bubblesmp/environment:environment-feedback",
@@ -77,8 +77,8 @@ cc_library(
     srcs = ["rrt.cc"],
     hdrs = ["rrt.h"],
     deps = [
-        ":bubble-tree",
-        ":classic-tree",
+        ":greedy-bubble-tree",
+        ":greedy-classic-tree",
         ":rrt-tree",
         ":task_proto",
         "//bubblesmp/environment:environment-feedback",
