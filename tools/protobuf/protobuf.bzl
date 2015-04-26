@@ -5,7 +5,8 @@ def proto_library(name, srcs, deps=None, cc_api_version=None, visibility=None):
   hdrs = []
   ccs = []
   for p in srcs:
-    fail("Proto must end in \".proto\"", p, not p.endswith(".proto"))
+    if (not p.endswith(".proto")):
+      fail("Proto must end in \".proto\"", p)
     short_p = p.replace(".proto", "")
     hdrs += [short_p + ".pb.h"]
     ccs += [short_p + ".pb.cc"]
