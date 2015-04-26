@@ -80,7 +80,7 @@ bool ClassicTree::ExtendFromNode(const std::vector<double>& q, TreeNode* node,
   double length = 0.0;
   for (size_t i = 0; i < axis_count; ++i) {
     step[i] -= current[i];
-    length += abs(step[i]);
+    length += fabs(step[i]);
   }
 
   if (length > eps_)

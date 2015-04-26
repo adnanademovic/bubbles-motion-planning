@@ -66,7 +66,7 @@ bool BubbleTree::CanReachBetween(
   if (!use_bubbles) {
     double length = 0.0;
     for (size_t i = 0; i < axis_count; ++i)
-      length += abs(q_2[i] - q_1[i]);
+      length += fabs(q_2[i] - q_1[i]);
     if (length < max_bubble_gap_)
       return true;
   }
@@ -81,7 +81,7 @@ bool BubbleTree::CanReachBetween(
     std::vector<double> q_2_hull(bubble_ptr->IntersectsHullAt(q_2));
     double length = 0.0;
     for (size_t i = 0; i < axis_count; ++i)
-      length += abs(q_1_hull[i] - q_mid[i]);
+      length += fabs(q_1_hull[i] - q_mid[i]);
     bool children_use_bubbles = length > min_bubble_reach_;
 
     if (!bubble_ptr->Contains(q_1) && !CanReachBetween(
