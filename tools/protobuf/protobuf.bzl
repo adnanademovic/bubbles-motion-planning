@@ -16,6 +16,7 @@ def proto_library(name, srcs, deps=None, cc_api_version=None, visibility=None):
     srcs = srcs,
     outs = hdrs + ccs,
     cmd = "protoc --proto_path=. --cpp_out=$(GENDIR) $(SRCS)",
+    tools = deps,
     visibility = visibility,
   )
   native.cc_library(
