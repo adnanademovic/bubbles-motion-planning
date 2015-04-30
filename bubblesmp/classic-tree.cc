@@ -87,7 +87,6 @@ bool ClassicTree::ExtendFromNode(const std::vector<double>& q, TreeNode* node,
     length = eps_ / length;
   else
     length = 1.0;
-  length /=  substeps_;
 
   for (size_t i = 0; i < axis_count; ++i)
     step[i] *= length;
