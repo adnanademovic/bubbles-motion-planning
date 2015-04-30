@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "bubble-tree.h"
+#include "crawling-bubble-tree.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -35,7 +35,7 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
-BubbleTree::BubbleTree(
+CrawlingBubbleTree::CrawlingBubbleTree(
     unsigned bubbles_per_extend, double min_bubble_reach,
     double max_bubble_gap, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
@@ -46,7 +46,8 @@ BubbleTree::BubbleTree(
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
 }
 
-bool BubbleTree::Connect(TreeNode* node, const std::vector<double>& q_target) {
+bool CrawlingBubbleTree::Connect(
+    TreeNode* node, const std::vector<double>& q_target) {
   Bubble* current_bubble = static_cast<Bubble*>(node->point.get());
 
   if (current_bubble->Contains(q_target))
@@ -57,7 +58,7 @@ bool BubbleTree::Connect(TreeNode* node, const std::vector<double>& q_target) {
                          node, true, &tn_ptr);
 }
 
-bool BubbleTree::CanReachBetween(
+bool CrawlingBubbleTree::CanReachBetween(
     const std::vector<double>& q_1, const std::vector<double>& q_2,
     TreeNode* parent, bool use_bubbles, TreeNode** ret_final_node) {
   size_t axis_count = q_1.size();
@@ -108,11 +109,13 @@ bool BubbleTree::CanReachBetween(
   return true;
 }
 
-TreeNode* BubbleTree::AddNode(const std::vector<double>& q, TreeNode* parent) {
+TreeNode* CrawlingBubbleTree::AddNode(
+    const std::vector<double>& q, TreeNode* parent) {
   return AddNodeFromBubble(parent, bubble_source_->NewBubble(q));
 }
 
-TreeNode* BubbleTree::AddNodeFromBubble(TreeNode* parent, Bubble* bubble) {
+TreeNode* CrawlingBubbleTree::AddNodeFromBubble(
+    TreeNode* parent, Bubble* bubble) {
   TreeNode* current_node = new TreeNode(bubble, parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
   nodes_.emplace_back(current_node);
@@ -130,7 +133,7 @@ TreeNode* BubbleTree::AddNodeFromBubble(TreeNode* parent, Bubble* bubble) {
   return current_node;
 }
 
-bool BubbleTree::ExtendFrom(
+bool CrawlingBubbleTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
