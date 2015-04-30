@@ -104,7 +104,7 @@ TreeNode* GreedyBubbleTree::AddNode(
   return current_node;
 }
 
-bool GreedyBubbleTree::ExtendFrom(
+ExtensionResult GreedyBubbleTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
@@ -115,7 +115,7 @@ bool GreedyBubbleTree::ExtendFrom(
     current_bubble = static_cast<Bubble*>(current_node->point.get());
     if (current_bubble->Contains(q_target)) {
       AddNode(q_target, current_node);
-      return true;
+      return ExtensionResult::REACHED;
     }
 
     std::vector<double> q_next(current_bubble->IntersectsHullAt(q_target));
@@ -132,11 +132,11 @@ bool GreedyBubbleTree::ExtendFrom(
     if (move_size_limit < 0.05 * current_move_size)
       move_size_limit = 0.05 * current_move_size;
     else if (current_move_size < move_size_limit)
-      return false;
+      return ExtensionResult::TRAPPED;
 
     current_node = AddNode(q_next, current_node);
   }
-  return false;
+  return ExtensionResult::TRAPPED;
 }
 
 }  // namespace bubblesmp

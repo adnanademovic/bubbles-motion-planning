@@ -35,7 +35,7 @@ RrtTree::RrtTree(
     : point_index_(new PointIndex(
           root, new TreeNode(new TreePoint(root), nullptr), index_settings)) {}
 
-bool RrtTree::Extend(const std::vector<double>& q_target) {
+ExtensionResult RrtTree::Extend(const std::vector<double>& q_target) {
   AttachmentPoint extension_point = point_index_->GetNearestPoint(q_target);
   return ExtendFrom(extension_point, q_target);
 }

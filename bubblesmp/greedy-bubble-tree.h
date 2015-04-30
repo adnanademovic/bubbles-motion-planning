@@ -57,7 +57,7 @@ class GreedyBubbleTree : public RrtTree {
   // Does not take ownership of parent.
   // Has ownership of returned pointer.
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
-  virtual bool ExtendFrom(
+  virtual ExtensionResult ExtendFrom(
       const AttachmentPoint& point, const std::vector<double>& q_target);
 
   bool CanReachBetween(

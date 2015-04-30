@@ -46,16 +46,14 @@ ClassicTree::ClassicTree(
 
 bool ClassicTree::Connect(TreeNode* node, const std::vector<double>& q_target) {
   TreeNode* current = node;
+  ExtensionResult result;
 
-  while (ExtendFromNode(current->point->position(), current, q_target))
+  do {
+    result = ExtendFromNode(current->point->position(), current, q_target);
     current = GetNewestNode();
+  } while (result == ExtensionResult::ADVANCED);
 
-  size_t axis_count = q_target.size();
-  std::vector<double> pos(current->point->position());
-  for (size_t i = 0; i < axis_count; ++i)
-    if (q_target[i] != pos[i])
-      return false;
-  return true;
+  return result == ExtensionResult::REACHED;
 }
 
 TreeNode* ClassicTree::AddNode(
@@ -66,13 +64,14 @@ TreeNode* ClassicTree::AddNode(
   return current_node;
 }
 
-bool ClassicTree::ExtendFrom(
+ExtensionResult ClassicTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   return ExtendFromNode(point.position, point.parent, q_target);
 }
 
-bool ClassicTree::ExtendFromNode(const std::vector<double>& q, TreeNode* node,
-                                 const std::vector<double>& q_target) {
+ExtensionResult ClassicTree::ExtendFromNode(
+    const std::vector<double>& q, TreeNode* node,
+    const std::vector<double>& q_target) {
   std::vector<double> current(q);
   std::vector<double> step(q_target);
   size_t axis_count = q_target.size();
@@ -83,10 +82,11 @@ bool ClassicTree::ExtendFromNode(const std::vector<double>& q, TreeNode* node,
     length += fabs(step[i]);
   }
 
-  if (length > eps_)
+  bool not_reached = length > eps_ * substeps_;
+  if (not_reached)
     length = eps_ / length;
   else
-    length = 1.0;
+    length = 1.0 / substeps_;
 
   for (size_t i = 0; i < axis_count; ++i)
     step[i] *= length;
@@ -95,10 +95,12 @@ bool ClassicTree::ExtendFromNode(const std::vector<double>& q, TreeNode* node,
     for (size_t i = 0; i < axis_count; ++i)
       current[i] += step[i];
     if (collision_source_->IsCollision(current))
-      return false;
+      return ExtensionResult::TRAPPED;
   }
-  AddNode(q_target, node);
-  return true;
+  AddNode(not_reached ? current : q_target, node);
+  return not_reached
+      ? ExtensionResult::ADVANCED
+      : ExtensionResult::REACHED;
 }
 
 }  // namespace bubblesmp

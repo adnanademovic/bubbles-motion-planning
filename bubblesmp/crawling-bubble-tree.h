@@ -57,7 +57,7 @@ class CrawlingBubbleTree : public RrtTree {
   // Has ownership of returned pointer.
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
   TreeNode* AddNodeFromBubble(TreeNode* parent, Bubble* bubble);
-  virtual bool ExtendFrom(
+  virtual ExtensionResult ExtendFrom(
       const AttachmentPoint& point, const std::vector<double>& q_target);
 
   bool CanReachBetween(

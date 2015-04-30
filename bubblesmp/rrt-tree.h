@@ -36,21 +36,28 @@ namespace com {
 namespace ademovic {
 namespace bubblesmp {
 
+enum ExtensionResult {
+  TRAPPED,
+  ADVANCED,
+  REACHED
+};
+
 // Should run in one thread, due to sequential nature of "Connect". Thus it is
 // not made threadsafe, but supports a threadsafe BubbleSource to be used in
 // multiple threads.
 class RrtTree {
  public:
+
   RrtTree(const std::vector<double>& root, const IndexSettings& index_settings);
   virtual ~RrtTree() {}
 
-  bool Extend(const std::vector<double>& q_target);
+  ExtensionResult Extend(const std::vector<double>& q_target);
   TreeNode* GetNewestNode() const;
   virtual bool Connect(TreeNode* node, const std::vector<double>& q_target) = 0;
 
  protected:
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent) = 0;
-  virtual bool ExtendFrom(
+  virtual ExtensionResult ExtendFrom(
       const AttachmentPoint& point, const std::vector<double>& q_target) = 0;
 
   std::unique_ptr<PointIndex> point_index_;

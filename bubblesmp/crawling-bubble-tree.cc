@@ -133,7 +133,7 @@ TreeNode* CrawlingBubbleTree::AddNodeFromBubble(
   return current_node;
 }
 
-bool CrawlingBubbleTree::ExtendFrom(
+ExtensionResult CrawlingBubbleTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   TreeNode* current_node = AddNode(point.position, point.parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
@@ -144,7 +144,7 @@ bool CrawlingBubbleTree::ExtendFrom(
     current_bubble = static_cast<Bubble*>(current_node->point.get());
     if (current_bubble->Contains(q_target)) {
       AddNode(q_target, current_node);
-      return true;
+      return ExtensionResult::REACHED;
     }
 
     std::vector<double> q_next(current_bubble->IntersectsHullAt(q_target));
@@ -154,11 +154,11 @@ bool CrawlingBubbleTree::ExtendFrom(
     for (size_t j = 0; j < axis_count; ++j)
       current_move_size += fabs(q_next[j] - q_prev[j]);
     if (current_move_size < min_bubble_reach_)
-      return false;
+      return ExtensionResult::TRAPPED;
 
     current_node = AddNode(q_next, current_node);
   }
-  return false;
+  return ExtensionResult::TRAPPED;
 }
 
 }  // namespace bubblesmp

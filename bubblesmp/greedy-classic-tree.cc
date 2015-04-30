@@ -90,7 +90,7 @@ TreeNode* GreedyClassicTree::AddNode(
   return current_node;
 }
 
-bool GreedyClassicTree::ExtendFrom(
+ExtensionResult GreedyClassicTree::ExtendFrom(
     const AttachmentPoint& point, const std::vector<double>& q_target) {
   std::vector<double> current(point.position);
   std::vector<double> step(q_target);
@@ -118,16 +118,16 @@ bool GreedyClassicTree::ExtendFrom(
     if (collision_source_->IsCollision(current)) {
       int steps_shortened = s - s % substeps_;
       if (!steps_shortened)
-        return false;
+        return ExtensionResult::TRAPPED;
       current = point.position;
       for (unsigned int i = 0; i < axis_count; ++i)
         current[i] += step[i] * steps_shortened;
       AddNode(current, point.parent);
-      return false;
+      return ExtensionResult::TRAPPED;
     }
   }
   AddNode(q_target, point.parent);
-  return true;
+  return ExtensionResult::REACHED;
 }
 
 }  // namespace bubblesmp

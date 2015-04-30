@@ -41,6 +41,7 @@
 #include "crawling-bubble-tree.h"
 #include "greedy-bubble-tree.h"
 #include "greedy-classic-tree.h"
+#include "rrt-tree.h"
 
 namespace com {
 namespace ademovic {
@@ -49,7 +50,7 @@ namespace {
 
 void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
                  bool* return_value) {
-  *return_value = rrt_tree->Extend(q);
+  *return_value = rrt_tree->Extend(q) == ExtensionResult::REACHED;
 }
 
 void attempt_connect_thread(RrtTree* rrt_tree, TreeNode* node,
@@ -179,7 +180,7 @@ bool Rrt::Step(const std::vector<double>& q, bool connect) {
   }
 
   if (connect) {
-    src_connected = dst_connected = false;
+    src_connected = dst_connected = ExtensionResult::TRAPPED;
 
     threads.clear();
     threads.emplace_back(attempt_connect_thread, src_tree_.get(),

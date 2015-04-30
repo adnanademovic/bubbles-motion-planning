@@ -54,10 +54,10 @@ class ClassicTree : public RrtTree {
   // Does not take ownership of parent.
   // Has ownership of returned pointer.
   virtual TreeNode* AddNode(const std::vector<double>& q, TreeNode* parent);
-  virtual bool ExtendFrom(
+  virtual ExtensionResult ExtendFrom(
       const AttachmentPoint& point, const std::vector<double>& q_target);
-  bool ExtendFromNode(const std::vector<double>& q, TreeNode* node,
-                      const std::vector<double>& q_target);
+  ExtensionResult ExtendFromNode(const std::vector<double>& q, TreeNode* node,
+                                 const std::vector<double>& q_target);
 
   double eps_;
   int substeps_;
