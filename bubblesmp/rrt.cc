@@ -54,8 +54,8 @@ void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
 }
 
 void attempt_connect_thread(RrtTree* rrt_tree, TreeNode* node,
-                            RrtTree* target_tree, bool* return_value) {
-  *return_value = rrt_tree->Connect(node, target_tree);
+                            const std::vector<double>& q, bool* return_value) {
+  *return_value = rrt_tree->Connect(node, q);
 }
 
 }  // namespace
@@ -180,12 +180,14 @@ bool Rrt::Step(const std::vector<double>& q) {
   bool dst_connected = false;
 
   threads.clear();
+  std::vector<double> src_target(dst_tree_->ClosestPointTo(src_connect_node_->point->position()));
+  std::vector<double> dst_target(src_tree_->ClosestPointTo(dst_connect_node_->point->position()));
   if (src_extended != ExtensionResult::TRAPPED)
     threads.emplace_back(attempt_connect_thread, src_tree_.get(),
-                         src_connect_node_, dst_tree_.get(), &src_connected);
+                         src_connect_node_, src_target, &src_connected);
   if (dst_extended != ExtensionResult::TRAPPED)
     threads.emplace_back(attempt_connect_thread, dst_tree_.get(),
-                         dst_connect_node_, src_tree_.get(), &dst_connected);
+                         dst_connect_node_, dst_target, &dst_connected);
 
   for (std::thread& thread : threads)
     thread.join();

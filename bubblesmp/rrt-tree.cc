@@ -25,6 +25,7 @@
 //
 
 #include "rrt-tree.h"
+#include <glog/logging.h>
 
 namespace com {
 namespace ademovic {
@@ -44,10 +45,9 @@ TreeNode* RrtTree::GetNewestNode() const {
   return nodes_.back().get();
 }
 
-bool RrtTree::Connect(TreeNode* node, const RrtTree* target_tree) {
-  AttachmentPoint connecting_point =
-    target_tree->point_index_->GetNearestPoint(node->point->position());
-  return Connect(node, connecting_point.position);
+std::vector<double> RrtTree::ClosestPointTo(
+    const std::vector<double>& q) const {
+  return point_index_->GetNearestPoint(q).position;
 }
 
 }  // namespace bubblesmp

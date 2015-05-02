@@ -53,7 +53,7 @@ class RrtTree {
 
   ExtensionResult Extend(const std::vector<double>& q_target);
   TreeNode* GetNewestNode() const;
-  bool Connect(TreeNode* node, const RrtTree* target_tree);
+  std::vector<double> ClosestPointTo(const std::vector<double>& q) const;
   virtual bool Connect(TreeNode* node, const std::vector<double>& q_target) = 0;
 
  protected:
