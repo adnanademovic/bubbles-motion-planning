@@ -48,13 +48,12 @@ class Rrt {
   Rrt(const std::string& configuration);
   // Takes ownership of everything passed to it.
   Rrt(RrtTree* src_tree, RrtTree* dst_tree,
-      generators::RandomPointGeneratorInterface* random_point_generator,
-      bool attempt_connect = false);
+      generators::RandomPointGeneratorInterface* random_point_generator);
   virtual ~Rrt() {}
 
   bool Run(int max_steps);
   bool Step();
-  bool Step(const std::vector<double>& q, bool connect);
+  bool Step(const std::vector<double>& q);
   std::vector<std::shared_ptr<TreePoint> > GetSolution() const;
 
  private:
@@ -67,7 +66,6 @@ class Rrt {
   std::unique_ptr<RrtTree> dst_tree_;
   TreeNode* src_connect_node_;
   TreeNode* dst_connect_node_;
-  bool connect_;
   bool done_;
 };
 

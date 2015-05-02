@@ -44,6 +44,12 @@ TreeNode* RrtTree::GetNewestNode() const {
   return nodes_.back().get();
 }
 
+bool RrtTree::Connect(TreeNode* node, const RrtTree* target_tree) {
+  AttachmentPoint connecting_point =
+    target_tree->point_index_->GetNearestPoint(node->point->position());
+  return Connect(node, connecting_point.position);
+}
+
 }  // namespace bubblesmp
 }  // namespace ademovic
 }  // namespace com

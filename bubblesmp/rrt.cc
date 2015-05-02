@@ -49,13 +49,13 @@ namespace bubblesmp {
 namespace {
 
 void step_thread(RrtTree* rrt_tree, const std::vector<double>& q,
-                 bool* return_value) {
-  *return_value = rrt_tree->Extend(q) == ExtensionResult::REACHED;
+                 ExtensionResult* return_value) {
+  *return_value = rrt_tree->Extend(q);
 }
 
 void attempt_connect_thread(RrtTree* rrt_tree, TreeNode* node,
-                            const std::vector<double>& q, bool* return_value) {
-  *return_value = rrt_tree->Connect(node, q);
+                            RrtTree* target_tree, bool* return_value) {
+  *return_value = rrt_tree->Connect(node, target_tree);
 }
 
 }  // namespace
@@ -78,7 +78,6 @@ Rrt::Rrt(const std::string& configuration) {
 void Rrt::Configure(const TaskConfig& config,
                     const boost::filesystem::path& config_file_path) {
   done_ = false;
-  connect_ = config.tree().attempt_connect();
   std::vector<double> src, dst;
   for (double q : config.source().q())
     src.push_back(q);
@@ -140,11 +139,9 @@ void Rrt::Configure(const TaskConfig& config,
 }
 
 Rrt::Rrt(RrtTree* src_tree, RrtTree* dst_tree,
-         generators::RandomPointGeneratorInterface* random_point_generator,
-         bool attempt_connect)
+         generators::RandomPointGeneratorInterface* random_point_generator)
     : random_point_generator_(random_point_generator),
-      src_tree_(src_tree), dst_tree_(dst_tree), connect_(attempt_connect),
-      done_(false) {}
+      src_tree_(src_tree), dst_tree_(dst_tree), done_(false) {}
 
 bool Rrt::Run(int max_steps) {
   for (int i = 0; i < max_steps; ++i)
@@ -154,50 +151,48 @@ bool Rrt::Run(int max_steps) {
 }
 
 bool Rrt::Step() {
-  return Step(random_point_generator_->NextPoint(), connect_);
+  return Step(random_point_generator_->NextPoint());
 }
 
-bool Rrt::Step(const std::vector<double>& q, bool connect) {
+bool Rrt::Step(const std::vector<double>& q) {
   if (done_)
     return true;
-  bool src_connected = false;
-  bool dst_connected = false;
+  ExtensionResult src_extended = ExtensionResult::TRAPPED;
+  ExtensionResult dst_extended = ExtensionResult::TRAPPED;
   std::vector<std::thread> threads;
 
-  threads.emplace_back(step_thread, src_tree_.get(), q, &src_connected);
-  threads.emplace_back(step_thread, dst_tree_.get(), q, &dst_connected);
+  threads.emplace_back(step_thread, src_tree_.get(), q, &src_extended);
+  threads.emplace_back(step_thread, dst_tree_.get(), q, &dst_extended);
 
-  for (std::thread& thread : threads) {
+  for (std::thread& thread : threads)
     thread.join();
-  }
 
   src_connect_node_ = src_tree_->GetNewestNode();
   dst_connect_node_ = dst_tree_->GetNewestNode();
 
-  if (src_connected && dst_connected) {
+  if (src_extended == ExtensionResult::REACHED &&
+      dst_extended == ExtensionResult::REACHED) {
     done_ = true;
     return true;
   }
 
-  if (connect) {
-    src_connected = dst_connected = ExtensionResult::TRAPPED;
+  bool src_connected = false;
+  bool dst_connected = false;
 
-    threads.clear();
+  threads.clear();
+  if (src_extended != ExtensionResult::TRAPPED)
     threads.emplace_back(attempt_connect_thread, src_tree_.get(),
-                         src_connect_node_,
-                         dst_connect_node_->point->position(), &src_connected);
+                         src_connect_node_, dst_tree_.get(), &src_connected);
+  if (dst_extended != ExtensionResult::TRAPPED)
     threads.emplace_back(attempt_connect_thread, dst_tree_.get(),
-                         dst_connect_node_,
-                         src_connect_node_->point->position(), &dst_connected);
+                         dst_connect_node_, src_tree_.get(), &dst_connected);
 
-    for (std::thread& thread : threads) {
-      thread.join();
-    }
+  for (std::thread& thread : threads)
+    thread.join();
 
-    if (src_connected || dst_connected) {
-      done_ = true;
-      return true;
-    }
+  if (src_connected || dst_connected) {
+    done_ = true;
+    return true;
   }
 
   return false;
