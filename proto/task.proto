@@ -26,9 +26,9 @@
 
 syntax = "proto2";
 
-import "bubblesmp/index.proto";
-import "bubblesmp/environment/environment.proto";
-import "bubblesmp/generators/generator.proto";
+import "index.proto";
+import "environment/environment.proto";
+import "generators/generator.proto";
 
 package com.ademovic.bubblesmp;
 

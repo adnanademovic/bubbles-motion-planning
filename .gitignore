@@ -1,2 +1,4 @@
-# Bazel directories
-bazel-*
+# Bii generated
+bin/
+bii/
+proto-src/

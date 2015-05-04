@@ -37,7 +37,7 @@
 
 #include <fcl/collision.h>
 
-#include "bubblesmp/environment/environment.pb.h"
+#include "environment/environment.pb.h"
 #include "environment-interface.h"
 
 namespace com {
