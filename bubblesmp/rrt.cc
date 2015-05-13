@@ -37,6 +37,7 @@
 #include "environment/environment-feedback.h"
 #include "environment/make-environment.h"
 #include "generators/make-generator.h"
+#include "bubble-tree.h"
 #include "classic-tree.h"
 #include "crawling-bubble-tree.h"
 #include "greedy-bubble-tree.h"
@@ -92,6 +93,16 @@ void Rrt::Configure(const TaskConfig& config,
           environment::NewEnvironmentFromProtoBuffer(
               config.environment(), config_file_path)));
   switch (config.tree().type()) {
+    case (TreeConfig::BUBBLE):
+      src_tree_.reset(new BubbleTree(
+          config.tree().bubble_extend(), config.tree().bubble_extend_halvings(),
+          config.tree().min_bubble_reach(), config.tree().max_bubble_gap(), src,
+          src_bubble_source, config.index()));
+      dst_tree_.reset(new BubbleTree(
+          config.tree().bubble_extend(), config.tree().bubble_extend_halvings(),
+          config.tree().min_bubble_reach(), config.tree().max_bubble_gap(), dst,
+          dst_bubble_source, config.index()));
+      break;
     case (TreeConfig::CLASSIC):
       src_tree_.reset(new ClassicTree(
           config.tree().step_length(), config.tree().checks_per_step(), src,
@@ -100,7 +111,6 @@ void Rrt::Configure(const TaskConfig& config,
           config.tree().step_length(), config.tree().checks_per_step(), dst,
           dst_bubble_source, config.index()));
       break;
-    case (TreeConfig::BUBBLE):
     case (TreeConfig::CRAWLING_BUBBLE):
       src_tree_.reset(new CrawlingBubbleTree(
           config.tree().bubbles_per_extend(), config.tree().min_bubble_reach(),
