@@ -35,16 +35,17 @@
 #include "rrt.h"
 
 DEFINE_bool(verbose, false, "Print algorithm progress information");
-DEFINE_string(output_type, "path",
+DEFINE_string(output_type, "",
     "Set the information that should be returned in the output ("
     "path - array of configurations, "
-    "times - duration of each step in microseconds"
+    "times - duration of each step in microseconds, "
+    "an empty string results in no output"
     ")");
 
 namespace {
 static bool ValidateOutputType(const char* flagname, const std::string& value) {
-  if (value != "path" && value != "times") {
-    printf("Invalid value for --%s: %s\nOptions are: path, times\n",
+  if (value != "path" && value != "times" && value != "") {
+    printf("Invalid value for --%s: %s\nOptions are: \"\", path, times\n",
            flagname, value.c_str());
     return false;
   }
