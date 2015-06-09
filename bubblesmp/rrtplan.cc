@@ -34,7 +34,7 @@
 
 #include "rrt.h"
 
-DEFINE_bool(verbose, false, "Print algorithm progress information");
+DEFINE_bool(verbose, false, "Print verification progress information");
 DEFINE_string(output_type, "",
     "Set the information that should be returned in the output ("
     "path - array of configurations, "
@@ -113,8 +113,11 @@ int main(int argc, char** argv) {
   }
   LOG(INFO) << "Number of configurations to open: " << argc - 1;
   LOG(INFO) << "Verifying configurations...";
-  for (int task = 1; task < argc; ++task)
+  for (int task = 1; task < argc; ++task) {
+    if (FLAGS_verbose)
+      LOG(INFO) << "Verifying " << argv[task];
     Rrt rrt_verification(argv[task]);
+  }
   LOG(INFO) << "All configurations are valid";
 
   for (int task = 1; task < argc; ++task) {
