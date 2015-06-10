@@ -190,19 +190,32 @@ bool Rrt::Step(const std::vector<double>& q) {
   bool dst_connected = false;
 
   threads.clear();
-  std::vector<double> src_target(dst_tree_->ClosestPointTo(src_connect_node_->point->position()));
-  std::vector<double> dst_target(src_tree_->ClosestPointTo(dst_connect_node_->point->position()));
+
+  AttachmentPoint src_attachment =
+    dst_tree_->ClosestPointTo(src_connect_node_->point->position());
+  AttachmentPoint dst_attachment =
+    src_tree_->ClosestPointTo(dst_connect_node_->point->position());
+
   if (src_extended != ExtensionResult::TRAPPED)
     threads.emplace_back(attempt_connect_thread, src_tree_.get(),
-                         src_connect_node_, src_target, &src_connected);
+                         src_connect_node_, src_attachment.position,
+                         &src_connected);
   if (dst_extended != ExtensionResult::TRAPPED)
     threads.emplace_back(attempt_connect_thread, dst_tree_.get(),
-                         dst_connect_node_, dst_target, &dst_connected);
+                         dst_connect_node_, dst_attachment.position,
+                         &dst_connected);
 
   for (std::thread& thread : threads)
     thread.join();
 
   if (src_connected || dst_connected) {
+    if (src_connected) {
+      src_connect_node_ = src_tree_->GetNewestNode();
+      dst_connect_node_ = src_attachment.parent;
+    } else {
+      dst_connect_node_ = dst_tree_->GetNewestNode();
+      src_connect_node_ = dst_attachment.parent;
+    }
     done_ = true;
     return true;
   }

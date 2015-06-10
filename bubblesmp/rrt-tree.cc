@@ -45,9 +45,9 @@ TreeNode* RrtTree::GetNewestNode() const {
   return nodes_.back().get();
 }
 
-std::vector<double> RrtTree::ClosestPointTo(
+AttachmentPoint RrtTree::ClosestPointTo(
     const std::vector<double>& q) const {
-  return point_index_->GetNearestPoint(q).position;
+  return point_index_->GetNearestPoint(q);
 }
 
 }  // namespace bubblesmp
