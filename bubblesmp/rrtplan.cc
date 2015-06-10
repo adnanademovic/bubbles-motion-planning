@@ -133,8 +133,6 @@ int main(int argc, char** argv) {
       ++step;
       LOG(INFO) << "Step " << step << " took " << durations.back() << " us";
     }
-    if (argc > 1)
-      printf("Case: %s\n", argv[task]);
     if (FLAGS_output_type == "path")
       OutputPath(rrt.GetSolution());
     else if (FLAGS_output_type == "times")
