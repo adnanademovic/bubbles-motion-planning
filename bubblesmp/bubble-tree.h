@@ -44,7 +44,7 @@ namespace bubblesmp {
 // multiple threads.
 class BubbleTree : public RrtTree {
  public:
-  BubbleTree(double eps, unsigned halving_depth, double min_bubble_reach,
+  BubbleTree(double eps, double min_bubble_reach,
              double max_bubble_gap, const std::vector<double>& root,
              std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
              const IndexSettings& index_settings);
@@ -62,11 +62,9 @@ class BubbleTree : public RrtTree {
 
   bool CanReachBetween(
       const std::vector<double>& q_1, const std::vector<double>& q_2,
-      TreeNode* parent, bool use_bubbles, TreeNode** ret_final_node,
-      int halving_depth);
+      TreeNode* parent, bool use_bubbles, TreeNode** ret_final_node);
 
   double eps_;
-  int halvings_;
   unsigned bubbles_per_extend_;
   double min_bubble_reach_;
   double max_bubble_gap_;

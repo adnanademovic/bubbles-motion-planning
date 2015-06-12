@@ -36,11 +36,11 @@ namespace ademovic {
 namespace bubblesmp {
 
 BubbleTree::BubbleTree(
-    double eps, unsigned halving_depth, double min_bubble_reach,
+    double eps, double min_bubble_reach,
     double max_bubble_gap, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
     const IndexSettings& index_settings)
-    : RrtTree(root, index_settings), eps_(eps), halvings_((int)halving_depth),
+    : RrtTree(root, index_settings), eps_(eps),
       min_bubble_reach_(min_bubble_reach), max_bubble_gap_(max_bubble_gap),
       bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()) {
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
@@ -54,13 +54,12 @@ bool BubbleTree::Connect(TreeNode* node, const std::vector<double>& q_target) {
   TreeNode tree_node(nullptr, nullptr);
   TreeNode* tn_ptr = &tree_node;
   return CanReachBetween(current_bubble->IntersectsHullAt(q_target), q_target,
-                         node, true, &tn_ptr, 0);
+                         node, true, &tn_ptr);
 }
 
 bool BubbleTree::CanReachBetween(
     const std::vector<double>& q_1, const std::vector<double>& q_2,
-    TreeNode* parent, bool use_bubbles, TreeNode** ret_final_node,
-    int halving_depth) {
+    TreeNode* parent, bool use_bubbles, TreeNode** ret_final_node) {
   size_t axis_count = q_1.size();
   *ret_final_node = parent;
 
@@ -86,8 +85,7 @@ bool BubbleTree::CanReachBetween(
     bool children_use_bubbles = length > min_bubble_reach_;
 
     if (!bubble_ptr->Contains(q_1) && !CanReachBetween(
-        q_1, q_1_hull, parent, children_use_bubbles, ret_final_node,
-        halving_depth - 1))
+        q_1, q_1_hull, parent, children_use_bubbles, ret_final_node))
       return false;
 
     if (bubble_ptr->IsCollision())
@@ -97,18 +95,15 @@ bool BubbleTree::CanReachBetween(
     *ret_final_node = mid_bubble;
 
     if (!bubble_ptr->Contains(q_2) && !CanReachBetween(
-        q_2, q_2_hull, mid_bubble, children_use_bubbles, ret_final_node,
-        halving_depth - 1))
+          q_2_hull, q_2, mid_bubble, children_use_bubbles, ret_final_node))
       return false;
   } else {
     if (bubble_source_->IsCollision(q_mid))
         return false;
-    if (!CanReachBetween(q_1, q_mid, parent, false, ret_final_node,
-                         halving_depth - 1))
+    if (!CanReachBetween(q_1, q_mid, parent, false, ret_final_node))
         return false;
-    if (!CanReachBetween(q_2, q_mid, parent, false, ret_final_node,
-                         halving_depth - 1))
-        return (halving_depth > 0);
+    if (!CanReachBetween(q_mid, q_2, parent, false, ret_final_node))
+        return false;
   }
   return true;
 }
@@ -169,8 +164,8 @@ ExtensionResult BubbleTree::ExtendFrom(
   TreeNode tree_node(nullptr, nullptr);
   TreeNode* tn_ptr = &tree_node;
   if (!CanReachBetween(current_bubble->IntersectsHullAt(current), current, node,
-      true, &tn_ptr, halvings_))
-    retval = ExtensionResult::TRAPPED;
+      true, &tn_ptr))
+    retval = ExtensionResult::ADVANCED;
 
   return retval;
 }

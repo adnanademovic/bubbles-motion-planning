@@ -52,7 +52,6 @@ message TreeConfig {
   optional double min_bubble_reach = 9 [default = 0.6];
   optional double max_bubble_gap = 10 [default = 0.36];
   optional double bubble_extend = 11 [default = 14.2];
-  optional uint32 bubble_extend_halvings = 12 [default = 4];
 
   // For Greedy Bubble tree
   optional uint32 max_bubbles_per_branch = 2 [default = 50];
