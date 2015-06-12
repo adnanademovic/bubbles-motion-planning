@@ -182,6 +182,7 @@ bool Rrt::Step(const std::vector<double>& q) {
 
   if (src_extended == ExtensionResult::REACHED &&
       dst_extended == ExtensionResult::REACHED) {
+    LOG(INFO) << "Connected via Extend";
     done_ = true;
     return true;
   }
@@ -216,6 +217,7 @@ bool Rrt::Step(const std::vector<double>& q) {
       dst_connect_node_ = dst_tree_->GetNewestNode();
       src_connect_node_ = dst_attachment.parent;
     }
+    LOG(INFO) << "Connected via Connect";
     done_ = true;
     return true;
   }
