@@ -164,7 +164,7 @@ ExtensionResult BubbleTree::ExtendFrom(
   TreeNode tree_node(nullptr, nullptr);
   TreeNode* tn_ptr = &tree_node;
   if (!CanReachBetween(current_bubble->IntersectsHullAt(current), current, node,
-      true, &tn_ptr))
+                       true, &tn_ptr))
     retval = ExtensionResult::ADVANCED;
 
   return retval;
