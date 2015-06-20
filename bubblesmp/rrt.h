@@ -46,6 +46,8 @@ namespace bubblesmp {
 class Rrt {
  public:
   Rrt(const std::string& configuration);
+  Rrt(const TaskConfig& configuration,
+      const boost::filesystem::path& config_file_path);
   // Takes ownership of everything passed to it.
   Rrt(RrtTree* src_tree, RrtTree* dst_tree,
       generators::RandomPointGeneratorInterface* random_point_generator);

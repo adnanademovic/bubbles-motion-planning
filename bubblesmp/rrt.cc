@@ -76,6 +76,11 @@ Rrt::Rrt(const std::string& configuration) {
   Configure(config_pb, config_file_path);
 }
 
+Rrt::Rrt(const TaskConfig& configuration,
+         const boost::filesystem::path& config_file_path) {
+  Configure(configuration, config_file_path);
+}
+
 void Rrt::Configure(const TaskConfig& config,
                     const boost::filesystem::path& config_file_path) {
   done_ = false;
