@@ -46,7 +46,6 @@ struct AttachmentPoint {
 // Not threadsafe, use in single thread.
 class PointIndex {
  public:
-  // PointIndex takes ownership of root_node
   PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
              const IndexSettings& flann_settings);
   virtual ~PointIndex() {}
