@@ -32,9 +32,10 @@ namespace ademovic {
 namespace bubblesmp {
 
 RrtTree::RrtTree(
-    const std::vector<double>& root, const IndexSettings& index_settings)
-    : point_index_(new PointIndex(
-          root, new TreeNode(new TreePoint(root), nullptr), index_settings)) {}
+    const std::vector<double>& root, const IndexSettings& index_settings) {
+  nodes_.emplace_back(new TreeNode(new TreePoint(root), nullptr));
+  point_index_.reset(new PointIndex(root, GetNewestNode(), index_settings));
+}
 
 ExtensionResult RrtTree::Extend(const std::vector<double>& q_target) {
   AttachmentPoint extension_point = point_index_->GetNearestPoint(q_target);
