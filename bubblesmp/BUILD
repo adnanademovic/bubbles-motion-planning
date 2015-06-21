@@ -159,6 +159,16 @@ proto_library(
 )
 
 cc_binary(
+    name = "rrtoptimize",
+    srcs = ["rrtoptimize.cc"],
+    deps = [
+        ":rrt",
+        "//third_party/google:gflags",
+        "//third_party/google:glog",
+    ],
+)
+
+cc_binary(
     name = "rrtplan",
     srcs = ["rrtplan.cc"],
     deps = [
