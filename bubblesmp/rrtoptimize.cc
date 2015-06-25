@@ -47,7 +47,7 @@ using namespace com::ademovic::bubblesmp;
 
 std::string MakeUsage(const char* argv0) {
   std::string usage;
-  usage += "determines a motion plan for the given task.\n"
+  usage += "determines an optimal branch length for RRT-Connect.\n"
            "Usage: ";
   usage += argv0;
   usage += " [OPTION]... [DATA PATH]\n"
