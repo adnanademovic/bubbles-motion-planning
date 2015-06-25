@@ -45,13 +45,13 @@ message TreeConfig {
     CRAWLING_BUBBLE = 4;
   }
   optional Type type = 1 [default = BUBBLE];
-  optional bool attempt_connect = 6 [default = false];
+  optional bool attempt_connect = 6 [default = true];
 
   // For Bubble tree
-  optional uint32 bubbles_per_extend = 8 [default = 10];
-  optional double min_bubble_reach = 9 [default = 0.6];
-  optional double max_bubble_gap = 10 [default = 0.36];
-  optional double bubble_extend = 11 [default = 14.2];
+  optional uint32 bubbles_per_extend = 8 [default = 25];
+  optional double min_bubble_reach = 9 [default = 0.75];
+  optional double max_bubble_gap = 10 [default = 0.4];
+  optional double bubble_extend = 11 [default = 16.0];
 
   // For Greedy Bubble tree
   optional uint32 max_bubbles_per_branch = 2 [default = 50];
@@ -59,8 +59,8 @@ message TreeConfig {
   optional double min_move_length = 3 [default = 0.9];
 
   // For Classic tree
-  optional double step_length = 4 [default = 3.6];
-  optional uint32 checks_per_step = 5 [default = 10];
+  optional double step_length = 4 [default = 10.0];
+  optional uint32 checks_per_step = 5 [default = 25];
 }
 
 message TaskConfig {
