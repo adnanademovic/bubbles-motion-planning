@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
   }
 
   TaskConfig task_config;
-  task_config.mutable_environment()->set_robot_filename("robot/setup.robot");
+  task_config.mutable_environment()->set_robot_filename("robot/solid.robot");
   task_config.mutable_environment()->set_environment_filename(
       "environment/obstacles_hard.stl");
   task_config.mutable_environment()->set_max_underestimate(20.0);
@@ -138,6 +138,7 @@ int main(int argc, char** argv) {
   task_config.mutable_index()->mutable_search_params()->set_use_heap(false);
   task_config.mutable_tree()->set_type(TreeConfig::CLASSIC);
   task_config.mutable_tree()->set_attempt_connect(true);
+  task_config.mutable_tree()->set_checks_per_step(25);
   task_config.mutable_source()->add_q(-90.0);
   task_config.mutable_source()->add_q( 50.0);
   task_config.mutable_source()->add_q(-50.0);
