@@ -45,7 +45,7 @@ message TreeConfig {
     CRAWLING_BUBBLE = 4;
   }
   optional Type type = 1 [default = BUBBLE];
-  optional bool attempt_connect = 6 [default = false];
+  optional bool attempt_connect = 6 [default = true];
 
   // For Bubble tree
   optional uint32 bubbles_per_extend = 8 [default = 25];
