@@ -47,7 +47,7 @@ namespace environment {
 
 class FclEnvironment : public EnvironmentInterface {
  public:
-  FclEnvironment(const std::string& configuration);
+  explicit FclEnvironment(const std::string& configuration);
   FclEnvironment(const EnvironmentConfig& configuration,
                  const boost::filesystem::path& config_file_path);
   virtual ~FclEnvironment() {}

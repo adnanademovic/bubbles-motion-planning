@@ -45,7 +45,7 @@ namespace bubblesmp {
 
 class Rrt {
  public:
-  Rrt(const std::string& configuration);
+  explicit Rrt(const std::string& configuration);
   Rrt(const TaskConfig& configuration,
       const boost::filesystem::path& config_file_path);
   // Takes ownership of everything passed to it.
