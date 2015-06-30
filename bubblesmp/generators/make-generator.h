@@ -30,13 +30,13 @@
 #include <utility>
 #include <vector>
 
-#include "bubblesmp/generators/generator.pb.h"
-#include "random-point-generator-interface.h"
-
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace generators {
+
+class GeneratorSettings;
+class RandomPointGeneratorInterface;
 
 RandomPointGeneratorInterface* NewGeneratorFromProtoBuffer(
     const std::vector<std::pair<double, double> >& limits,

@@ -26,7 +26,7 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE HaltonSequenceGenerator
-#include "halton-sequence-generator.h"
+#include "bubblesmp/generators/halton-sequence-generator.h"
 #include <boost/test/unit_test.hpp>
 
 using ::com::ademovic::bubblesmp::generators::HaltonSequenceGenerator;

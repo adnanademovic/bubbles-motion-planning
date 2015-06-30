@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "simple-generator.h"
+#include "bubblesmp/generators/simple-generator.h"
 
 #include <chrono>
 

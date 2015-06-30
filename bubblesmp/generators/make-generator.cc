@@ -24,12 +24,14 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "make-generator.h"
+#include "bubblesmp/generators/make-generator.h"
 
 #include <glog/logging.h>
 
-#include "halton-sequence-generator.h"
-#include "simple-generator.h"
+#include "bubblesmp/generators/generator.pb.h"
+#include "bubblesmp/generators/halton-sequence-generator.h"
+#include "bubblesmp/generators/random-point-generator-interface.h"
+#include "bubblesmp/generators/simple-generator.h"
 
 namespace com {
 namespace ademovic {

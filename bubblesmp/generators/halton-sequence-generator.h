@@ -30,7 +30,7 @@
 #include <utility>
 #include <vector>
 
-#include "random-point-generator-interface.h"
+#include "bubblesmp/generators/random-point-generator-interface.h"
 
 namespace com {
 namespace ademovic {

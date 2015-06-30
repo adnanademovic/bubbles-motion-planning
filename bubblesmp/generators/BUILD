@@ -59,10 +59,7 @@ cc_library(
     name = "simple-generator",
     srcs = ["simple-generator.cc"],
     hdrs = ["simple-generator.h"],
-    deps = [
-        ":random-point-generator-interface",
-        "//third_party:math",
-    ],
+    deps = [":random-point-generator-interface"],
 )
 
 proto_library(
