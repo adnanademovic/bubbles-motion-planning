@@ -24,10 +24,13 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "environment-feedback.h"
+#include "bubblesmp/environment/environment-feedback.h"
 
 #include <cmath>
 #include <limits>
+
+#include "bubblesmp/bubble.h"
+#include "bubblesmp/environment/environment-interface.h"
 
 namespace com {
 namespace ademovic {
@@ -40,6 +43,8 @@ constexpr double rad_to_deg() {
 }
 
 }  // namespace
+
+EnvironmentFeedback::~EnvironmentFeedback() {}
 
 EnvironmentFeedback::EnvironmentFeedback(EnvironmentInterface* environment)
     : environment_(environment) {}

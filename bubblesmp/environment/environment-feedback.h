@@ -27,18 +27,23 @@
 #ifndef COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_ENVIRONMENT_FEEDBACK_H_
 #define COM_ADEMOVIC_BUBBLESMP_ENVIRONMENT_ENVIRONMENT_FEEDBACK_H_
 
-#include "environment-interface.h"
-#include "../bubble.h"
+#include <vector>
+#include <memory>
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+class Bubble;
+
 namespace environment {
+
+class EnvironmentInterface;
 
 class EnvironmentFeedback {
  public:
   explicit EnvironmentFeedback(EnvironmentInterface* environment);
-  virtual ~EnvironmentFeedback() {}
+  virtual ~EnvironmentFeedback();
   // Caller needs to handle ownership of the returned Bubble.
   Bubble* NewBubble(const std::vector<double>& coordinates) const;
   bool IsCollision(const std::vector<double>& coordinates) const;

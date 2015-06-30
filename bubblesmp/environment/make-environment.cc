@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "make-environment.h"
+#include "bubblesmp/environment/make-environment.h"
 
 #include <fstream>
 #include <string>
@@ -32,7 +32,9 @@
 #include <glog/logging.h>
 #include <google/protobuf/text_format.h>
 
-#include "fcl-environment.h"
+#include "bubblesmp/environment/environment.pb.h"
+#include "bubblesmp/environment/environment-interface.h"
+#include "bubblesmp/environment/fcl-environment.h"
 
 namespace com {
 namespace ademovic {

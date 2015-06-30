@@ -37,20 +37,22 @@
 
 #include <fcl/collision.h>
 
-#include "bubblesmp/environment/environment.pb.h"
-#include "environment-interface.h"
+#include "bubblesmp/environment/environment-interface.h"
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace environment {
 
+class EnvironmentConfig;
+class Robot;
+
 class FclEnvironment : public EnvironmentInterface {
  public:
   explicit FclEnvironment(const std::string& configuration);
   FclEnvironment(const EnvironmentConfig& configuration,
                  const boost::filesystem::path& config_file_path);
-  virtual ~FclEnvironment() {}
+  virtual ~FclEnvironment();
 
   bool IsCollision(const std::vector<double>& q) const;
   EnvironmentInterface::DistanceProfile GetDistanceProfile(

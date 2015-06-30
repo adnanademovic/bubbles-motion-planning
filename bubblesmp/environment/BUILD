@@ -42,10 +42,6 @@ cc_library(
     deps = [
         ":environment-interface",
         "//bubblesmp:bubble",
-        "//third_party/boost:filesystem",
-        "//third_party/boost:serialization",
-        "//third_party/boost:system",
-        "//third_party/boost:thread",
     ],
 )
 
@@ -92,6 +88,7 @@ cc_test(
     deps = [
         ":environment-feedback",
         ":make-environment",
+        "//bubblesmp:bubble",
         "//third_party/boost:unit-test-framework",
     ],
     size = "small",

@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "fcl-environment.h"
+#include "bubblesmp/environment/fcl-environment.h"
 
 #include <algorithm>
 #include <cmath>
@@ -35,6 +35,8 @@
 
 #include <glog/logging.h>
 #include <google/protobuf/text_format.h>
+
+#include "bubblesmp/environment/environment.pb.h"
 
 namespace com {
 namespace ademovic {
@@ -112,6 +114,8 @@ fcl::BVHModel<fcl::OBBRSS>* ParseModel(
 }
 
 }  // namespace
+
+FclEnvironment::~FclEnvironment() {}
 
 FclEnvironment::FclEnvironment(const std::string& configuration) {
   boost::filesystem::path config_file_path(configuration);

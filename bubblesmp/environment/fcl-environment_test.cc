@@ -26,7 +26,7 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE FclEnvironment
-#include "fcl-environment.h"
+#include "bubblesmp/environment/fcl-environment.h"
 #include <boost/test/unit_test.hpp>
 #include <cstdio>
 

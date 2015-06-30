@@ -30,13 +30,13 @@
 #define BOOST_SPIRIT_THREADSAFE
 #include <boost/filesystem.hpp>
 
-#include "bubblesmp/environment/environment.pb.h"
-#include "environment-interface.h"
-
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
 namespace environment {
+
+class EnvironmentConfig;
+class EnvironmentInterface;
 
 EnvironmentInterface* NewEnvironmentFromProtoBuffer(
     const std::string& configuration);

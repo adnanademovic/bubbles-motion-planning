@@ -26,8 +26,9 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE EnvironmentFeedback
-#include "environment-feedback.h"
-#include "make-environment.h"
+#include "bubblesmp/bubble.h"
+#include "bubblesmp/environment/environment-feedback.h"
+#include "bubblesmp/environment/make-environment.h"
 #include <boost/test/unit_test.hpp>
 
 #include <cmath>
