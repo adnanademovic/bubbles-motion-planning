@@ -30,12 +30,15 @@
 #include <memory>
 #include <vector>
 
-#include "rrt-tree.h"
-#include "environment/environment-feedback.h"
+#include "bubblesmp/rrt-tree.h"
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+namespace environment {
+class EnvironmentFeedback;
+}  // namespace environment
 
 // Should run in one thread, due to sequential nature of "Connect". Thus it is
 // not made threadsafe, but supports a threadsafe BubbleSource to be used in
@@ -46,7 +49,7 @@ class GreedyClassicTree : public RrtTree {
       double max_step, unsigned substeps, const std::vector<double>& root,
       std::shared_ptr<environment::EnvironmentFeedback> collision_source,
       const IndexSettings& index_settings);
-  virtual ~GreedyClassicTree() {}
+  virtual ~GreedyClassicTree();
 
   virtual bool Connect( TreeNode* node, const std::vector<double>& q_target);
 

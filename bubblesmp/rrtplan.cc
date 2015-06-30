@@ -31,8 +31,10 @@
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
+#include <google/protobuf/stubs/common.h>
 
-#include "rrt.h"
+#include "bubblesmp/rrt.h"
+#include "bubblesmp/tree-node.h"
 
 DEFINE_bool(verbose, false, "Print verification progress information");
 DEFINE_string(output_type, "",

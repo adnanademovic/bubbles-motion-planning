@@ -24,16 +24,21 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "bubble-tree.h"
+#include "bubblesmp/bubble-tree.h"
 
 #include <algorithm>
 #include <cstdio>
 
 #include <glog/logging.h>
 
+#include "bubblesmp/environment/environment-feedback.h"
+#include "bubblesmp/bubble.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+BubbleTree::~BubbleTree() {}
 
 BubbleTree::BubbleTree(
     double eps, double min_bubble_reach,

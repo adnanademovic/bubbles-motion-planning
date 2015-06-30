@@ -35,13 +35,18 @@
 #define BOOST_SPIRIT_THREADSAFE
 #include <boost/filesystem.hpp>
 
-#include "generators/random-point-generator-interface.h"
-#include "rrt-tree.h"
-#include "bubblesmp/task.pb.h"
-
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+namespace generators {
+class RandomPointGeneratorInterface;
+}  // namespace generators
+
+class RrtTree;
+class TaskConfig;
+class TreeNode;
+class TreePoint;
 
 class Rrt {
  public:
@@ -51,7 +56,7 @@ class Rrt {
   // Takes ownership of everything passed to it.
   Rrt(RrtTree* src_tree, RrtTree* dst_tree,
       generators::RandomPointGeneratorInterface* random_point_generator);
-  virtual ~Rrt() {}
+  virtual ~Rrt();
 
   bool Run(int max_steps);
   bool Step();

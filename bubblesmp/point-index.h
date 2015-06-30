@@ -27,16 +27,17 @@
 #ifndef COM_ADEMOVIC_BUBBLESMP_POINT_INDEX_H_
 #define COM_ADEMOVIC_BUBBLESMP_POINT_INDEX_H_
 
+#include <memory>
 #include <vector>
 
 #include <flann/flann.hpp>
 
-#include "bubblesmp/index.pb.h"
-#include "tree-node.h"
-
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+class TreeNode;
+class IndexSettings;
 
 struct AttachmentPoint {
   std::vector<double> position;

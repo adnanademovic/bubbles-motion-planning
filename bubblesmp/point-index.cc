@@ -24,7 +24,10 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "point-index.h"
+#include "bubblesmp/point-index.h"
+
+#include "bubblesmp/index.pb.h"
+#include "bubblesmp/tree-node.h"
 
 namespace com {
 namespace ademovic {

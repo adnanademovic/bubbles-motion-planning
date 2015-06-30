@@ -26,7 +26,7 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Bubble
-#include "bubble.h"
+#include "bubblesmp/bubble.h"
 
 #include <cmath>
 
@@ -111,5 +111,3 @@ BOOST_AUTO_TEST_CASE(colliding_bubble) {
 
   BOOST_CHECK(bubble.IsCollision());
 }
-
-

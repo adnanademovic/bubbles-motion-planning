@@ -24,16 +24,21 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "greedy-bubble-tree.h"
+#include "bubblesmp/greedy-bubble-tree.h"
 
 #include <algorithm>
 #include <cstdio>
 
 #include <glog/logging.h>
 
+#include "bubblesmp/environment/environment-feedback.h"
+#include "bubblesmp/bubble.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+GreedyBubbleTree::~GreedyBubbleTree() {}
 
 GreedyBubbleTree::GreedyBubbleTree(
     unsigned max_bubbles_per_branch, unsigned max_binary_search_depth,

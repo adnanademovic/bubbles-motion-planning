@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "tree-node.h"
+#include "bubblesmp/tree-node.h"
 
 namespace com {
 namespace ademovic {

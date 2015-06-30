@@ -24,12 +24,15 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "rrt-tree.h"
-#include <glog/logging.h>
+#include "bubblesmp/rrt-tree.h"
+
+#include "bubblesmp/tree-node.h"
 
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+RrtTree::~RrtTree() {}
 
 RrtTree::RrtTree(
     const std::vector<double>& root, const IndexSettings& index_settings) {

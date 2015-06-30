@@ -24,7 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "rrt.h"
+#include "bubblesmp/rrt.h"
 
 #include <iostream>
 #include <fstream>
@@ -34,15 +34,18 @@
 #include <glog/logging.h>
 #include <google/protobuf/text_format.h>
 
-#include "environment/environment-feedback.h"
-#include "environment/make-environment.h"
-#include "generators/make-generator.h"
-#include "bubble-tree.h"
-#include "classic-tree.h"
-#include "crawling-bubble-tree.h"
-#include "greedy-bubble-tree.h"
-#include "greedy-classic-tree.h"
-#include "rrt-tree.h"
+#include "bubblesmp/environment/environment-feedback.h"
+#include "bubblesmp/environment/make-environment.h"
+#include "bubblesmp/generators/make-generator.h"
+#include "bubblesmp/generators/random-point-generator-interface.h"
+#include "bubblesmp/bubble-tree.h"
+#include "bubblesmp/classic-tree.h"
+#include "bubblesmp/crawling-bubble-tree.h"
+#include "bubblesmp/greedy-bubble-tree.h"
+#include "bubblesmp/greedy-classic-tree.h"
+#include "bubblesmp/rrt-tree.h"
+#include "bubblesmp/task.pb.h"
+#include "bubblesmp/tree-node.h"
 
 namespace com {
 namespace ademovic {
@@ -61,6 +64,7 @@ void attempt_connect_thread(RrtTree* rrt_tree, TreeNode* node,
 
 }  // namespace
 
+Rrt::~Rrt() {}
 
 Rrt::Rrt(const std::string& configuration) {
   boost::filesystem::path config_file_path(configuration);

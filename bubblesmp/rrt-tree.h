@@ -30,7 +30,7 @@
 #include <memory>
 #include <vector>
 
-#include "point-index.h"
+#include "bubblesmp/point-index.h"
 
 namespace com {
 namespace ademovic {
@@ -47,9 +47,8 @@ enum ExtensionResult {
 // multiple threads.
 class RrtTree {
  public:
-
   RrtTree(const std::vector<double>& root, const IndexSettings& index_settings);
-  virtual ~RrtTree() {}
+  virtual ~RrtTree();
 
   ExtensionResult Extend(const std::vector<double>& q_target);
   TreeNode* GetNewestNode() const;

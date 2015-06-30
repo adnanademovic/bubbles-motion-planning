@@ -55,6 +55,7 @@ cc_library(
     hdrs = ["classic-tree.h"],
     deps = [
         ":rrt-tree",
+        ":tree-node",
         "//bubblesmp/environment:environment-feedback",
         "//third_party/google:glog",
     ],
@@ -90,6 +91,7 @@ cc_library(
     hdrs = ["greedy-classic-tree.h"],
     deps = [
         ":rrt-tree",
+        ":tree-node",
         "//bubblesmp/environment:environment-feedback",
         "//third_party/google:glog",
     ],
@@ -102,7 +104,6 @@ cc_library(
     deps = [
         ":index_proto",
         ":tree-node",
-        "//third_party/google:gflags",
         "//third_party:flann",
     ],
 )
@@ -119,12 +120,12 @@ cc_library(
         ":greedy-classic-tree",
         ":rrt-tree",
         ":task_proto",
+        ":tree-node",
         "//bubblesmp/environment:environment-feedback",
         "//bubblesmp/environment:make-environment",
         "//bubblesmp/generators:make-generator",
         "//bubblesmp/generators:random-point-generator-interface",
         "//third_party/boost:filesystem",
-        "//third_party/google:gflags",
         "//third_party/google:glog",
         "//third_party/google:protobuf",
     ],
@@ -134,7 +135,10 @@ cc_library(
     name = "rrt-tree",
     srcs = ["rrt-tree.cc"],
     hdrs = ["rrt-tree.h"],
-    deps = [":point-index"],
+    deps = [
+        ":point-index",
+        ":tree-node",
+    ],
 )
 
 cc_library(
@@ -163,8 +167,10 @@ cc_binary(
     srcs = ["rrtplan.cc"],
     deps = [
         ":rrt",
+        ":tree-node",
         "//third_party/google:gflags",
         "//third_party/google:glog",
+        "//third_party/google:protobuf",
     ],
 )
 

@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include "tree-node.h"
+#include "bubblesmp/tree-node.h"
 
 namespace com {
 namespace ademovic {

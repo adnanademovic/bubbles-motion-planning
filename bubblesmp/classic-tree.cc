@@ -24,16 +24,21 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "classic-tree.h"
+#include "bubblesmp/classic-tree.h"
 
 #include <cmath>
 #include <cstdio>
 
 #include <glog/logging.h>
 
+#include "bubblesmp/environment/environment-feedback.h"
+#include "bubblesmp/tree-node.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+ClassicTree::~ClassicTree() {}
 
 ClassicTree::ClassicTree(
     double max_step, unsigned substeps, const std::vector<double>& root,

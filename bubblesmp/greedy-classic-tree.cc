@@ -24,16 +24,21 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "greedy-classic-tree.h"
+#include "bubblesmp/greedy-classic-tree.h"
 
 #include <cmath>
 #include <cstdio>
 
 #include <glog/logging.h>
 
+#include "bubblesmp/environment/environment-feedback.h"
+#include "bubblesmp/tree-node.h"
+
 namespace com {
 namespace ademovic {
 namespace bubblesmp {
+
+GreedyClassicTree::~GreedyClassicTree() {}
 
 GreedyClassicTree::GreedyClassicTree(
     double max_step, unsigned substeps, const std::vector<double>& root,
