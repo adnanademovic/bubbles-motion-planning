@@ -28,7 +28,7 @@ licenses(["notice"])  # FreeBSD
 
 package(default_visibility = ["//visibility:public"])
 
-load("//tools/protobuf/protobuf", "proto_library")
+load("/tools/protobuf/protobuf", "proto_library")
 
 cc_library(
     name = "environment-interface",
