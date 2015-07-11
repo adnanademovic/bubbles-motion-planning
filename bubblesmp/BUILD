@@ -125,6 +125,7 @@ cc_library(
         "//bubblesmp/environment:make-environment",
         "//bubblesmp/generators:make-generator",
         "//bubblesmp/generators:random-point-generator-interface",
+        "//third_party:pthread",
         "//third_party/boost:filesystem",
         "//third_party/google:glog",
         "//third_party/google:protobuf",
@@ -168,6 +169,7 @@ cc_binary(
     deps = [
         ":rrt",
         ":tree-node",
+        "//third_party:pthread",
         "//third_party/google:gflags",
         "//third_party/google:glog",
         "//third_party/google:protobuf",

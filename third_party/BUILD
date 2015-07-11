@@ -42,3 +42,8 @@ cc_library(
   name = "fcl",
   linkopts = ["-lfcl"],
 )
+
+cc_library(
+  name = "pthread",
+  linkopts = ["-lpthread"],
+)
