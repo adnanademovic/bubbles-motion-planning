@@ -45,7 +45,8 @@ class EnvironmentFeedback {
   explicit EnvironmentFeedback(EnvironmentInterface* environment);
   virtual ~EnvironmentFeedback();
   // Caller needs to handle ownership of the returned Bubble.
-  Bubble* NewBubble(const std::vector<double>& coordinates) const;
+  Bubble* NewBubble(
+      const std::vector<double>& coordinates, bool extended = true) const;
   bool IsCollision(const std::vector<double>& coordinates) const;
   std::vector<std::pair<double, double> > GetAngleRanges() const;
 

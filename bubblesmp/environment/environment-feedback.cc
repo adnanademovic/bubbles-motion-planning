@@ -50,7 +50,7 @@ EnvironmentFeedback::EnvironmentFeedback(EnvironmentInterface* environment)
     : environment_(environment) {}
 
 Bubble* EnvironmentFeedback::NewBubble(
-    const std::vector<double>& coordinates) const {
+    const std::vector<double>& coordinates, bool extended) const {
 
   std::vector<std::pair<double, std::vector<double> > > distance_profile(
       environment_->GetDistanceProfile(coordinates));
@@ -58,8 +58,15 @@ Bubble* EnvironmentFeedback::NewBubble(
   std::vector<double> output(
       coordinates.size(), std::numeric_limits<double>::infinity());
 
+  double distance = std::numeric_limits<double>::infinity();
+  if (!extended) {
+    for (const auto& profile_part : distance_profile)
+      distance = std::min(distance, profile_part.first);
+  }
+
   for (const auto& profile_part : distance_profile) {
-    double distance = profile_part.first;
+    if (extended)
+      distance = profile_part.first;
     int segment = 0;
     for (double subdistance : profile_part.second) {
       if (subdistance != 0.0)

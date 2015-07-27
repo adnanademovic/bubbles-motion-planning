@@ -370,3 +370,108 @@ BOOST_AUTO_TEST_CASE(two_segment_bubble) {
   BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 15.0 / 11.0,
                     AbsToRelTolerance(rad_to_deg() * 15.0 / 11.0, 0.11));
 }
+
+BOOST_AUTO_TEST_CASE(trivial_bubble_unextended) {
+  MakeFile("conf.testfile",
+      "robot_filename: \"robot.testfile\","
+      "environment_filename: \"env.testfile\","
+      "max_underestimate: 0.1"
+      );
+  MakeFile("robot.testfile",
+      "segments {"
+      "  a: 10"
+      "  parts: \"seg1.testfile\""
+      "  range {"
+      "    min: -180"
+      "    max: 180"
+      "  }"
+      "}"
+      );
+  MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
+  MakeModelFile("env.testfile", {15, -10, -10, 15, -10, 10, 15, 10, 0});
+
+  EnvironmentFeedback environment(
+      NewEnvironmentFromProtoBuffer("conf.testfile"));
+
+  std::unique_ptr<Bubble> bub;
+  std::vector<double> dims;
+
+  bub.reset(environment.NewBubble({0.0}, false));
+  dims = bub->size();
+  BOOST_CHECK_EQUAL(dims.size(), 1);
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 5.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 5.0 / 11.0, 0.11));
+
+  bub.reset(environment.NewBubble({45.0}, false));
+  dims = bub->size();
+  BOOST_CHECK_EQUAL(dims.size(), 1);
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 7.929 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 7.929 / 11.0, 0.11));
+}
+
+BOOST_AUTO_TEST_CASE(two_segment_bubble_unextended) {
+  MakeFile("conf.testfile",
+      "robot_filename: \"robot.testfile\","
+      "environment_filename: \"env.testfile\","
+      "max_underestimate: 0.1"
+      );
+  MakeFile("robot.testfile",
+      "segments {"
+      "  a: 10"
+      "  parts: \"seg1.testfile\""
+      "  range {"
+      "    min: -180"
+      "    max: 180"
+      "  }"
+      "}"
+      "segments {"
+      "  a: 10"
+      "  parts: \"seg2.testfile\""
+      "  range {"
+      "    min: -180"
+      "    max: 180"
+      "  }"
+      "}"
+      );
+  MakeModelFile("seg1.testfile", {10, 0, 0, 0, 0, 1, 0, 0, -1});
+  MakeModelFile("seg2.testfile", {20, 0, 0, 10, 0, 1, 10, 0, -1});
+  MakeModelFile("env.testfile", {25, -20, -10, 25, -20, 10, 25, 20, 0});
+
+  EnvironmentFeedback environment(
+      NewEnvironmentFromProtoBuffer("conf.testfile"));
+
+  std::unique_ptr<Bubble> bub;
+  std::vector<double> dims;
+
+  bub.reset(environment.NewBubble({0.0, 0.0}, false));
+  dims = bub->size();
+  BOOST_CHECK_EQUAL(dims.size(), 2);
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 5.0 / 21.0,
+                    AbsToRelTolerance(rad_to_deg() * 5.0 / 21.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 5.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 5.0 / 11.0, 0.11));
+
+  bub.reset(environment.NewBubble({45.0, 0.0}, false));
+  dims = bub->size();
+  BOOST_CHECK_EQUAL(dims.size(), 2);
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 10.858 / 21.0,
+                    AbsToRelTolerance(rad_to_deg() * 10.858 / 21.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 10.858 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 10.858 / 11.0, 0.11));
+
+  bub.reset(environment.NewBubble({45.0, 45.0}, false));
+  dims = bub->size();
+  BOOST_CHECK_EQUAL(dims.size(), 2);
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 17.929 / 19.4776,
+                    AbsToRelTolerance(rad_to_deg() * 17.929 / 19.4776, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 17.929 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 17.929 / 11.0, 0.11));
+
+  bub.reset(environment.NewBubble({0.0, 135.0}, false));
+  dims = bub->size();
+  BOOST_CHECK_EQUAL(dims.size(), 2);
+  BOOST_CHECK_CLOSE(dims[0], rad_to_deg() * 15.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 15.0 / 11.0, 0.11));
+  BOOST_CHECK_CLOSE(dims[1], rad_to_deg() * 15.0 / 11.0,
+                    AbsToRelTolerance(rad_to_deg() * 15.0 / 11.0, 0.11));
+}
