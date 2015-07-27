@@ -44,10 +44,11 @@ BubbleTree::BubbleTree(
     double eps, double min_bubble_reach,
     double max_bubble_gap, const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
-    const IndexSettings& index_settings)
+    const IndexSettings& index_settings, bool use_extended)
     : RrtTree(root, index_settings), eps_(eps),
       min_bubble_reach_(min_bubble_reach), max_bubble_gap_(max_bubble_gap),
-      bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()) {
+      bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()),
+      use_extended_(use_extended) {
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
 }
 
@@ -80,7 +81,8 @@ bool BubbleTree::CanReachBetween(
   for (size_t i = 0; i < axis_count; ++i)
     q_mid[i] = (q_1[i] + q_2[i]) / 2.0;
   if (use_bubbles) {
-    std::unique_ptr<Bubble> bubble(bubble_source_->NewBubble(q_mid));
+    std::unique_ptr<Bubble> bubble(
+        bubble_source_->NewBubble(q_mid, use_extended_));
     Bubble* bubble_ptr = bubble.get();
     std::vector<double> q_1_hull(bubble_ptr->IntersectsHullAt(q_1));
     std::vector<double> q_2_hull(bubble_ptr->IntersectsHullAt(q_2));
@@ -114,7 +116,7 @@ bool BubbleTree::CanReachBetween(
 }
 
 TreeNode* BubbleTree::AddNode(const std::vector<double>& q, TreeNode* parent) {
-  return AddNodeFromBubble(parent, bubble_source_->NewBubble(q));
+  return AddNodeFromBubble(parent, bubble_source_->NewBubble(q, use_extended_));
 }
 
 TreeNode* BubbleTree::AddNodeFromBubble(TreeNode* parent, Bubble* bubble) {

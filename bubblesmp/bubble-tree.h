@@ -51,7 +51,7 @@ class BubbleTree : public RrtTree {
   BubbleTree(double eps, double min_bubble_reach,
              double max_bubble_gap, const std::vector<double>& root,
              std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
-             const IndexSettings& index_settings);
+             const IndexSettings& index_settings, bool use_extended);
   virtual ~BubbleTree();
 
   virtual bool Connect(TreeNode* node, const std::vector<double>& q_target);
@@ -74,6 +74,7 @@ class BubbleTree : public RrtTree {
   double max_bubble_gap_;
   std::shared_ptr<environment::EnvironmentFeedback> bubble_source_;
   std::vector<std::pair<double, double> > limits_;
+  bool use_extended_;
 };
 
 }  // namespace bubblesmp

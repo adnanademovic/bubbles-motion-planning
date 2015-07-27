@@ -106,11 +106,11 @@ void Rrt::Configure(const TaskConfig& config,
       src_tree_.reset(new BubbleTree(
           config.tree().bubble_extend(), config.tree().min_bubble_reach(),
           config.tree().max_bubble_gap(), src, src_bubble_source,
-          config.index()));
+          config.index(), config.tree().use_extended_bubbles()));
       dst_tree_.reset(new BubbleTree(
           config.tree().bubble_extend(), config.tree().min_bubble_reach(),
           config.tree().max_bubble_gap(), dst, dst_bubble_source,
-          config.index()));
+          config.index(), config.tree().use_extended_bubbles()));
       break;
     case (TreeConfig::CLASSIC):
       src_tree_.reset(new ClassicTree(
@@ -124,21 +124,25 @@ void Rrt::Configure(const TaskConfig& config,
       src_tree_.reset(new CrawlingBubbleTree(
           config.tree().bubbles_per_extend(), config.tree().min_bubble_reach(),
           config.tree().max_bubble_gap(), src,
-          src_bubble_source, config.index()));
+          src_bubble_source, config.index(),
+          config.tree().use_extended_bubbles()));
       dst_tree_.reset(new CrawlingBubbleTree(
           config.tree().bubbles_per_extend(), config.tree().min_bubble_reach(),
           config.tree().max_bubble_gap(), dst,
-          dst_bubble_source, config.index()));
+          dst_bubble_source, config.index(),
+          config.tree().use_extended_bubbles()));
       break;
     case (TreeConfig::GREEDY_BUBBLE):
       src_tree_.reset(new GreedyBubbleTree(
           config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), src,
-          src_bubble_source, config.tree().min_move_length(), config.index()));
+          src_bubble_source, config.tree().min_move_length(), config.index(),
+          config.tree().use_extended_bubbles()));
       dst_tree_.reset(new GreedyBubbleTree(
           config.tree().max_bubbles_per_branch(),
           config.tree().max_binary_search_depth(), dst,
-          dst_bubble_source, config.tree().min_move_length(), config.index()));
+          dst_bubble_source, config.tree().min_move_length(), config.index(),
+          config.tree().use_extended_bubbles()));
       break;
     case (TreeConfig::GREEDY_CLASSIC):
       src_tree_.reset(new GreedyClassicTree(

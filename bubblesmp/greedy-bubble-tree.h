@@ -52,7 +52,8 @@ class GreedyBubbleTree : public RrtTree {
       unsigned max_bubbles_per_branch, unsigned max_binary_search_depth,
       const std::vector<double>& root,
       std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
-      double min_move_size, const IndexSettings& index_settings);
+      double min_move_size, const IndexSettings& index_settings,
+      bool use_extended);
   virtual ~GreedyBubbleTree();
 
   virtual bool Connect(TreeNode* node, const std::vector<double>& q_target);
@@ -73,6 +74,7 @@ class GreedyBubbleTree : public RrtTree {
   std::shared_ptr<environment::EnvironmentFeedback> bubble_source_;
   std::vector<std::pair<double, double> > limits_;
   double min_move_size_;
+  bool use_extended_;
 };
 
 }  // namespace bubblesmp

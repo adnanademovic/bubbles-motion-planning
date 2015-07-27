@@ -44,12 +44,13 @@ GreedyBubbleTree::GreedyBubbleTree(
     unsigned max_bubbles_per_branch, unsigned max_binary_search_depth,
     const std::vector<double>& root,
     std::shared_ptr<environment::EnvironmentFeedback> bubble_source,
-    double min_move_size, const IndexSettings& index_settings)
+    double min_move_size, const IndexSettings& index_settings,
+    bool use_extended)
     : RrtTree(root, index_settings),
       max_bubbles_per_branch_(max_bubbles_per_branch),
       max_binary_search_depth_(max_binary_search_depth),
       bubble_source_(bubble_source), limits_(bubble_source->GetAngleRanges()),
-      min_move_size_(min_move_size) {
+      min_move_size_(min_move_size), use_extended_(use_extended) {
   CHECK(!bubble_source_->IsCollision(root)) << "Collision at root point";
 }
 
@@ -75,7 +76,8 @@ bool GreedyBubbleTree::CanReachBetween(
   std::vector<double> q_mid(dims, 0.0);
   for (unsigned i = 0; i < dims; ++i)
     q_mid[i] = (q_1[i] + q_2[i]) / 2.0;
-  std::unique_ptr<Bubble> bubble(bubble_source_->NewBubble(q_mid));
+  std::unique_ptr<Bubble> bubble(
+      bubble_source_->NewBubble(q_mid, use_extended_));
 
   if (bubble->IsCollision())
     return false;
@@ -92,7 +94,8 @@ bool GreedyBubbleTree::CanReachBetween(
 
 TreeNode* GreedyBubbleTree::AddNode(
     const std::vector<double>& q, TreeNode* parent) {
-  TreeNode* current_node = new TreeNode(bubble_source_->NewBubble(q), parent);
+  TreeNode* current_node = new TreeNode(
+      bubble_source_->NewBubble(q, use_extended_), parent);
   Bubble* current_bubble = static_cast<Bubble*>(current_node->point.get());
   nodes_.emplace_back(current_node);
   std::vector<double> position(current_bubble->position());
