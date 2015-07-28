@@ -81,10 +81,14 @@ fcl::BVHModel<fcl::OBBRSS>* ParseModel(
     const std::string& filename, fcl::Transform3f* t,
     double x, double y, double z, double* l, double* r) {
   FILE* f = fopen(filename.c_str(), "rb");
+  CHECK(f != nullptr) << "Could not open model file: " << filename;
   uint8_t header[80];
   uint32_t triangle_count;
-  fread(header, sizeof(header[0]), 80, f);
-  fread(&triangle_count, sizeof(triangle_count), 1, f);
+  size_t fread_retval;
+  fread_retval = fread(header, sizeof(header[0]), 80, f);
+  CHECK_EQ(fread_retval, 80) << "Error reading file: " << filename;
+  fread_retval = fread(&triangle_count, sizeof(triangle_count), 1, f);
+  CHECK_EQ(fread_retval, 1) << "Error reading file: " << filename;
   float input[3][3];
   fcl::Vec3f p[3];
   float normal[3];
@@ -94,11 +98,16 @@ fcl::BVHModel<fcl::OBBRSS>* ParseModel(
   *l = 0.0;
   *r = 0.0;
   for (uint32_t triangle = 0; triangle < triangle_count; ++triangle) {
-    fread(normal, sizeof(normal[0]), 3, f);
-    fread(input[0], sizeof(input[0][0]), 3, f);
-    fread(input[1], sizeof(input[1][0]), 3, f);
-    fread(input[2], sizeof(input[2][0]), 3, f);
-    fread(&attribute, sizeof(attribute), 1, f);
+    fread_retval = fread(normal, sizeof(normal[0]), 3, f);
+    CHECK_EQ(fread_retval, 3) << "Error reading file: " << filename;
+    fread_retval = fread(input[0], sizeof(input[0][0]), 3, f);
+    CHECK_EQ(fread_retval, 3) << "Error reading file: " << filename;
+    fread_retval = fread(input[1], sizeof(input[1][0]), 3, f);
+    CHECK_EQ(fread_retval, 3) << "Error reading file: " << filename;
+    fread_retval = fread(input[2], sizeof(input[2][0]), 3, f);
+    CHECK_EQ(fread_retval, 3) << "Error reading file: " << filename;
+    fread_retval = fread(&attribute, sizeof(attribute), 1, f);
+    CHECK_EQ(fread_retval, 1) << "Error reading file: " << filename;
     for (int tri = 0; tri < 3; ++tri) {
       p[tri] = t->transform(fcl::Vec3f(
           input[tri][0], input[tri][1], input[tri][2]));
