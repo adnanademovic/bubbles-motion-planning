@@ -49,9 +49,9 @@ message TreeConfig {
 
   // For Bubble tree
   optional uint32 bubbles_per_extend = 8 [default = 25];
-  optional double min_bubble_reach = 9 [default = 0.75];
+  optional double min_bubble_reach = 9 [default = 2];
   optional double max_bubble_gap = 10 [default = 0.4];
-  optional double bubble_extend = 11 [default = 16.0];
+  optional double bubble_extend = 11 [default = 96.0];
   optional bool use_extended_bubbles = 12 [default = true];
 
   // For Greedy Bubble tree
