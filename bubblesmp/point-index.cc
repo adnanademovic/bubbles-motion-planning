@@ -62,10 +62,8 @@ PointIndex::PointIndex(const std::vector<double>& q_root, TreeNode* root_node,
   if (settings.has_index_params())
     pb_index_params = settings.index_params();
 
-  flann::flann_centers_init_t centers_init;
-  if (pb_index_params.has_centers_init())
-    centers_init = static_cast<flann::flann_centers_init_t>(
-        pb_index_params.centers_init());
+  flann::flann_centers_init_t centers_init(
+      static_cast<flann::flann_centers_init_t>(pb_index_params.centers_init()));
 
   switch (index_settings_type) {
     case IndexSettings::LINEAR:
