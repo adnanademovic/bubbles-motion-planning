@@ -43,6 +43,7 @@ message TreeConfig {
     GREEDY_BUBBLE = 2;
     GREEDY_CLASSIC = 3;
     CRAWLING_BUBBLE = 4;
+    BERTRAM_BUBBLE = 5;
   }
   optional Type type = 1 [default = BUBBLE];
   optional bool attempt_connect = 6 [default = true];
@@ -62,6 +63,10 @@ message TreeConfig {
   // For Classic tree
   optional double step_length = 4 [default = 10.0];
   optional uint32 checks_per_step = 5 [default = 25];
+
+  // For Bertram Bubble tree
+  optional double s_min = 13 [default = 10.0];
+  optional uint32 checks_on_s_min = 14 [default = 25];
 }
 
 message TaskConfig {

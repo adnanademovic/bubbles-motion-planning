@@ -31,6 +31,18 @@ package(default_visibility = ["//visibility:public"])
 load("/tools/protobuf/protobuf", "proto_library")
 
 cc_library(
+    name = "bertram-bubble-tree",
+    srcs = ["bertram-bubble-tree.cc"],
+    hdrs = ["bertram-bubble-tree.h"],
+    deps = [
+        ":bubble",
+        ":rrt-tree",
+        "//bubblesmp/environment:environment-feedback",
+        "//third_party/google:glog",
+    ],
+)
+
+cc_library(
     name = "bubble",
     srcs = ["bubble.cc"],
     hdrs = ["bubble.h"],
@@ -113,6 +125,7 @@ cc_library(
     srcs = ["rrt.cc"],
     hdrs = ["rrt.h"],
     deps = [
+        ":bertram-bubble-tree",
         ":bubble-tree",
         ":classic-tree",
         ":crawling-bubble-tree",

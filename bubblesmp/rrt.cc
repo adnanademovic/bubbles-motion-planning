@@ -38,6 +38,7 @@
 #include "bubblesmp/environment/make-environment.h"
 #include "bubblesmp/generators/make-generator.h"
 #include "bubblesmp/generators/random-point-generator-interface.h"
+#include "bubblesmp/bertram-bubble-tree.h"
 #include "bubblesmp/bubble-tree.h"
 #include "bubblesmp/classic-tree.h"
 #include "bubblesmp/crawling-bubble-tree.h"
@@ -151,6 +152,16 @@ void Rrt::Configure(const TaskConfig& config,
       dst_tree_.reset(new GreedyClassicTree(
           config.tree().step_length(), config.tree().checks_per_step(), dst,
           dst_bubble_source, config.index()));
+      break;
+    case (TreeConfig::BERTRAM_BUBBLE):
+      src_tree_.reset(new BertramBubbleTree(
+          config.tree().s_min(), config.tree().checks_on_s_min(), src,
+          src_bubble_source, config.index(),
+          config.tree().use_extended_bubbles()));
+      dst_tree_.reset(new BertramBubbleTree(
+          config.tree().s_min(), config.tree().checks_on_s_min(), dst,
+          dst_bubble_source, config.index(),
+          config.tree().use_extended_bubbles()));
       break;
     default:
       LOG(FATAL) << (config.tree().has_type() ? "Unsuported" : "Missing")
