@@ -65,8 +65,8 @@ message TreeConfig {
   optional uint32 checks_per_step = 5 [default = 25];
 
   // For Bertram Bubble tree
-  optional double s_min = 13 [default = 10.0];
-  optional uint32 checks_on_s_min = 14 [default = 25];
+  optional double s_min = 13 [default = 16.0];
+  optional uint32 checks_on_s_min = 14 [default = 40];
 }
 
 message TaskConfig {
