@@ -41,12 +41,14 @@ DEFINE_string(output_type, "",
     "Set the information that should be returned in the output ("
     "path - array of configurations, "
     "times - duration of each step in microseconds, "
+    "progress - progress information for the current case, "
     "an empty string results in no output"
     ")");
 
 namespace {
 static bool ValidateOutputType(const char* flagname, const std::string& value) {
-  if (value != "path" && value != "times" && value != "") {
+  if (value != "path" && value != "times" && value != "progress"
+      && value != "") {
     printf("Invalid value for --%s: %s\nOptions are: \"\", path, times\n",
            flagname, value.c_str());
     return false;
@@ -125,6 +127,8 @@ int main(int argc, char** argv) {
   for (int task = 1; task < argc; ++task) {
     Rrt rrt(argv[task]);
     LOG(INFO) << "Running case: " << argv[task];
+    if (FLAGS_output_type == "progress")
+      printf("\nBegin: %s\n", argv[task]);
     int step = 0;
     bool done = false;
     std::vector<long int> durations;
@@ -132,9 +136,14 @@ int main(int argc, char** argv) {
       durations.push_back(static_cast<long int>(
           TimeMeasure<std::chrono::microseconds>::Run(
             DoStep, &rrt, &done)));
-      ++step;
-      LOG(INFO) << "Step " << step << " took " << durations.back() << " us";
+      if (FLAGS_output_type == "progress")
+        printf(".");
     }
+    step = 0;
+    for (long int t : durations)
+      LOG(INFO) << "Step " << ++step << " took " << t << " us";
+    if (FLAGS_output_type == "progress")
+      printf("\nEnd: %s\n", argv[task]);
     if (FLAGS_output_type == "path")
       OutputPath(rrt.GetSolution());
     else if (FLAGS_output_type == "times")
