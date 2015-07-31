@@ -41,7 +41,7 @@ DEFINE_string(output_type, "",
     "Set the information that should be returned in the output ("
     "path - array of configurations, "
     "times - duration of each step in microseconds, "
-    "progress - progress information for the current case, "
+    "progress - progress information for the current case to stderr, "
     "an empty string results in no output"
     ")");
 
@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
     Rrt rrt(argv[task]);
     LOG(INFO) << "Running case: " << argv[task];
     if (FLAGS_output_type == "progress")
-      printf("\nBegin: %s\n", argv[task]);
+      fprintf(stderr, "Begin: %s\n", argv[task]);
     int step = 0;
     bool done = false;
     std::vector<long int> durations;
@@ -136,14 +136,12 @@ int main(int argc, char** argv) {
       durations.push_back(static_cast<long int>(
           TimeMeasure<std::chrono::microseconds>::Run(
             DoStep, &rrt, &done)));
-      if (FLAGS_output_type == "progress")
-        printf(".");
     }
     step = 0;
     for (long int t : durations)
       LOG(INFO) << "Step " << ++step << " took " << t << " us";
     if (FLAGS_output_type == "progress")
-      printf("\nEnd: %s\n", argv[task]);
+      fprintf(stderr, "End: %s\n", argv[task]);
     if (FLAGS_output_type == "path")
       OutputPath(rrt.GetSolution());
     else if (FLAGS_output_type == "times")
